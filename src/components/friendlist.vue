@@ -1,9 +1,9 @@
 <template>
   <ul v-if="!isLoading">
-      <li  v-for="friend in friends" :key="friend.id">
+      <li v-on:click="friendchosen"  v-bind:id="index" v-for="(friend, index) in friends" :key="friend.id">
         <div class="list__container">
             <img v-bind:src="friend.photourl">
-            <div class="list__name">
+            <div class="list__name" >
               {{friend.name}}
             </div>
         </div>
@@ -17,50 +17,58 @@
 </template>
 
 <script>
-import axios from "axios";
-import state from "../appstate.js";
+import axios from 'axios'
+
 export default {
-  name: "FriendList",
+  name: 'FriendList',
   data() {
     return {
       isLoading: true,
       friends: []
-    };
+    }
   },
   methods: {
     loadfrienddata: async function() {
-      // setTimeout(() => {
-      // this.isLoading = false
-      // this.friends = [
-      //   {name: 'kazuma', pic: require('../assets/defaultprofile.png'), id: 1},
-      //   {name: 'kazuma', pic: require('../assets/defaultprofile.png'), id: 2},
-      //   {name: 'kazuma', pic: require('../assets/defaultprofile.png'), id: 3} ]
-      // }, 3000)
-      const home_url = `http://localhost:8181`;
-      const url = home_url + "/api/friend";
+      const home_url = `http://localhost:8181`
+      const url = home_url + '/api/friend'
 
       try {
         let result = await axios({
-          method: "get",
+          method: 'get',
           url: url,
-          headers: { "x-access-token": state.token }
-        });
-        console.log(result);
-        this.friends = result.data;
-        this.isLoading = false;
-      } catch (err) {
-        console.log(err);
-      }
+          headers: { 'x-access-token': this.$store.state.token }
+        })
+        this.friends = result.data
+        this.isLoading = false
+      } catch (err) {}
+    },
+    friendchosen: async function(event) {
+      console.log(this.friends[event.target.id].id)
+      this.$store.commit('setactivefriendid', this.friends[event.target.id].id)
+      const home_url = `http://localhost:8181`
+      const talk_url = '/api/user/talks/' + this.friends[event.target.id].id
+      const url = home_url + talk_url
+
+      let result = await axios({
+        method: 'get',
+        url: url,
+        headers: { 'x-access-token': this.$store.state.token }
+      })
+
+      this.$store.commit('settalks', result.data)
+      this.$store.commit('setactivename', this.friends[event.target.id].name)
+
+      console.log(result)
     }
   },
   created() {
-    this.loadfrienddata();
+    this.loadfrienddata()
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
-@import "../scss/color.scss";
+@import '../scss/color.scss';
 img {
   width: 40px;
   height: 40px;
@@ -83,6 +91,10 @@ li {
 li:hover {
   background: $hover-color;
   color: white;
+}
+
+li * {
+  pointer-events: none;
 }
 
 .list__container {

@@ -1,17 +1,18 @@
 <template>
     <div id="chat__container">
-        <ul v-if="!isLoading">
-            <li v-for="(chat, index) in chats" v-bind:key="index">
-                <div v-bind:class="chatbubblestyle(chat.person)" >
+        <div class="friendnamecontainer">
+          {{this.$store.state.acitvename}}
+        </div>
+        <ul>
+            <li v-for="(chat, index) in this.chats" v-bind:key="index">
+                <div v-bind:class="chatbubblestyle(chat.which)" >
                     <span>
                          {{chat.content}}
                     </span>
                 </div>
             </li>
         </ul>
-        <ul v-else>
-            <li>Loading...</li>
-        </ul>
+       
         <div id="chatinput__container">
             <input v-model="chatinput"  type="text" id="chatinput">
             <button  v-on:click="addchat" class="addbutton" >
@@ -22,42 +23,48 @@
 </template>
 
 <script>
-import state from '../appstate.js'
+var webSocket = new WebSocket('ws://localhost:8084')
 export default {
   data() {
     return {
-      isLoading: true,
-      chats: [],
-      chatinput: ""
-    };
+      chatinput: ''
+    }
+  },
+  computed: {
+    chats() {
+      console.log('ee')
+      return this.$store.state.talks
+    }
   },
   methods: {
     addchat: function() {
-      console.log(state.token);
-      this.chats.push({ content: this.chatinput, person: 1 });
+      this.chats.push({ content: this.chatinput, person: 1 })
+
+      let sendobj = {
+        myId: this.$store.state.token,
+        friendId: this.$store.state.activefriendid,
+        content: this.chatinput
+      }
+
+      webSocket.send(JSON.stringify(sendobj))
 
       //network post request to server
     },
     chatbubblestyle: function(person) {
-      return person == 0 ? "mechat" : "youchat";
+      return person == 0 ? 'mechat' : 'youchat'
     }
-
-    // loadchatdata: function() {
-    //   setTimeout(() => {
-    //     this.isLoading = false;
-    //     this.chats = [
-    //       { content: "hello", person: 1 },
-    //       { content: "hello what", person: 0 },
-    //       { content: "hello what", person: 0 },
-    //       { content: "hello what", person: 0 }
-    //     ];
-    //   }, 2000);
-    // }
   },
   created() {
-    this.loadchatdata();
+    this.loadchatdata()
+    webSocket.addEventListener('open', function(event) {
+      console.log('connected')
+    })
+
+    webSocket.addEventListener('message', function(event) {
+      console.log('message: ', event.data)
+    })
   }
-};
+}
 </script >
 
 
@@ -107,6 +114,10 @@ span {
   width: 100%;
   /* position: absolute;
     bottom: 10px; */
+}
+
+.friendnamecontainer {
+  padding: 20px;
 }
 
 #chatinput__container {

@@ -15,9 +15,7 @@
                 <router-link v-bind:to="item">{{item}}</router-link>
             </li>
         </ul>
-        <!-- <button class="loginbutton">
-            LOGIN/SIGNUP
-        </button> -->
+       
     </div>
     <div class="addfriendpanel" v-bind:class="{active: isActiveAddfriend}" >
         <button v-on:click="searchopen" class="closebutton">
@@ -46,6 +44,7 @@
             
         </div>
     </div>
+
 
     <div class="addfriendpanel" v-bind:class="{active: isActiveProfile}" >
         <button v-on:click="profileopen" class="closebutton">
@@ -89,112 +88,110 @@
 
 
 <script>
-import axios from "axios";
-import state from "../appstate.js";
+import axios from 'axios'
 
 export default {
   data() {
     return {
       isActive: true,
-      isActiveAddfriend: true,
+      isActiveAddfriend: false,
       isActiveProfile: false,
       isActiveLogin: false,
-      sidebarItems: ["chat", "video", "feed"],
-      username: "",
-      userpassword: "",
-      loginerrmessage: "",
-      friendname: "",
-      searchusername: "",
-      searchuserid: "",
-      searchuserphotourl: "http://localhost:8181/img/defaultprofile.jpg",
-      nofindmessage: "",
-      friendadderror: ""
-    };
+      sidebarItems: ['chat', 'video', 'feed'],
+      username: '',
+      userpassword: '',
+      loginerrmessage: '',
+      friendname: '',
+      searchusername: '',
+      searchuserid: '',
+      searchuserphotourl: 'http://localhost:8181/img/defaultprofile.jpg',
+      nofindmessage: '',
+      friendadderror: ''
+    }
   },
 
   methods: {
     sidebaropen: function(event) {
-      console.log("clicked");
-      this.isActive = !this.isActive;
+      console.log('clicked')
+      this.isActive = !this.isActive
     },
     searchopen: function(event) {
-      this.isActiveAddfriend = !this.isActiveAddfriend;
+      this.isActiveAddfriend = !this.isActiveAddfriend
     },
     profileopen: function(event) {
-      this.isActiveProfile = !this.isActiveProfile;
+      this.isActiveProfile = !this.isActiveProfile
     },
 
     loginsubmit: async function(event) {
-      const home_url = `http://localhost:8181`;
-      const login_url = "/api/user/login";
-      const url = home_url + login_url;
+      const home_url = `http://localhost:8181`
+      const login_url = '/api/user/login'
+      const url = home_url + login_url
 
       try {
         let result = await axios.post(url, {
           name: this.username,
           password: this.userpassword
-        });
-        console.log(result);
+        })
+        console.log(result)
 
-        this.isActiveLogin = false;
-        state.token = result.data.token;
+        this.isActiveLogin = false
+        this.$store.commit('settoken', result.data.token)
       } catch (err) {
-        console.log(err);
+        console.log(err)
         this.loginerrmessage =
-          "Your name is already used or your password is not correct";
+          'Your name is already used or your password is not correct'
       }
     },
     addfriend: async function(event) {
-      if (this.searchuserid != "") {
-        const home_url = `http://localhost:8181`;
-        const login_url = "/api/friend/add/" + this.searchuserid;
-        const url = home_url + login_url;
+      if (this.searchuserid != '') {
+        const home_url = `http://localhost:8181`
+        const login_url = '/api/friend/add/' + this.searchuserid
+        const url = home_url + login_url
 
         try {
           let result = await axios({
-            method: "get",
+            method: 'get',
             url: url,
-            headers: { "x-access-token": state.token }
-          });
-          console.log(result);
+            headers: { 'x-access-token': this.$store.state.token }
+          })
+          console.log(result)
         } catch (err) {
-          console.log(err);
-          this.friendadderror = "This person is aleady yor friend";
+          console.log(err)
+          this.friendadderror = 'This person is aleady yor friend'
         }
       } else {
       }
     },
 
     findfriend: async function(event) {
-      console.log(state.token);
-      const home_url = `http://localhost:8181`;
-      const login_url = "/api/friend/" + this.friendname;
-      const url = home_url + login_url;
+      const home_url = `http://localhost:8181`
+      const login_url = '/api/friend/' + this.friendname
+      const url = home_url + login_url
 
       try {
         let result = await axios({
-          method: "get",
+          method: 'get',
           url: url,
-          headers: { "x-access-token": state.token }
-        });
-        console.log(result);
+          headers: { 'x-access-token': this.$store.state.token }
+        })
+        console.log(result)
         if (result.data.name != undefined) {
-          this.searchuserid = result.data.id;
-          this.searchusername = result.data.name;
-          this.searchuserphotourl = result.data.photourl;
+          this.searchuserid = result.data.id
+          this.searchusername = result.data.name
+          this.searchuserphotourl = result.data.photourl
         } else {
-          this.nofindmessage = "No friend found !!";
+          this.nofindmessage = 'No friend found !!'
         }
       } catch (err) {
-        console.log(err);
+        console.log(err)
       }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
-@import "../scss/color.scss";
+@import '../scss/color.scss';
 
 .searchbutton {
   background: transparent;
@@ -318,8 +315,8 @@ a {
   right: 50%;
   transform: translate(50%, -50%);
 
-  input[type="text"],
-  input[type="password"] {
+  input[type='text'],
+  input[type='password'] {
     font-size: 1.3rem;
     border-radius: 10px;
     border: none;
@@ -328,7 +325,7 @@ a {
     margin: 30px;
   }
 
-  input[type="submit"] {
+  input[type='submit'] {
     background: transparent;
     font-size: 1.3rem;
     border-radius: 10px;
@@ -337,7 +334,7 @@ a {
     color: white;
     outline: none;
   }
-  input[type="submit"]:hover {
+  input[type='submit']:hover {
     color: rgb(209, 87, 78);
     border: 1px solid rgb(209, 87, 78);
   }

@@ -1,16 +1,17 @@
 <template>
 <div>
     <div id="video__container">
+        <div class="friendnamecontainer">
+          {{this.$store.state.acitvename}}
+        </div>
         <div id="video__innercontainer">
             <video width="130" height="100"  muted ref="video" id="mevideo" ></video>
              <video width="500" height="420"  ref="video2" id="youvideo" ></video>
             <button v-on:click="createPeerConnection" id="callbutton">
                 <font-awesome-icon icon="phone"/>
             </button>
-        </div>
-       
+        </div>    
     </div> 
-    <!-- <button v-on:click="createPeerConnection">g</button> -->
 </div>
 </template>
 

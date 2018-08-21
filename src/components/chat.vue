@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import state from "../appstate.js";
+import state from '../appstate.js'
 export default {
   data() {
     return {
@@ -63,7 +63,7 @@ export default {
 
 
 <style lang="scss" scoped>
-@import "../scss/color.scss";
+@import '../scss/color.scss';
 ul {
   list-style: none;
 }

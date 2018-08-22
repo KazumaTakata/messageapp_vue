@@ -40,8 +40,6 @@
                     ADD THIS FRIEND
                 </button>
             </div>
-            
-            
         </div>
     </div>
 
@@ -192,48 +190,8 @@ export default {
 
 <style lang="scss" scoped>
 @import '../scss/color.scss';
-
-.searchbutton {
-  background: transparent;
-  border: none;
-  font-size: 1.6rem;
-  color: white;
-  transition: 0.2s;
-  outline: none;
-}
-.searchbutton:hover {
-  transform: scale(1.1);
-}
-
-.addfriendbutton {
-  background: transparent;
-  border: none;
-  font-size: 1.6rem;
-  color: white;
-  transition: 0.2s;
-  outline: none;
-  margin-top: 20px;
-  border: 1px solid white;
-}
-
-.addfriendbutton:hover {
-  transform: scale(1.1);
-}
-
-.icon_button {
-  background: transparent;
-  border: none;
-  font-size: 1.6rem;
-  margin-top: 10px;
-  margin-left: 10px;
-  color: white;
-  transition: 0.2s;
-  outline: none;
-}
-
-.icon_button:hover {
-  transform: scale(1.1);
-}
+@import '../scss/form.scss';
+@import '../scss/button.scss';
 
 #sidebar {
   position: absolute;
@@ -249,22 +207,6 @@ export default {
   left: -210px;
 }
 
-#menu_button {
-  color: $border-color;
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  border: none;
-  font-size: 1.6rem;
-  z-index: 2;
-  background: transparent;
-  outline: none;
-  transition: 0.4s;
-}
-
-#menu_button:hover {
-  transform: rotate(45deg);
-}
 ul {
   position: relative;
   top: 50px;
@@ -284,69 +226,6 @@ a {
   color: white;
 }
 
-.addfriendpanel {
-  position: fixed;
-  background: pink;
-  height: 100vh;
-  width: 100vw;
-  top: calc(100vh + 300px);
-  z-index: 3;
-  transition: 0.3s;
-}
-
-.addfriendpanel.active {
-  top: 0;
-}
-
-.closebutton {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: transparent;
-  font-size: 1.5rem;
-  color: white;
-  border: none;
-  outline: none;
-}
-
-.form__container {
-  position: absolute;
-  top: 50%;
-  right: 50%;
-  transform: translate(50%, -50%);
-
-  input[type='text'],
-  input[type='password'] {
-    font-size: 1.3rem;
-    border-radius: 10px;
-    border: none;
-    outline: none;
-    padding: 10px;
-    margin: 30px;
-  }
-
-  input[type='submit'] {
-    background: transparent;
-    font-size: 1.3rem;
-    border-radius: 10px;
-    border: 1px solid white;
-    padding: 10px;
-    color: white;
-    outline: none;
-  }
-  input[type='submit']:hover {
-    color: rgb(209, 87, 78);
-    border: 1px solid rgb(209, 87, 78);
-  }
-  p {
-    font-weight: 600;
-  }
-
-  .errormessage {
-    color: rgb(209, 87, 78);
-  }
-}
-
 .result__container {
   height: 200px;
   margin: 30px;
@@ -356,19 +235,5 @@ a {
     width: 100px;
     border-radius: 50%;
   }
-}
-
-.loginbutton {
-  position: absolute;
-  left: 10px;
-  bottom: 20px;
-  background: transparent;
-  border: none;
-  font-size: 1.6rem;
-  color: white;
-  transition: 0.2s;
-  outline: none;
-  margin-top: 20px;
-  border: 1px solid white;
 }
 </style>

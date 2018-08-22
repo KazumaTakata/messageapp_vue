@@ -1,0 +1,78 @@
+.form__container {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+
+  input[type='text'],
+  input[type='password'] {
+    font-size: 1.3rem;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    padding: 10px;
+    margin: 30px;
+  }
+
+  textarea {
+    font-size: 1.3rem;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    padding: 10px;
+    margin: 30px;
+    resize: none;
+    width: 70%;
+    height: 400px;
+  }
+
+  input[type='submit'] {
+    background: transparent;
+    font-size: 1.3rem;
+    border-radius: 10px;
+    border: 1px solid white;
+    padding: 10px;
+    color: white;
+    outline: none;
+  }
+  input[type='submit']:hover {
+    color: rgb(209, 87, 78);
+    border: 1px solid rgb(209, 87, 78);
+  }
+  p {
+    font-weight: 600;
+  }
+
+  .errormessage {
+    color: rgb(209, 87, 78);
+  }
+}
+
+.form__container_width {
+  width: 100%;
+}
+
+.addfriendpanel {
+  position: fixed;
+  background: pink;
+  height: 100vh;
+  width: 100vw;
+  top: calc(100vh + 300px);
+  z-index: 3;
+  transition: 0.3s;
+}
+
+.addfriendpanel.active {
+  top: 0;
+}
+
+.result__container {
+  height: 200px;
+  margin: 30px;
+
+  img {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+  }
+}

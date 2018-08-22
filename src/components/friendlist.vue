@@ -1,17 +1,17 @@
 <template>
   <ul v-if="!isLoading">
-      <li v-on:click="friendchosen"  v-bind:id="index" v-for="(friend, index) in friends" :key="friend.id">
-        <div class="list__container">
-            <img v-bind:src="friend.photourl">
-            <div class="list__name" >
-              {{friend.name}}
-            </div>
+    <li v-on:click="friendchosen" v-bind:id="index" v-for="(friend, index) in friends" :key="friend.id">
+      <div class="list__container">
+        <img v-bind:src="friend.photourl">
+        <div class="list__name">
+          {{friend.name}}
         </div>
-      </li>
+      </div>
+    </li>
   </ul>
   <ul v-else>
     <li>
-       Loading...
+      Loading...
     </li>
   </ul>
 </template>

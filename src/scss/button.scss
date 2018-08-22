@@ -1,0 +1,110 @@
+.icon_button {
+  background: transparent;
+  border: none;
+  font-size: 1.6rem;
+  margin-top: 10px;
+  margin-left: 10px;
+  color: white;
+  transition: 0.2s;
+  outline: none;
+}
+
+.icon_button:hover {
+  transform: scale(1.1);
+}
+
+#menu_button {
+  color: $border-color;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border: none;
+  font-size: 1.6rem;
+  z-index: 2;
+  background: transparent;
+  outline: none;
+  transition: 0.4s;
+}
+
+#menu_button:hover {
+  transform: rotate(45deg);
+}
+
+.closebutton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  font-size: 1.5rem;
+  color: white;
+  border: none;
+  outline: none;
+}
+
+.searchbutton {
+  background: transparent;
+  border: none;
+  font-size: 1.6rem;
+  color: white;
+  transition: 0.2s;
+  outline: none;
+}
+.searchbutton:hover {
+  transform: scale(1.1);
+}
+
+.addfriendbutton {
+  background: transparent;
+  border: none;
+  font-size: 1.6rem;
+  color: white;
+  transition: 0.2s;
+  outline: none;
+  margin-top: 20px;
+  border: 1px solid white;
+}
+
+.addfriendbutton:hover {
+  transform: scale(1.1);
+}
+
+.loginbutton {
+  position: absolute;
+  left: 10px;
+  bottom: 20px;
+  background: transparent;
+  border: none;
+  font-size: 1.6rem;
+  color: white;
+  transition: 0.2s;
+  outline: none;
+  margin-top: 20px;
+  border: 1px solid white;
+}
+
+#floating {
+  position: absolute;
+  color: white;
+  bottom: 30px;
+  right: 30px;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  background-color: $sidebar-background;
+  box-shadow: 2px 2px 1px $main-bg-color;
+  outline: none;
+  border: none;
+}
+
+input [type='file'] {
+  display: none;
+  opacity: 0;
+}
+
+.custom-file-upload {
+  border: 1px solid white;
+  color: white;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+}

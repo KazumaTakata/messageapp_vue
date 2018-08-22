@@ -1,87 +1,86 @@
 <template>
-<div>
+  <div>
     <button v-on:click="sidebaropen" id='menu_button'>
-        <font-awesome-icon icon="plus" />
+      <font-awesome-icon icon="plus" />
     </button>
     <div id="sidebar" v-bind:class="{active: isActive}">
-        <button v-on:click="searchopen" class="icon_button">
-            <font-awesome-icon icon="search"/>
-        </button>
-         <button v-on:click="profileopen"  class="icon_button">
-            <font-awesome-icon icon="user-circle"/>
-        </button>
-        <ul>
-            <li v-for="(item, index) in sidebarItems"  v-bind:key="index">
-                <router-link v-bind:to="item">{{item}}</router-link>
-            </li>
-        </ul>
-       
+      <button v-on:click="searchopen" class="icon_button">
+        <font-awesome-icon icon="search" />
+      </button>
+      <button v-on:click="profileopen" class="icon_button">
+        <font-awesome-icon icon="user-circle" />
+      </button>
+      <ul>
+        <li v-for="(item, index) in sidebarItems" v-bind:key="index">
+          <router-link v-bind:to="item">{{item}}</router-link>
+        </li>
+      </ul>
+
     </div>
-    <div class="addfriendpanel" v-bind:class="{active: isActiveAddfriend}" >
-        <button v-on:click="searchopen" class="closebutton">
-            <font-awesome-icon icon="times"/>
-        </button>
-        <div class="form__container">
-            <h2>Type in your friend name</h2>
-            <div>
-                <input v-model="friendname" type="text">
-                <button v-on:click="findfriend" class="searchbutton">
-                    <font-awesome-icon icon="search"/>
-                </button>
-                <p>{{nofindmessage}}</p>
-            </div>
-            <div class="result__container">
-                <div>
-                    <img v-bind:src="this.searchuserphotourl" alt="">
-                </div>
-                <p>{{searchusername}}</p>
-                <p>{{friendadderror}}</p>
-                <button v-on:click="addfriend" class="addfriendbutton">
-                    ADD THIS FRIEND
-                </button>
-            </div>
+    <div class="addfriendpanel" v-bind:class="{active: isActiveAddfriend}">
+      <button v-on:click="searchopen" class="closebutton">
+        <font-awesome-icon icon="times" />
+      </button>
+      <div class="form__container">
+        <h2>Type in your friend name</h2>
+        <div>
+          <input v-model="friendname" type="text">
+          <button v-on:click="findfriend" class="searchbutton">
+            <font-awesome-icon icon="search" />
+          </button>
+          <p>{{nofindmessage}}</p>
         </div>
+        <div class="result__container">
+          <div>
+            <img v-bind:src="this.searchuserphotourl" alt="">
+          </div>
+          <p>{{searchusername}}</p>
+          <p>{{friendadderror}}</p>
+          <button v-on:click="addfriend" class="addfriendbutton">
+            ADD THIS FRIEND
+          </button>
+        </div>
+      </div>
     </div>
 
-
-    <div class="addfriendpanel" v-bind:class="{active: isActiveProfile}" >
-        <button v-on:click="profileopen" class="closebutton">
-            <font-awesome-icon icon="times"/>
-        </button>
-        <div class="form__container">
-            <div class="result__container">
-                <img src="https://www.gstatic.com/webp/gallery3/1.png" alt="">
-                <button class="addfriendbutton">
-                    CHANGE PROFILE PHOTO
-                </button>
-            </div>
-            <div>
-                <input type="text">
-                <button class="addfriendbutton">
-                    CHANGE PROFILE NAME
-                </button>
-            </div>
+    <div class="addfriendpanel" v-bind:class="{active: isActiveProfile}">
+      <button v-on:click="profileopen" class="closebutton">
+        <font-awesome-icon icon="times" />
+      </button>
+      <div class="form__container">
+        <div class="result__container">
+          <img src="https://www.gstatic.com/webp/gallery3/1.png" alt="">
+          <button class="addfriendbutton">
+            CHANGE PROFILE PHOTO
+          </button>
         </div>
+        <div>
+          <input type="text">
+          <button class="addfriendbutton">
+            CHANGE PROFILE NAME
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="addfriendpanel" v-bind:class="{active: isActiveLogin}" >
-        <div class="form__container">
-            <h1>Please login or Signup</h1>
-            <form action="" onsubmit="event.preventDefault();">
-                <p for="">name</p>
-                <input v-model="username"  type="text">
-                
-                <p for="">password</p>
-                <input v-model="userpassword" type="password">
-                <p class="errormessage">{{loginerrmessage}}</p>
-                <div>
-                    <input type="submit" v-on:click="loginsubmit">
-                </div>
-                
-            </form>
-        </div>
+    <div class="addfriendpanel" v-bind:class="{active: isActiveLogin}">
+      <div class="form__container">
+        <h1>Please login or Signup</h1>
+        <form action="" onsubmit="event.preventDefault();">
+          <p for="">name</p>
+          <input v-model="username" type="text">
+
+          <p for="">password</p>
+          <input v-model="userpassword" type="password">
+          <p class="errormessage">{{loginerrmessage}}</p>
+          <div>
+            <input type="submit" v-on:click="loginsubmit">
+          </div>
+
+        </form>
+      </div>
     </div>
-</div>
+  </div>
 </template>
 
 
@@ -94,7 +93,7 @@ export default {
       isActive: true,
       isActiveAddfriend: false,
       isActiveProfile: false,
-      isActiveLogin: false,
+      isActiveLogin: true,
       sidebarItems: ['chat', 'video', 'feed'],
       username: '',
       userpassword: '',
@@ -130,10 +129,21 @@ export default {
           name: this.username,
           password: this.userpassword
         })
-        console.log(result)
-
         this.isActiveLogin = false
         this.$store.commit('settoken', result.data.token)
+        this.$store.commit('setmyState', result.data)
+
+        try {
+          let result2 = await axios({
+            method: 'get',
+            url: `http://localhost:8181/api/friend`,
+            headers: { 'x-access-token': result.data.token }
+          })
+
+          this.$store.commit('setfriend', result2.data)
+        } catch (err) {
+          console.log(err)
+        }
       } catch (err) {
         console.log(err)
         this.loginerrmessage =

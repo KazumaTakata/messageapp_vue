@@ -1,27 +1,26 @@
 <template>
-    <div id="chat__container">
-        <div class="friendnamecontainer">
-          {{this.$store.state.acitvename}}
-        </div>
-        <ul>
-            <li v-for="(chat, index) in this.chats" v-bind:key="index">
-                <div v-bind:class="chatbubblestyle(chat.which)" >
-                    <span>
-                         {{chat.content}}
-                    </span>
-                </div>
-            </li>
-        </ul>
-       
-        <div id="chatinput__container">
-            <input v-model="chatinput"  type="text" id="chatinput">
-            <button  v-on:click="addchat" class="addbutton" >
-                <font-awesome-icon icon="plus" />
-            </button>
-        </div>
-
-        
+  <div id="chat__container">
+    <div class="friendnamecontainer">
+      {{this.$store.state.acitvename}}
     </div>
+    <ul>
+      <li v-for="(chat, index) in this.chats" v-bind:key="index">
+        <div v-bind:class="chatbubblestyle(chat.which)">
+          <span>
+            {{chat.content}}
+          </span>
+        </div>
+      </li>
+    </ul>
+
+    <div id="chatinput__container">
+      <input v-model="chatinput" type="text" id="chatinput">
+      <button v-on:click="addchat" class="addbutton">
+        <font-awesome-icon icon="plus" />
+      </button>
+    </div>
+
+  </div>
 </template>
 
 <script>
@@ -57,7 +56,6 @@ export default {
     }
   },
   created() {
-    this.loadchatdata()
     webSocket.addEventListener('open', function(event) {
       console.log('connected')
     })

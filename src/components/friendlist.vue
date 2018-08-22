@@ -1,6 +1,6 @@
 <template>
   <ul v-if="!isLoading">
-    <li v-on:click="friendchosen" v-bind:id="index" v-for="(friend, index) in friends" :key="friend.id">
+    <li v-on:click="friendchosen" v-bind:id="index" v-for="(friend, index) in this.$store.state.friends" :key="friend.id">
       <div class="list__container">
         <img v-bind:src="friend.photourl">
         <div class="list__name">
@@ -23,8 +23,7 @@ export default {
   name: 'FriendList',
   data() {
     return {
-      isLoading: true,
-      friends: []
+      isLoading: false
     }
   },
   methods: {
@@ -33,20 +32,23 @@ export default {
       const url = home_url + '/api/friend'
 
       try {
-        let result = await axios({
-          method: 'get',
-          url: url,
-          headers: { 'x-access-token': this.$store.state.token }
-        })
-        this.friends = result.data
-        this.isLoading = false
+        // let result = await axios({
+        //   method: 'get',
+        //   url: url,
+        //   headers: { 'x-access-token': this.$store.state.token }
+        // })
+        // this.$store.commit('setfriend', result.data)
+        // this.isLoading = false
       } catch (err) {}
     },
     friendchosen: async function(event) {
-      console.log(this.friends[event.target.id].id)
-      this.$store.commit('setactivefriendid', this.friends[event.target.id].id)
+      this.$store.commit(
+        'setactivefriendid',
+        this.$store.getters.getfriend(event.target.id).id
+      )
       const home_url = `http://localhost:8181`
-      const talk_url = '/api/user/talks/' + this.friends[event.target.id].id
+      const talk_url =
+        '/api/user/talks/' + this.$store.getters.getfriend(event.target.id).id
       const url = home_url + talk_url
 
       let result = await axios({
@@ -56,7 +58,10 @@ export default {
       })
 
       this.$store.commit('settalks', result.data)
-      this.$store.commit('setactivename', this.friends[event.target.id].name)
+      this.$store.commit(
+        'setactivename',
+        this.$store.getters.getfriend(event.target.id).name
+      )
 
       console.log(result)
     }

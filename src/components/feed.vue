@@ -1,8 +1,5 @@
 <template>
   <div class="container">
-    <div class="friendnamecontainer">
-      {{this.$store.state.acitvename}}
-    </div>
     <ul>
       <li v-for="(feed, index) in feeds" v-bind:key="index">
         <div class="feedcard">
@@ -14,21 +11,7 @@
           </div>
           <img v-bind:src="feed.photourl">
           <div class="feedcontent">
-            {{feed.content}}
-          </div>
-        </div>
-      </li>
-      <li v-for="(feed, index) in feeds" v-bind:key="index">
-        <div class="feedcard">
-          <div class="profilecontainer">
-            <img class="profile" v-bind:src="feed.photourl">
-            <div class="profilename">
-              {{feed.name}}
-            </div>
-          </div>
-          <img v-bind:src="feed.photourl">
-          <div class="feedcontent">
-            {{feed.content}}
+            {{feed.feedcontent}}
           </div>
         </div>
       </li>
@@ -42,13 +25,13 @@
       <div class="form__container form__container_width">
         <h2>Type in your Feed</h2>
         <div>
-          <textarea v-model="friendname" type="text"></textarea>
+          <textarea v-model="feedcontent" type="text"></textarea>
         </div>
         <label class="custom-file-upload" for="file-upload">
-          <input type="file" accept="image/*" style="display:none" id="file-upload"> Choose file
+          <input type="file" v-on:change="handleFileUpload()" accept="image/*" style="display:none" id="file-upload" ref="file"> Choose file
         </label>
         <div class="result__container">
-          <button class="addfriendbutton">
+          <button v-on:click="sendfeed" class="skelltonbutton">
             Submit feed
           </button>
         </div>
@@ -59,18 +42,15 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
       chatinput: '',
       isActiveAddFeed: false,
-      feeds: [
-        {
-          name: 'jully',
-          content: 'hello',
-          photourl: 'http://localhost:8181/img/defaultprofile.jpg'
-        }
-      ]
+      feedcontent: '',
+      file: '',
+      feeds: []
     }
   },
   computed: {
@@ -79,16 +59,68 @@ export default {
     // }
   },
   methods: {
+    handleFileUpload() {
+      this.file = this.$refs.file.files[0]
+    },
     addfeed: function(event) {
       console.log('ee')
       this.isActiveAddFeed = !this.isActiveAddFeed
+    },
+    sendfeed: function(event) {
+      const home_url = `http://localhost:8181`
+      const url = home_url + '/api/user/feed'
+
+      console.log(this.feedcontent)
+      let formData = new FormData()
+      formData.append('image', this.file)
+      formData.append('feedcontent', this.feedcontent)
+      axios
+        .post(url, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'x-access-token': this.$store.state.token
+          }
+        })
+        .then(function() {
+          console.log('SUCCESS!!')
+        })
+        .catch(function() {
+          console.log('FAILURE!!')
+        })
     }
   },
-  created() {}
+  created() {
+    const home_url = `http://localhost:8181`
+    const url = home_url + '/api/user/feed'
+    axios
+      .get(url, {
+        headers: {
+          'x-access-token': this.$store.state.token
+        }
+      })
+      .then(res => {
+        console.log('SUCCESS!!')
+        console.log(res)
+
+        for (let i = 0; i < res.data.length; i++) {
+          if (res.data[i].userId == this.$store.state.myState.id) {
+            res.data[i]['name'] = this.$store.state.myState.name
+          } else {
+            let u = this.$store.state.friends.find(
+              f => f.id == res.data[i].userId
+            )
+            res.data[i]['name'] = u.name
+            console.log(u)
+          }
+        }
+        this.feeds = res.data
+      })
+      .catch(function(err) {
+        console.log(err)
+      })
+  }
 }
 </script >
-
-
 
 <style lang="scss" scoped>
 @import '../scss/color.scss';

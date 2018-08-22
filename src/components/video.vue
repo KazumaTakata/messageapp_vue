@@ -53,12 +53,6 @@ export default {
         pc.onicecandidate = event => {
           console.log('handleIceCandidate event: ', event)
           if (event.candidate) {
-            // sendMessage({
-            //   type: 'candidate',
-            //   label: event.candidate.sdpMLineIndex,
-            //   id: event.candidate.sdpMid,
-            //   candidate: event.candidate.candidate
-            // })
             this.sendMessage({
               data: {
                 type: 'candidate',
@@ -74,7 +68,7 @@ export default {
         }
         pc.onaddstream = event => {
           console.log('Remote stream added.')
-          // this.$refs.video2.srcObject =  event.stream
+
           this.$refs.video2.srcObject = event.stream
           this.$refs.video2.play()
         }
@@ -191,7 +185,15 @@ var OrigPeerConnection = window.RTCPeerConnection
 
 
 
-<style>
+<style lang="scss" scoped>
+@import '../scss/color.scss';
+@import '../scss/form.scss';
+@import '../scss/button.scss';
+
+.friendnamecontainer {
+  padding: 20px;
+  border-bottom: 1px solid $border-color;
+}
 #video__container {
   min-width: 600px;
   margin: 0 auto;

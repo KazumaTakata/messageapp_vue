@@ -16,7 +16,7 @@
     <div id="chatinput__container">
       <input v-model="chatinput" type="text" id="chatinput">
       <button v-on:click="addchat" class="addbutton">
-        <font-awesome-icon icon="plus" />
+        SEND
       </button>
     </div>
 
@@ -71,6 +71,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '../scss/color.scss';
+@import '../scss/button.scss';
 ul {
   list-style: none;
 }
@@ -108,16 +109,20 @@ span {
 
 .addbutton {
   background: transparent;
+  color: $border-color;
+}
+.addbutton:hover {
+  color: $font-color;
 }
 
 #chatinput {
   width: 100%;
-  /* position: absolute;
-    bottom: 10px; */
+  color: $font-color;
 }
 
 .friendnamecontainer {
   padding: 20px;
+  border-bottom: 1px solid $border-color;
 }
 
 #chatinput__container {

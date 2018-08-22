@@ -17,7 +17,7 @@
       </ul>
 
     </div>
-    <div class="addfriendpanel" v-bind:class="{active: isActiveAddfriend}">
+    <div class="panel" v-bind:class="{active: isActiveAddfriend}">
       <button v-on:click="searchopen" class="closebutton">
         <font-awesome-icon icon="times" />
       </button>
@@ -36,34 +36,43 @@
           </div>
           <p>{{searchusername}}</p>
           <p>{{friendadderror}}</p>
-          <button v-on:click="addfriend" class="addfriendbutton">
+          <button v-on:click="addfriend" class="skelltonbutton">
             ADD THIS FRIEND
           </button>
         </div>
       </div>
     </div>
 
-    <div class="addfriendpanel" v-bind:class="{active: isActiveProfile}">
+    <div class="panel" v-bind:class="{active: isActiveProfile}">
       <button v-on:click="profileopen" class="closebutton">
         <font-awesome-icon icon="times" />
       </button>
       <div class="form__container">
         <div class="result__container">
-          <img src="https://www.gstatic.com/webp/gallery3/1.png" alt="">
-          <button class="addfriendbutton">
-            CHANGE PROFILE PHOTO
-          </button>
+          <div>
+            <img src="https://www.gstatic.com/webp/gallery3/1.png" alt="">
+          </div>
+
+          <label class="skelltonbutton">
+            <input style="display:none" type="file" accept="image/*"> SELECT PROFILE PHOTO
+          </label>
+          <div>
+            <button class="skelltonbutton">SET PHOTO</button>
+          </div>
+
         </div>
         <div>
-          <input type="text">
-          <button class="addfriendbutton">
-            CHANGE PROFILE NAME
+          <div>
+            <input type="text">
+          </div>
+          <button class="skelltonbutton">
+            SET PROFILE NAME
           </button>
         </div>
       </div>
     </div>
 
-    <div class="addfriendpanel" v-bind:class="{active: isActiveLogin}">
+    <div class="panel" v-bind:class="{active: isActiveLogin}">
       <div class="form__container">
         <h1>Please login or Signup</h1>
         <form action="" onsubmit="event.preventDefault();">

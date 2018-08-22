@@ -1,3 +1,4 @@
+@import '../scss/color.scss';
 .form__container {
   position: absolute;
   top: 50%;
@@ -30,9 +31,9 @@
     background: transparent;
     font-size: 1.3rem;
     border-radius: 10px;
-    border: 1px solid white;
+    border: 1px solid $font-color;
     padding: 10px;
-    color: white;
+    color: $font-color;
     outline: none;
   }
   input[type='submit']:hover {
@@ -52,7 +53,7 @@
   width: 100%;
 }
 
-.addfriendpanel {
+.panel {
   position: fixed;
   background: pink;
   height: 100vh;
@@ -62,7 +63,7 @@
   transition: 0.3s;
 }
 
-.addfriendpanel.active {
+.panel.active {
   top: 0;
 }
 

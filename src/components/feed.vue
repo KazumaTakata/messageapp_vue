@@ -18,10 +18,11 @@
     </ul>
     <button v-on:click="addfeed" id="floating">+ </button>
 
-    <div class="addfriendpanel" v-bind:class="{active: isActiveAddFeed}">
+    <div class="panel" v-bind:class="{active: isActiveAddFeed}">
       <button v-on:click="addfeed" class="closebutton">
         <font-awesome-icon icon="times" />
       </button>
+
       <div class="form__container form__container_width">
         <h2>Type in your Feed</h2>
         <div>
@@ -30,6 +31,7 @@
         <label class="custom-file-upload" for="file-upload">
           <input type="file" v-on:change="handleFileUpload()" accept="image/*" style="display:none" id="file-upload" ref="file"> Choose file
         </label>
+
         <div class="result__container">
           <button v-on:click="sendfeed" class="skelltonbutton">
             Submit feed
@@ -127,7 +129,7 @@ export default {
 @import '../scss/form.scss';
 @import '../scss/button.scss';
 
-.addfriendpanel {
+.panel {
   position: fixed;
   background: pink;
   height: 100vh;
@@ -138,7 +140,7 @@ export default {
   transition: 0.3s;
 }
 
-.addfriendpanel.active {
+.panel.active {
   top: 0;
 }
 

@@ -1,19 +1,15 @@
 <template>
-  <ul v-if="!isLoading">
+  <ul>
     <li v-on:click="friendchosen" v-bind:id="index" v-for="(friend, index) in this.$store.state.friends" :key="friend.id">
       <div class="list__container">
-        <img v-bind:src="friend.photourl">
+        <img class="profile-img" v-bind:src="friend.photourl">
         <div class="list__name">
           {{friend.name}}
         </div>
       </div>
     </li>
   </ul>
-  <ul v-else>
-    <li>
-      Loading...
-    </li>
-  </ul>
+
 </template>
 
 <script>
@@ -22,25 +18,9 @@ import axios from 'axios'
 export default {
   name: 'FriendList',
   data() {
-    return {
-      isLoading: false
-    }
+    return {}
   },
   methods: {
-    loadfrienddata: async function() {
-      const home_url = `http://localhost:8181`
-      const url = home_url + '/api/friend'
-
-      try {
-        // let result = await axios({
-        //   method: 'get',
-        //   url: url,
-        //   headers: { 'x-access-token': this.$store.state.token }
-        // })
-        // this.$store.commit('setfriend', result.data)
-        // this.isLoading = false
-      } catch (err) {}
-    },
     friendchosen: async function(event) {
       this.$store.commit(
         'setactivefriendid',
@@ -62,26 +42,22 @@ export default {
         'setactivename',
         this.$store.getters.getfriend(event.target.id).name
       )
-
-      console.log(result)
     }
   },
-  created() {
-    this.loadfrienddata()
-  }
+  created() {}
 }
 </script>
 
 <style lang="scss" scoped>
 @import '../scss/color.scss';
-img {
+
+.profile-img {
   width: 40px;
   height: 40px;
   object-fit: cover;
   border-radius: 50%;
   border: 2px solid rgb(73, 53, 53);
 }
-
 ul {
   list-style: none;
   padding: 0px 0px;

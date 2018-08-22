@@ -1,28 +1,27 @@
 <template>
-<div>
+  <div>
     <div id="video__container">
-        <div class="friendnamecontainer">
-          {{this.$store.state.acitvename}}
-        </div>
-        <div id="video__innercontainer">
-            <video width="130" height="100"  muted ref="video" id="mevideo" ></video>
-             <video width="500" height="420"  ref="video2" id="youvideo" ></video>
-            <button v-on:click="createPeerConnection" id="callbutton">
-                <font-awesome-icon icon="phone"/>
-            </button>
-        </div>    
-    </div> 
-</div>
+      <div class="friendnamecontainer">
+        {{this.$store.state.acitvename}}
+      </div>
+      <div id="video__innercontainer">
+        <video width="130" height="100" muted ref="video" id="mevideo"></video>
+        <video width="500" height="420" ref="video2" id="youvideo"></video>
+        <button v-on:click="createPeerConnection" id="callbutton">
+          <font-awesome-icon icon="phone" />
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 
 <script>
-var webSocket = new WebSocket('ws://localhost:8183')
-
 export default {
   data() {
     return {
-      test: 'test'
+      test: 'test',
+      websocket: ''
     }
   },
 
@@ -36,20 +35,38 @@ export default {
       })
       .catch(error => console.error('getUserMedia() error:', error))
 
-    webSocket.onmessage = jsonmessage => {
+    this.webSocket = new WebSocket('ws://localhost:8183')
+
+    this.webSocket.onopen = event => {
+      console.log('open')
+      this.webSocket.send(
+        JSON.stringify({ pingid: this.$store.state.myState.id })
+      )
+    }
+
+    this.webSocket.onmessage = jsonmessage => {
       let message = JSON.parse(jsonmessage.data)
 
       if (message.type === 'offer') {
         pc = new RTCPeerConnection(pc_config, pc_constraints)
         pc.addStream(localStream)
-        pc.onicecandidate = function(event) {
+        pc.onicecandidate = event => {
           console.log('handleIceCandidate event: ', event)
           if (event.candidate) {
-            sendMessage({
-              type: 'candidate',
-              label: event.candidate.sdpMLineIndex,
-              id: event.candidate.sdpMid,
-              candidate: event.candidate.candidate
+            // sendMessage({
+            //   type: 'candidate',
+            //   label: event.candidate.sdpMLineIndex,
+            //   id: event.candidate.sdpMid,
+            //   candidate: event.candidate.candidate
+            // })
+            this.sendMessage({
+              data: {
+                type: 'candidate',
+                label: event.candidate.sdpMLineIndex,
+                id: event.candidate.sdpMid,
+                candidate: event.candidate.candidate
+              },
+              id: this.$store.state.activefriendid
             })
           } else {
             console.log('End of candidates.')
@@ -63,7 +80,7 @@ export default {
         }
 
         pc.setRemoteDescription(new RTCSessionDescription(message))
-        doAnswer()
+        this.doAnswer()
       } else if (message.type === 'answer') {
         pc.setRemoteDescription(new RTCSessionDescription(message))
       } else if (message.type === 'candidate') {
@@ -78,7 +95,25 @@ export default {
     }
   },
   methods: {
-    createPeerConnection: function(event) {
+    sendMessage(message) {
+      console.log('Sending message: ', message)
+      this.webSocket.send(JSON.stringify(message))
+    },
+    doAnswer() {
+      console.log('Sending answer to peer.')
+      pc.createAnswer(
+        sessionDescription => {
+          pc.setLocalDescription(sessionDescription)
+          this.sendMessage({
+            data: sessionDescription,
+            id: this.$store.state.activefriendid
+          })
+        },
+        onSignalingError,
+        sdpConstraints
+      )
+    },
+    createPeerConnection(event) {
       console.log(this.test)
       console.log('clicked')
       try {
@@ -89,11 +124,14 @@ export default {
         pc.onicecandidate = event => {
           console.log('handleIceCandidate event: ', event)
           if (event.candidate) {
-            sendMessage({
-              type: 'candidate',
-              label: event.candidate.sdpMLineIndex,
-              id: event.candidate.sdpMid,
-              candidate: event.candidate.candidate
+            this.sendMessage({
+              data: {
+                type: 'candidate',
+                label: event.candidate.sdpMLineIndex,
+                id: event.candidate.sdpMid,
+                candidate: event.candidate.candidate
+              },
+              id: this.$store.state.activefriendid
             })
           } else {
             console.log('End of candidates.')
@@ -111,9 +149,12 @@ export default {
       }
 
       pc.createOffer(
-        function(sessionDescription) {
+        sessionDescription => {
           pc.setLocalDescription(sessionDescription)
-          sendMessage(sessionDescription)
+          this.sendMessage({
+            data: sessionDescription,
+            id: this.$store.state.activefriendid
+          })
         },
         onSignalingError,
         sdpConstraints
@@ -143,23 +184,6 @@ var pc
 
 function onSignalingError(error) {
   console.log('Failed to create signaling message : ' + error.name)
-}
-
-function sendMessage(message) {
-  console.log('Sending message: ', message)
-  webSocket.send(JSON.stringify(message))
-}
-
-function doAnswer() {
-  console.log('Sending answer to peer.')
-  pc.createAnswer(
-    function(sessionDescription) {
-      pc.setLocalDescription(sessionDescription)
-      sendMessage(sessionDescription)
-    },
-    onSignalingError,
-    sdpConstraints
-  )
 }
 
 var OrigPeerConnection = window.RTCPeerConnection

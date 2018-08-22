@@ -2,15 +2,30 @@ const WebSocket = require("ws");
 
 const wss = new WebSocket.Server({ port: 8183 });
 
-wss.on("connection", function connection(ws) {
-  console.log("connect");
+let loginuser = {};
 
+wss.on("connection", function connection(ws) {
   ws.on("message", function incoming(message) {
-    console.log(message);
-    wss.clients.forEach(function each(client) {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message);
+    let parsedmessage = JSON.parse(message);
+    let userid = parsedmessage.pingid;
+    if (message != "{}") {
+      if (userid != null) {
+        loginuser[userid] = ws;
+      } else {
+        let socket = loginuser[parsedmessage.id];
+        if (typeof parsedmessage.data === "string") {
+          console.log(parsedmessage.data);
+          socket.send(parsedmessage.data);
+        } else {
+          console.log(parsedmessage.data);
+          socket.send(JSON.stringify(parsedmessage.data));
+        }
+        // wss.clients.forEach(function each(client) {
+        //   if (client !== ws && client.readyState === WebSocket.OPEN) {
+        //     client.send(message);
+        //   }
+        // });
       }
-    });
+    }
   });
 });

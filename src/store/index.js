@@ -9,7 +9,7 @@ const store = new Vuex.Store({
     activefriendid: "",
     myState: {},
     talks: "",
-    acitvename: "",
+    acitvename: "No Friend Chosen",
     friends: [],
   },
   getters: {

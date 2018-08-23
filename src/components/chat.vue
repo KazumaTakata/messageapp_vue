@@ -1,25 +1,26 @@
 <template>
-  <div id="chat__container">
-    <div class="friendnamecontainer">
-      {{this.$store.state.acitvename}}
-    </div>
-    <ul>
-      <li v-for="(chat, index) in this.chats" v-bind:key="index">
-        <div v-bind:class="chatbubblestyle(chat.which)">
-          <span>
-            {{chat.content}}
-          </span>
-        </div>
-      </li>
-    </ul>
+  <div>
 
+    <div id="chat__container">
+      <div class="friendnamecontainer">
+        <h2>{{this.$store.state.acitvename}}</h2>
+      </div>
+      <ul>
+        <li v-for="(chat, index) in this.chats" v-bind:key="index">
+          <div v-bind:class="chatbubblestyle(chat.which)">
+            <span>
+              {{chat.content}}
+            </span>
+          </div>
+        </li>
+      </ul>
+    </div>
     <div id="chatinput__container">
       <input v-model="chatinput" type="text" id="chatinput">
       <button v-on:click="addchat" class="addbutton">
         SEND
       </button>
     </div>
-
   </div>
 </template>
 
@@ -39,7 +40,7 @@ export default {
   },
   methods: {
     addchat: function() {
-      this.chats.push({ content: this.chatinput, person: 1 })
+      this.chats.push({ content: this.chatinput, which: 0 })
 
       let sendobj = {
         myId: this.$store.state.token,
@@ -48,20 +49,22 @@ export default {
       }
 
       webSocket.send(JSON.stringify(sendobj))
-
-      //network post request to server
     },
     chatbubblestyle: function(person) {
       return person == 0 ? 'mechat' : 'youchat'
     }
   },
   created() {
-    webSocket.addEventListener('open', function(event) {
-      console.log('connected')
-    })
+    webSocket.send(
+      JSON.stringify({ ping: 'hey', myId: this.$store.state.token })
+    )
 
-    webSocket.addEventListener('message', function(event) {
+    webSocket.addEventListener('message', event => {
       console.log('message: ', event.data)
+      let parseddata = JSON.parse(event.data)
+      if (parseddata.id == this.$store.state.activefriendid) {
+        this.chats.push({ content: parseddata.content, which: 1 })
+      }
     })
   }
 }
@@ -103,8 +106,10 @@ span {
   border-radius: 20px;
 }
 
-.chat__container {
+#chat__container {
   position: relative;
+  height: calc(100vh - 80px);
+  overflow-y: scroll;
 }
 
 .addbutton {
@@ -121,7 +126,7 @@ span {
 }
 
 .friendnamecontainer {
-  padding: 20px;
+  padding: 10px;
   border-bottom: 1px solid $border-color;
 }
 

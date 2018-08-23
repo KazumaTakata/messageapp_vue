@@ -32,7 +32,7 @@
         </div>
         <div class="result__container">
           <div>
-            <img v-bind:src="this.searchuserphotourl" alt="">
+            <img　v-bind:src="this.searchuserphotourl" alt="">
           </div>
           <p>{{searchusername}}</p>
           <p>{{friendadderror}}</p>
@@ -48,24 +48,26 @@
         <font-awesome-icon icon="times" />
       </button>
       <div class="form__container">
-        <div class="result__container">
+        <div>
+          <p>Select new profile photo</p>
           <div>
-            <img src="https://www.gstatic.com/webp/gallery3/1.png" alt="">
+            <img class="previewimg" v-bind:src='this.$store.state.myState.photourl'>
           </div>
 
           <label class="skelltonbutton">
-            <input style="display:none" type="file" accept="image/*"> SELECT PROFILE PHOTO
+            <input @change="onFileChange" style="display:none" type="file" accept="image/*"> SELECT PROFILE PHOTO
           </label>
           <div>
-            <button class="skelltonbutton">SET PHOTO</button>
+            <button v-on:click="sendProfilephoto" class="skelltonbutton">SET PHOTO</button>
           </div>
 
         </div>
         <div>
+          <p>Type in NEW NAME</p>
           <div>
-            <input type="text">
+            <input v-model="newname" type="text">
           </div>
-          <button class="skelltonbutton">
+          <button v-on:click="sendNewname" class="skelltonbutton">
             SET PROFILE NAME
           </button>
         </div>
@@ -112,11 +114,58 @@ export default {
       searchuserid: '',
       searchuserphotourl: 'http://localhost:8181/img/defaultprofile.jpg',
       nofindmessage: '',
-      friendadderror: ''
+      friendadderror: '',
+      previewimageurl: this.$store.state,
+      profilephoto: '',
+      newname: ''
     }
   },
 
   methods: {
+    onFileChange(e) {
+      this.profilephoto = e.target.files[0]
+      this.previewimageurl = URL.createObjectURL(this.profilephoto)
+    },
+    sendNewname: function(event) {
+      const home_url = `http://localhost:8181`
+      const url = home_url + '/api/user/profile/name'
+      axios
+        .post(
+          url,
+          { name: this.newname },
+          {
+            headers: {
+              'x-access-token': this.$store.state.token
+            }
+          }
+        )
+        .then(function() {
+          console.log('SUCCESS!!')
+        })
+        .catch(function() {
+          console.log('FAILURE!!')
+        })
+    },
+    sendProfilephoto: function(event) {
+      const home_url = `http://localhost:8181`
+      const url = home_url + '/api/user/profile/photo'
+      let formData = new FormData()
+      formData.append('image', this.profilephoto)
+      axios
+        .post(url, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'x-access-token': this.$store.state.token
+          }
+        })
+        .then(function() {
+          console.log('SUCCESS!!')
+        })
+        .catch(function() {
+          console.log('FAILURE!!')
+        })
+    },
+
     sidebaropen: function(event) {
       console.log('clicked')
       this.isActive = !this.isActive
@@ -245,14 +294,13 @@ a {
   color: white;
 }
 
-.result__container {
-  height: 200px;
+p {
   margin: 30px;
-
-  img {
-    height: 100px;
-    width: 100px;
-    border-radius: 50%;
-  }
+}
+img {
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 </style>

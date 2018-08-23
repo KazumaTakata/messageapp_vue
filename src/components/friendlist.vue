@@ -1,13 +1,20 @@
 <template>
   <ul>
-    <li v-on:click="friendchosen" v-bind:id="index" v-for="(friend, index) in this.$store.state.friends" :key="friend.id">
-      <div class="list__container">
-        <img class="profile-img" v-bind:src="friend.photourl">
-        <div class="list__name">
-          {{friend.name}}
+    <template v-if="this.$store.state.friends.length != 0">
+      <li v-on:click="friendchosen" v-bind:id="index" v-for="(friend, index) in getfriendlist" :key="friend.id">
+        <div class="list__container">
+          <img class="profile-img" v-bind:src="friend.photourl">
+          <div class="list__name">
+            {{friend.name}}
+          </div>
         </div>
-      </div>
-    </li>
+      </li>
+    </template>
+    <template v-else>
+      <li>
+        You have no friend. Please find your friend.
+      </li>
+    </template>
   </ul>
 
 </template>
@@ -19,6 +26,14 @@ export default {
   name: 'FriendList',
   data() {
     return {}
+  },
+  computed: {
+    getfriendlist: function() {
+      if (this.$store.state.friends.length == 0) {
+      } else {
+        return this.$store.state.friends
+      }
+    }
   },
   methods: {
     friendchosen: async function(event) {

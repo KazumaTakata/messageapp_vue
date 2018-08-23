@@ -30,6 +30,10 @@
   transform: rotate(45deg);
 }
 
+#menu_button.active {
+  color: white;
+}
+
 .closebutton {
   position: absolute;
   top: 10px;
@@ -108,4 +112,34 @@ input [type='file'] {
   display: inline-block;
   padding: 6px 12px;
   cursor: pointer;
+}
+
+.basicbutton {
+  background: transparent;
+  font-size: 1.3rem;
+  border-radius: 10px;
+  border: 1px solid $font-color;
+  padding: 10px;
+  color: $font-color;
+  outline: none;
+  margin: 0 30px;
+}
+
+.basicbutton:hover {
+  color: white;
+  border: 1px solid white;
+}
+
+input[type='submit'] {
+  background: transparent;
+  font-size: 1.3rem;
+  border-radius: 10px;
+  border: 1px solid $font-color;
+  padding: 10px;
+  color: $font-color;
+  outline: none;
+}
+input[type='submit']:hover {
+  color: white;
+  border: 1px solid white;
 }

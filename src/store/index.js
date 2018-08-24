@@ -11,6 +11,9 @@ const store = new Vuex.Store({
     talks: "",
     acitvename: "No Friend Chosen",
     friends: [],
+    isActiveAddfriend: false,
+    isActiveLogin: true,
+    isActiveProfile: false,
   },
   getters: {
     getfriend: state => i => {
@@ -41,6 +44,15 @@ const store = new Vuex.Store({
     },
     setName(state, newname) {
       state.myState.name = newname;
+    },
+    toggleaddfriend(state) {
+      state.isActiveAddfriend = !state.isActiveAddfriend;
+    },
+    togglelogin(state) {
+      state.isActiveLogin = !state.isActiveLogin;
+    },
+    toggleprofile(state) {
+      state.isActiveProfile = !state.isActiveProfile;
     },
   },
 });

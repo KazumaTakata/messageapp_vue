@@ -70,8 +70,9 @@ export default {
     this.$store.commit('setwebsocket_video', this.websocket_video)
     this.websocket_chat = new WebSocket('ws://localhost:8084')
     this.$store.commit('setwebsocket_chat', this.websocket_chat)
-    this.websocket_video.onmessage = jsonmessage => {
-      let parseddata = JSON.parse(jsonmessage.data)
+
+    this.websocket_video.addEventListener('message', jsondata => {
+      let parseddata = JSON.parse(jsondata.data)
       if (parseddata.type == 'call') {
         let name = this.$store.state.friends.filter(
           f => f.id == parseddata.sender
@@ -83,7 +84,7 @@ export default {
           this.$store.commit('popnotificationlist')
         }, 10000)
       }
-    }
+    })
     this.websocket_chat.onmessage = jsonmessage => {
       this.$store.commit('pushtonotificationlist', 'chat from')
     }

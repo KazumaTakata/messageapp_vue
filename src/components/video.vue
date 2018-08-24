@@ -81,8 +81,8 @@ export default {
     //   )
     // }
 
-    this.webSocket.addEventListener('message', jsondata => {
-      let message = JSON.parse(jsondata.data)
+    this.webSocket.onmessage = jsonmessage => {
+      let message = JSON.parse(jsonmessage.data)
       if (message.type === 'call') {
         if (message.sender == this.$store.state.activefriendid) {
           this.callcommingid = message.sender
@@ -142,7 +142,7 @@ export default {
       } else if (message.type === 'bye') {
         this.handleRemoteHangup()
       }
-    })
+    }
   },
   methods: {
     handleRemoteHangup() {
@@ -161,8 +161,11 @@ export default {
     },
 
     stop() {
-      pc.close()
-      pc = null
+      if (pc != null) {
+        pc.close()
+        pc = null
+      }
+
       this.talking = false
       this.responced = false
     },

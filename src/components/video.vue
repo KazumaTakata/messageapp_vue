@@ -2,15 +2,44 @@
   <div>
     <div id="video__container">
       <div class="friendnamecontainer">
-        {{this.$store.state.acitvename}}
+        <h2>{{this.$store.state.acitvename}}</h2>
       </div>
       <div id="video__innercontainer">
         <video width="130" height="100" muted ref="video" id="mevideo"></video>
         <video width="500" height="420" ref="video2" id="youvideo"></video>
-        <button v-on:click="createPeerConnection" id="callbutton">
-          <font-awesome-icon icon="phone" />
-        </button>
+
+        <template v-if="!callcomming">
+          <template v-if="offering">
+            <div class="calling">
+              {{this.callingmessage}} {{this.$store.state.acitvename}}
+            </div>
+          </template>
+          <template v-if="talking">
+            <button v-on:click="hangup" id="callbutton">
+              <font-awesome-icon icon="times" />
+            </button>
+          </template>
+          <template v-else>
+            <button v-on:click="offercall" id="callbutton">
+              <font-awesome-icon icon="phone" />
+            </button>
+          </template>
+        </template>
+        <template v-else>
+          <div class="callcomming__container">
+            <button v-on:click="responsecallaccept" class="callcommingbutton accept">
+              <font-awesome-icon icon="phone" />
+            </button>
+            <button v-on:click="responsecallreject" class="callcommingbutton reject">
+              <font-awesome-icon icon="times" />
+            </button>
+          </div>
+        </template>
+
       </div>
+      <template v-if="callcomming">
+        <p>incoming call ...</p>
+      </template>
     </div>
   </div>
 </template>
@@ -21,10 +50,18 @@ export default {
   data() {
     return {
       test: 'test',
-      websocket: ''
+      websocket: '',
+      callcomming: false,
+      talking: false,
+      offering: false,
+      responced: false,
+      callcommingid: '',
+      callingmessage: 'Calling to'
     }
   },
-
+  beforeDestroy() {
+    this.stop()
+  },
   mounted() {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
@@ -46,8 +83,27 @@ export default {
 
     this.webSocket.onmessage = jsonmessage => {
       let message = JSON.parse(jsonmessage.data)
-
-      if (message.type === 'offer') {
+      if (message.type === 'call') {
+        if (message.sender == this.$store.state.activefriendid) {
+          this.callcommingid = message.sender
+          this.callcomming = true
+          this.talking = true
+          setTimeout(() => {
+            if (!this.responced) {
+              this.callcomming = false
+              this.talking = false
+            }
+          }, 10000)
+        }
+      } else if (message.type == 'responce') {
+        if (message.res == 'accept') {
+          this.offering = false
+          this.talking = true
+          this.createPeerConnection()
+        } else {
+          this.callingmessage = 'Rejected by'
+        }
+      } else if (message.type === 'offer') {
         pc = new RTCPeerConnection(pc_config, pc_constraints)
         pc.addStream(localStream)
         pc.onicecandidate = event => {
@@ -83,12 +139,79 @@ export default {
           candidate: message.candidate
         })
         pc.addIceCandidate(candidate)
-      } else if (message === 'bye' && isStarted) {
-        handleRemoteHangup()
+      } else if (message.type === 'bye') {
+        this.handleRemoteHangup()
       }
     }
   },
   methods: {
+    handleRemoteHangup() {
+      this.stop()
+    },
+
+    hangup() {
+      this.stop()
+      let sendobj = {
+        data: {
+          type: 'bye'
+        },
+        id: this.$store.state.activefriendid
+      }
+      this.webSocket.send(JSON.stringify(sendobj))
+    },
+
+    stop() {
+      pc.close()
+      pc = null
+      this.talking = false
+      this.responced = false
+    },
+    offercall(event) {
+      this.offering = true
+      this.callingmessage = 'Calling to'
+
+      setTimeout(() => {
+        this.offering = false
+      }, 10000)
+
+      let sendobj = {
+        data: {
+          type: 'call',
+          sender: this.$store.state.myState.id
+        },
+        id: this.$store.state.activefriendid
+      }
+      this.webSocket.send(JSON.stringify(sendobj))
+    },
+    responsecallaccept(event) {
+      this.responced = true
+
+      this.talking = true
+      this.callcomming = false
+      let sendobj = {
+        data: {
+          type: 'responce',
+          res: 'accept',
+          sender: this.$store.state.myState.id
+        },
+        id: this.$store.state.activefriendid
+      }
+      this.webSocket.send(JSON.stringify(sendobj))
+    },
+    responsecallreject(event) {
+      this.responced = true
+      this.callcomming = false
+      this.talking = false
+      let sendobj = {
+        data: {
+          type: 'responce',
+          res: 'reject',
+          sender: this.$store.state.myState.id
+        },
+        id: this.$store.state.activefriendid
+      }
+      this.webSocket.send(JSON.stringify(sendobj))
+    },
     sendMessage(message) {
       console.log('Sending message: ', message)
       this.webSocket.send(JSON.stringify(message))
@@ -107,6 +230,7 @@ export default {
         sdpConstraints
       )
     },
+
     createPeerConnection(event) {
       console.log(this.test)
       console.log('clicked')
@@ -190,8 +314,16 @@ var OrigPeerConnection = window.RTCPeerConnection
 @import '../scss/form.scss';
 @import '../scss/button.scss';
 
+.calling {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: white;
+  transform: translate(-50%, -50%);
+}
+
 .friendnamecontainer {
-  padding: 20px;
+  padding: 10px;
   border-bottom: 1px solid $border-color;
 }
 #video__container {
@@ -237,12 +369,45 @@ var OrigPeerConnection = window.RTCPeerConnection
   border: 1px solid white;
   bottom: 10px;
   border-radius: 50%;
+  width: 60px;
+  height: 60px;
   padding: 15px;
   outline: none;
 }
 
 #callbutton:hover {
   transform: scale(1.1);
+}
+
+.callcommingbutton {
+  z-index: 3;
+  background: transparent;
+  color: white;
+  font-size: 1.5rem;
+  border: 1px solid white;
+  bottom: 10px;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  padding: 15px;
+  outline: none;
+  margin: 30px;
+}
+
+.accept {
+  color: greenyellow;
+  border-color: greenyellow;
+}
+.reject {
+  color: red;
+  border-color: red;
+}
+
+.callcomming__container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>
 

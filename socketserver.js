@@ -8,6 +8,7 @@ wss.on("connection", function connection(ws) {
   ws.on("message", function incoming(message) {
     let parsedmessage = JSON.parse(message);
     let userid = parsedmessage.pingid;
+
     if (message != "{}") {
       if (userid != null) {
         loginuser[userid] = ws;
@@ -22,11 +23,6 @@ wss.on("connection", function connection(ws) {
             socket.send(JSON.stringify(parsedmessage.data));
           }
         }
-        // wss.clients.forEach(function each(client) {
-        //   if (client !== ws && client.readyState === WebSocket.OPEN) {
-        //     client.send(message);
-        //   }
-        // });
       }
     }
   });

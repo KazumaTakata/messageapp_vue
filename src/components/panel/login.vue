@@ -58,6 +58,17 @@ export default {
         this.$store.commit('settoken', result.data.token)
         this.$store.commit('setmyState', result.data)
 
+        this.$store.state.websocket_video.send(
+          JSON.stringify({ pingid: result.data.id })
+        )
+
+        // this.$store.state.websocket_chat.send(
+        //   JSON.stringify({ pingid: result.data.id })
+        // )
+        this.$store.state.websocket_chat.send(
+          JSON.stringify({ ping: 'hey', myId: this.$store.state.token })
+        )
+
         try {
           let result2 = await axios({
             method: 'get',

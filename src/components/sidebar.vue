@@ -20,6 +20,13 @@
     <EditProfile></EditProfile>
     <Login></Login>
     <AddFriend></AddFriend>
+    <div class="notification" v-bind:class="{active: this.$store.state.isActiveNotification}">
+      <ul>
+        <li v-for="(item, index) in this.$store.state.notificationlist" v-bind:key="index">
+          {{item}}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -40,7 +47,9 @@ export default {
     return {
       sidebarItems: ['chat', 'video', 'feed'],
       sidebarActive: false,
-      isActive: true
+      isActive: true,
+      websocket_video: '',
+      websocket_chat: ''
     }
   },
 
@@ -55,6 +64,29 @@ export default {
     profileopen: function(event) {
       this.$store.commit('toggleprofile')
     }
+  },
+  created() {
+    this.websocket_video = new WebSocket('ws://localhost:8183')
+    this.$store.commit('setwebsocket_video', this.websocket_video)
+    this.websocket_chat = new WebSocket('ws://localhost:8084')
+    this.$store.commit('setwebsocket_chat', this.websocket_chat)
+    this.websocket_video.onmessage = jsonmessage => {
+      let parseddata = JSON.parse(jsonmessage.data)
+      if (parseddata.type == 'call') {
+        let name = this.$store.state.friends.filter(
+          f => f.id == parseddata.sender
+        )[0].name
+        let message = 'call from ' + name
+        this.$store.commit('pushtonotificationlist', message)
+
+        setTimeout(() => {
+          this.$store.commit('popnotificationlist')
+        }, 10000)
+      }
+    }
+    this.websocket_chat.onmessage = jsonmessage => {
+      this.$store.commit('pushtonotificationlist', 'chat from')
+    }
   }
 }
 </script>
@@ -63,6 +95,28 @@ export default {
 @import '../scss/color.scss';
 @import '../scss/form.scss';
 @import '../scss/button.scss';
+
+.notification {
+  position: absolute;
+  bottom: 0px;
+  right: 10px;
+
+  box-shadow: 1px 1px 4px black;
+  color: black;
+
+  ul {
+    list-style: none;
+    top: 0;
+    li {
+      padding: 30px;
+      color: black;
+    }
+  }
+}
+
+.notification.active {
+  top: 0;
+}
 
 .selectfile__container {
   margin: 30px;

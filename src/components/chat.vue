@@ -25,11 +25,12 @@
 </template>
 
 <script>
-var webSocket = new WebSocket('ws://localhost:8084')
+// var webSocket = new WebSocket('ws://localhost:8084')
 export default {
   data() {
     return {
-      chatinput: ''
+      chatinput: '',
+      websocket: ''
     }
   },
   computed: {
@@ -48,18 +49,20 @@ export default {
         content: this.chatinput
       }
 
-      webSocket.send(JSON.stringify(sendobj))
+      this.websocket.send(JSON.stringify(sendobj))
     },
     chatbubblestyle: function(person) {
       return person == 0 ? 'mechat' : 'youchat'
     }
   },
   created() {
-    webSocket.send(
-      JSON.stringify({ ping: 'hey', myId: this.$store.state.token })
-    )
+    this.websocket = this.$store.state.websocket_chat
 
-    webSocket.addEventListener('message', event => {
+    // webSocket.send(
+    //   JSON.stringify({ ping: 'hey', myId: this.$store.state.token })
+    // )
+
+    this.websocket.addEventListener('message', event => {
       console.log('message: ', event.data)
       let parseddata = JSON.parse(event.data)
       if (parseddata.id == this.$store.state.activefriendid) {

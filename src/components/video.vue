@@ -50,7 +50,7 @@ export default {
   data() {
     return {
       test: 'test',
-      websocket: '',
+      webSocket: '',
       callcomming: false,
       talking: false,
       offering: false,
@@ -72,17 +72,17 @@ export default {
       })
       .catch(error => console.error('getUserMedia() error:', error))
 
-    this.webSocket = new WebSocket('ws://localhost:8183')
+    this.webSocket = this.$store.state.websocket_video
 
-    this.webSocket.onopen = event => {
-      console.log('open')
-      this.webSocket.send(
-        JSON.stringify({ pingid: this.$store.state.myState.id })
-      )
-    }
+    // this.webSocket.onopen = event => {
+    //   console.log('open')
+    //   this.webSocket.send(
+    //     JSON.stringify({ pingid: this.$store.state.myState.id })
+    //   )
+    // }
 
-    this.webSocket.onmessage = jsonmessage => {
-      let message = JSON.parse(jsonmessage.data)
+    this.webSocket.addEventListener('message', jsondata => {
+      let message = JSON.parse(jsondata.data)
       if (message.type === 'call') {
         if (message.sender == this.$store.state.activefriendid) {
           this.callcommingid = message.sender
@@ -142,7 +142,7 @@ export default {
       } else if (message.type === 'bye') {
         this.handleRemoteHangup()
       }
-    }
+    })
   },
   methods: {
     handleRemoteHangup() {

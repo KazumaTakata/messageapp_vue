@@ -14,6 +14,10 @@ const store = new Vuex.Store({
     isActiveAddfriend: false,
     isActiveLogin: true,
     isActiveProfile: false,
+    isActiveNotification: false,
+    websocket_video: "",
+    websocket_chat: "",
+    notificationlist: [],
   },
   getters: {
     getfriend: state => i => {
@@ -53,6 +57,21 @@ const store = new Vuex.Store({
     },
     toggleprofile(state) {
       state.isActiveProfile = !state.isActiveProfile;
+    },
+    togglenotification(state) {
+      state.isActiveNotification = !state.isActiveNotification;
+    },
+    setwebsocket_video(state, websocket) {
+      state.websocket_video = websocket;
+    },
+    setwebsocket_chat(state, websocket) {
+      state.websocket_chat = websocket;
+    },
+    pushtonotificationlist(state, notification) {
+      state.notificationlist.push(notification);
+    },
+    popnotificationlist(state) {
+      state.notificationlist.pop();
     },
   },
 });

@@ -11,6 +11,7 @@ wss.on("connection", function connection(ws) {
 
     if (message != "{}") {
       if (userid != null) {
+        console.log("ping from", userid);
         loginuser[userid] = ws;
       } else {
         let socket = loginuser[parsedmessage.id];

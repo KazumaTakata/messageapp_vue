@@ -80,6 +80,18 @@ export default {
     //     JSON.stringify({ pingid: this.$store.state.myState.id })
     //   )
     // }
+    if (
+      this.$store.state.callcoming.includes(this.$store.state.activefriendid)
+    ) {
+      this.callcomming = true
+      this.talking = true
+      setTimeout(() => {
+        if (!this.responced) {
+          this.callcomming = false
+          this.talking = false
+        }
+      }, 10000)
+    }
 
     this.webSocket.onmessage = jsonmessage => {
       let message = JSON.parse(jsonmessage.data)

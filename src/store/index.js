@@ -11,6 +11,7 @@ const store = new Vuex.Store({
     talks: "",
     acitvename: "No Friend Chosen",
     friends: [],
+    callcoming: [],
     isActiveAddfriend: false,
     isActiveLogin: true,
     isActiveProfile: false,
@@ -72,6 +73,13 @@ const store = new Vuex.Store({
     },
     popnotificationlist(state) {
       state.notificationlist.pop();
+    },
+    pushcomingcall(state, comingid) {
+      state.callcoming.push(comingid);
+    },
+    popcomingcall(state, comingid) {
+      var index = state.callcoming.indexOf(comingid);
+      if (index !== -1) state.callcoming.splice(index, 1);
     },
   },
 });

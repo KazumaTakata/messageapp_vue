@@ -83,6 +83,12 @@ export default {
         setTimeout(() => {
           this.$store.commit('popnotificationlist')
         }, 10000)
+
+        this.$store.commit('pushcomingcall', parseddata.sender)
+
+        setTimeout(() => {
+          this.$store.commit('popcomingcall', parseddata.sender)
+        }, 10000)
       }
     })
     this.websocket_chat.onmessage = jsonmessage => {

@@ -81,6 +81,9 @@ const store = new Vuex.Store({
       var index = state.callcoming.indexOf(comingid);
       if (index !== -1) state.callcoming.splice(index, 1);
     },
+    pushtalk(state, talk) {
+      state.talks.push(talk);
+    },
   },
 });
 

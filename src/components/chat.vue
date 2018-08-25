@@ -8,9 +8,17 @@
       <ul>
         <li v-for="(chat, index) in this.chats" v-bind:key="index">
           <div v-bind:class="chatbubblestyle(chat.which)">
-            <span>
-              {{chat.content}}
-            </span>
+            <div>
+              <img class="profile-img" v-bind:src="getphoto(chat.friendid)"> {{getname(chat.friendid, chat.which)}}
+            </div>
+            <div class="time__container">
+              {{chat.time}}
+            </div>
+            <div class="bubble__container">
+              <span>
+                {{chat.content}}
+              </span>
+            </div>
           </div>
         </li>
       </ul>
@@ -25,7 +33,6 @@
 </template>
 
 <script>
-// var webSocket = new WebSocket('ws://localhost:8084')
 export default {
   data() {
     return {
@@ -40,8 +47,32 @@ export default {
     }
   },
   methods: {
+    getphoto: function(id, which) {
+      if (which == 0) {
+        return this.$store.state.myState.photourl
+      } else {
+        let photourl = this.$store.state.friends.filter(f => f.id == id)[0]
+          .photourl
+        return photourl
+      }
+    },
+    getname: function(id, which) {
+      if (which == 0) {
+        return this.$store.state.myState.name
+      } else {
+        let name = this.$store.state.friends.filter(f => f.id == id)[0].name
+        return name
+      }
+    },
     addchat: function() {
-      this.chats.push({ content: this.chatinput, which: 0 })
+      var d = new Date()
+
+      this.$store.commit('pushtalk', {
+        content: this.chatinput,
+        which: 0,
+        friendid: this.$store.state.activefriendid,
+        time: d.toLocaleString()
+      })
 
       let sendobj = {
         myId: this.$store.state.token,
@@ -58,17 +89,16 @@ export default {
   created() {
     this.websocket = this.$store.state.websocket_chat
 
-    // webSocket.send(
-    //   JSON.stringify({ ping: 'hey', myId: this.$store.state.token })
-    // )
-
-    this.websocket.addEventListener('message', event => {
-      console.log('message: ', event.data)
+    this.websocket.onmessage = jsonmessage => {
+      console.log('message: ', jsonmessage.data)
       let parseddata = JSON.parse(event.data)
       if (parseddata.id == this.$store.state.activefriendid) {
-        this.chats.push({ content: parseddata.content, which: 1 })
+        this.$store.commit('pushtalk', {
+          content: parseddata.content,
+          which: 1
+        })
       }
-    })
+    }
   }
 }
 </script >
@@ -78,6 +108,13 @@ export default {
 <style lang="scss" scoped>
 @import '../scss/color.scss';
 @import '../scss/button.scss';
+.profile-img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid rgb(73, 53, 53);
+}
 ul {
   list-style: none;
 }
@@ -95,6 +132,10 @@ li {
   text-align: left;
 }
 
+.bubble__container {
+  margin: 20px;
+}
+
 .youchat span {
   background: rgb(103, 199, 65);
 }
@@ -104,7 +145,8 @@ li {
 }
 
 span {
-  padding: 20px;
+  padding: 10px;
+
   color: white;
   border-radius: 20px;
 }
@@ -115,9 +157,14 @@ span {
   overflow-y: scroll;
 }
 
+.time__container {
+  font-size: 0.5rem;
+}
+
 .addbutton {
   background: transparent;
   color: $border-color;
+  font-size: 1px;
 }
 .addbutton:hover {
   color: $font-color;
@@ -143,17 +190,18 @@ span {
   display: flex;
 
   button {
-    font-size: 25px;
-    border: 2px solid $border-color;
+    font-size: 10px;
+    border: 1px solid $border-color;
     border-radius: 15px;
     background: transparent;
     outline: none;
     margin-left: 10px;
   }
   input {
-    border-radius: 10px;
-    border: 2px solid $border-color;
-    font-size: 25px;
+    border-radius: 20px;
+    border: 1px solid $border-color;
+    font-size: 20px;
+    font-weight: 100;
     padding: 6px;
     outline: none;
   }

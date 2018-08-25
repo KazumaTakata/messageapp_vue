@@ -91,9 +91,17 @@ export default {
         }, 10000)
       }
     })
-    this.websocket_chat.onmessage = jsonmessage => {
-      this.$store.commit('pushtonotificationlist', 'chat from')
-    }
+    this.websocket_chat.addEventListener('message', jsondata => {
+      let parseddata = JSON.parse(jsondata.data)
+      let name = this.$store.state.friends.filter(f => f.id == parseddata.id)[0]
+        .name
+      let message = 'chat from ' + name
+      this.$store.commit('pushtonotificationlist', message)
+
+      setTimeout(() => {
+        this.$store.commit('popnotificationlist')
+      }, 10000)
+    })
   }
 }
 </script>
@@ -107,6 +115,10 @@ export default {
   position: absolute;
   bottom: 0px;
   right: 10px;
+  background: white;
+  z-index: 10;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
 
   box-shadow: 1px 1px 4px black;
   color: black;
@@ -121,9 +133,9 @@ export default {
   }
 }
 
-.notification.active {
-  top: 0;
-}
+// .notification.active {
+//   top: 0;
+// }
 
 .selectfile__container {
   margin: 30px;

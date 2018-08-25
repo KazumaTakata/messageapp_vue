@@ -12,10 +12,20 @@ import {
   faUserCircle,
   faTimes,
   faPhone,
+  faComment,
 } from "@fortawesome/free-solid-svg-icons";
+
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faBars, faPlus, faSearch, faUserCircle, faTimes, faPhone);
+library.add(
+  faBars,
+  faPlus,
+  faSearch,
+  faUserCircle,
+  faTimes,
+  faPhone,
+  faComment
+);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 

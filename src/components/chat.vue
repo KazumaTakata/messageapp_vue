@@ -9,7 +9,7 @@
         <li v-for="(chat, index) in this.chats" v-bind:key="index">
           <div v-bind:class="chatbubblestyle(chat.which)">
             <div>
-              <img class="profile-img" v-bind:src="getphoto(chat.friendid)"> {{getname(chat.friendid, chat.which)}}
+              <img class="profile-img" v-bind:src="getphoto(chat.friendid,  chat.which)"> {{getname(chat.friendid, chat.which)}}
             </div>
             <div class="time__container">
               {{chat.time}}
@@ -77,6 +77,7 @@ export default {
       let sendobj = {
         myId: this.$store.state.token,
         friendId: this.$store.state.activefriendid,
+        time: d.toLocaleString(),
         content: this.chatinput
       }
 
@@ -95,6 +96,8 @@ export default {
       if (parseddata.id == this.$store.state.activefriendid) {
         this.$store.commit('pushtalk', {
           content: parseddata.content,
+          friendid: parseddata.id,
+          time: parseddata.time,
           which: 1
         })
       }

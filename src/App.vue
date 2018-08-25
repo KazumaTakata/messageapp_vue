@@ -11,24 +11,24 @@
 </template>
 
 <script>
-import FriendList from "./components/friendlist";
-import Chat from "./components/chat";
-import SideBar from "./components/sidebar";
+import FriendList from './components/friendlist'
+import Chat from './components/chat'
+import SideBar from './components/sidebar'
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     FriendList,
     Chat,
     SideBar
   }
-};
+}
 </script>
 
 <style lang="scss">
-@import "./scss/color.scss";
+@import './scss/color.scss';
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -38,7 +38,7 @@ export default {
 .friendlist__container {
   position: absolute;
   height: 100vh;
-  border-right: 2px solid $border-color;
+  border-right: 1px solid $border-color;
 }
 
 body,

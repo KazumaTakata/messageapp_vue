@@ -4,6 +4,9 @@
     <div id="chat__container">
       <div class="friendnamecontainer">
         <h2>{{this.$store.state.acitvename}}</h2>
+        <button class="header_menubutton">
+          <font-awesome-icon icon="bars" />
+        </button>
       </div>
       <ul>
         <li v-for="(chat, index) in this.chats" v-bind:key="index">
@@ -111,6 +114,15 @@ export default {
 <style lang="scss" scoped>
 @import '../scss/color.scss';
 @import '../scss/button.scss';
+
+.header_menubutton {
+  position: absolute;
+  top: 10px;
+  font-size: 1.2rem;
+  right: 10px;
+  border: none;
+  outline: none;
+}
 .profile-img {
   width: 40px;
   height: 40px;
@@ -155,7 +167,7 @@ span {
 }
 
 #chat__container {
-  position: relative;
+  padding-top: 50px;
   height: calc(100vh - 80px);
   overflow-y: scroll;
 }
@@ -179,8 +191,15 @@ span {
 }
 
 .friendnamecontainer {
-  padding: 10px;
+  background: white;
+  position: fixed;
+  top: 0px;
+  width: calc(100% - 210px);
+  h2 {
+    margin: 6px;
+  }
   border-bottom: 1px solid $border-color;
+  border-left: 1px solid $border-color;
 }
 
 #chatinput__container {

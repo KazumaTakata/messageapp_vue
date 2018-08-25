@@ -4,12 +4,15 @@
       <li v-for="(feed, index) in feeds" v-bind:key="index">
         <div class="feedcard">
           <div class="profilecontainer">
-            <img class="profile" v-bind:src="feed.photourl">
+            <img class="profile" v-bind:src="feed.profileurl">
             <div class="profilename">
               {{feed.name}}
             </div>
           </div>
-          <img v-bind:src="feed.photourl">
+          <template v-if="feed.photourl != ''">
+            <img v-bind:src="feed.photourl">
+          </template>
+
           <div class="feedcontent">
             {{feed.feedcontent}}
           </div>
@@ -28,14 +31,18 @@
         <div>
           <textarea v-model="feedcontent" type="text"></textarea>
         </div>
-        <label class="custom-file-upload" for="file-upload">
+        <label class="basicbutton" for="file-upload">
           <input type="file" v-on:change="handleFileUpload()" accept="image/*" style="display:none" id="file-upload" ref="file"> Choose file
         </label>
+        <p>{{filechosenmessage}}</p>
 
         <div class="result__container">
-          <button v-on:click="sendfeed" class="skelltonbutton">
+          <button v-on:click="sendfeed" class="basicbutton">
             Submit feed
           </button>
+          <div>
+            {{successorfailuremessage}}
+          </div>
         </div>
       </div>
     </div>
@@ -52,7 +59,9 @@ export default {
       isActiveAddFeed: false,
       feedcontent: '',
       file: '',
-      feeds: []
+      filechosenmessage: '',
+      feeds: [],
+      successorfailuremessage: ''
     }
   },
   computed: {
@@ -63,16 +72,17 @@ export default {
   methods: {
     handleFileUpload() {
       this.file = this.$refs.file.files[0]
+      this.filechosenmessage = 'file chosen'
     },
     addfeed: function(event) {
-      console.log('ee')
       this.isActiveAddFeed = !this.isActiveAddFeed
+      this.filechosenmessage = ''
+      this.successorfailuremessage = ''
     },
     sendfeed: function(event) {
       const home_url = `http://localhost:8181`
       const url = home_url + '/api/user/feed'
 
-      console.log(this.feedcontent)
       let formData = new FormData()
       formData.append('image', this.file)
       formData.append('feedcontent', this.feedcontent)
@@ -83,11 +93,13 @@ export default {
             'x-access-token': this.$store.state.token
           }
         })
-        .then(function() {
+        .then(() => {
           console.log('SUCCESS!!')
+          this.successorfailuremessage = 'sucessfully uploaded'
         })
-        .catch(function() {
+        .catch(() => {
           console.log('FAILURE!!')
+          this.successorfailuremessage = 'failed to upload'
         })
     }
   },
@@ -107,11 +119,13 @@ export default {
         for (let i = 0; i < res.data.length; i++) {
           if (res.data[i].userId == this.$store.state.myState.id) {
             res.data[i]['name'] = this.$store.state.myState.name
+            res.data[i]['profileurl'] = this.$store.state.myState.photourl
           } else {
             let u = this.$store.state.friends.find(
               f => f.id == res.data[i].userId
             )
             res.data[i]['name'] = u.name
+            res.data[i]['profileurl'] = u.photourl
             console.log(u)
           }
         }

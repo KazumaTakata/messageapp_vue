@@ -6,34 +6,41 @@
         <div class="form__container">
             <div>
                 <h1>UPDATE YOUR PROFILE !!</h1>
-                <div>
-                    <img class="previewimg" v-bind:src='this.$store.state.myState.photourl'>
-                </div>
+                <button v-on:click="tophoto" class="basicbutton">Name</button>
+                <button v-on:click="toname" class="basicbutton">Photo</button>
 
-                <div class="selectfile__container">
-                    <label class="skelltonbutton selectfile">
-                        <input @change="onFileChange" style="display:none" type="file" accept="image/*"> SELECT NEW PROFILE PHOTO
-                    </label>
+                <div v-if="photoorname">
+                    <h2>Update your profile photo.</h2>
+                    <div>
+                        <img class="previewimg" v-bind:src='this.$store.state.myState.photourl'>
+                    </div>
+                    <div class="selectfile__container">
+                        <label class="basicbutton selectfile">
+                            <input @change="onFileChange" style="display:none" type="file" accept="image/*"> SELECT
+                        </label>
+                    </div>
+                    <div>
+                        <button v-on:click="sendProfilephoto" class="basicbutton">SET PHOTO</button>
+                    </div>
+                    <p>{{this.profilephotochosen}}</p>
+                    <p>{{this.setprofilemessage}}</p>
                 </div>
-                <p>{{this.profilephotochosen}}</p>
-
-                <div>
-                    <button v-on:click="sendProfilephoto" class="skelltonbutton">SET PHOTO</button>
+                <div v-else>
+                    <div>
+                        <h2>Type in NEW NAME</h2>
+                        <p>Your current name is {{this.$store.state.myState.name}}</p>
+                        <div>
+                            <input placeholder="new name" v-model="newname" type="text">
+                        </div>
+                        <button v-on:click="sendNewname" class="skelltonbutton">
+                            SET PROFILE NAME
+                        </button>
+                        <p>{{setnamemessage}}</p>
+                    </div>
                 </div>
-                <p>{{this.setprofilemessage}}</p>
 
             </div>
-            <div>
-                <h2>Type in NEW NAME</h2>
-                <p>Your current name is {{this.$store.state.myState.name}}</p>
-                <div>
-                    <input placeholder="new name" v-model="newname" type="text">
-                </div>
-                <button v-on:click="sendNewname" class="skelltonbutton">
-                    SET PROFILE NAME
-                </button>
-                <p>{{setnamemessage}}</p>
-            </div>
+
         </div>
     </div>
 </template>
@@ -53,10 +60,17 @@ export default {
       newname: '',
       profilephotochosen: '',
       setprofilemessage: '',
-      setnamemessage: ''
+      setnamemessage: '',
+      photoorname: true
     }
   },
   methods: {
+    tophoto(e) {
+      this.photoorname = false
+    },
+    toname(e) {
+      this.photoorname = true
+    },
     sendProfilephoto: function(event) {
       if (this.profilephoto != '') {
         const home_url = `http://localhost:8181`
@@ -116,6 +130,10 @@ export default {
     },
     profileopen: function(event) {
       this.$store.commit('toggleprofile')
+      this.loginerrmessage = ''
+      this.friendaddmessage = ''
+      this.setprofilemessage = ''
+      this.setnamemessage = ''
     }
   }
 }
@@ -133,10 +151,15 @@ img {
 }
 .selectfile {
   padding: 10px;
+  margin: 30px;
 }
 
 .selectfile:hover {
   color: red;
   border-color: red;
+}
+
+.selectfile__container {
+  margin: 40px 0;
 }
 </style>

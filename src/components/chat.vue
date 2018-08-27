@@ -1,30 +1,34 @@
 <template>
   <div>
-
     <div id="chat__container">
       <div class="friendnamecontainer">
         <h2>{{this.$store.state.acitvename}}</h2>
-        <button class="header_menubutton">
+        <button v-on:click="openmenu" class="header_menubutton">
           <font-awesome-icon icon="bars" />
         </button>
       </div>
-      <ul>
-        <li v-for="(chat, index) in this.chats" v-bind:key="index">
-          <div v-bind:class="chatbubblestyle(chat.which)">
-            <div>
-              <img class="profile-img" v-bind:src="getphoto(chat.friendid,  chat.which)"> {{getname(chat.friendid, chat.which)}}
+      <div class="inner__chat__container" v-bind:class="{active: menuActive}">
+        <ul>
+          <li v-for="(chat, index) in this.chats" v-bind:key="index">
+            <div v-bind:class="chatbubblestyle(chat.which)">
+              <div>
+                <img class="profile-img" v-bind:src="getphoto(chat.friendid,  chat.which)"> {{getname(chat.friendid, chat.which)}}
+              </div>
+              <div class="time__container">
+                {{chat.time}}
+              </div>
+              <div class="bubble__container">
+                <span>
+                  {{chat.content}}
+                </span>
+              </div>
             </div>
-            <div class="time__container">
-              {{chat.time}}
-            </div>
-            <div class="bubble__container">
-              <span>
-                {{chat.content}}
-              </span>
-            </div>
-          </div>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="menu__container" v-bind:class="{active: menuActive}">
+        <input type="text">
+      </div>
     </div>
     <div id="chatinput__container">
       <input v-model="chatinput" type="text" id="chatinput">
@@ -40,7 +44,8 @@ export default {
   data() {
     return {
       chatinput: '',
-      websocket: ''
+      websocket: '',
+      menuActive: true
     }
   },
   computed: {
@@ -50,6 +55,10 @@ export default {
     }
   },
   methods: {
+    openmenu: function(event) {
+      console.log(event)
+      this.menuActive = !this.menuActive
+    },
     getphoto: function(id, which) {
       if (which == 0) {
         return this.$store.state.myState.photourl
@@ -114,6 +123,34 @@ export default {
 <style lang="scss" scoped>
 @import '../scss/color.scss';
 @import '../scss/button.scss';
+
+.menu__container {
+  position: fixed;
+  top: 50px;
+  right: 0;
+  height: 100vh;
+  background: green;
+  width: 200px;
+  transition: 0.5s;
+
+  input {
+    width: 80%;
+    margin-top: 20px;
+  }
+}
+.menu__container.active {
+  right: -200px;
+}
+
+.inner__chat__container {
+  position: relative;
+  width: calc(100% - 200px);
+  transition: 0.5s;
+}
+
+.inner__chat__container.active {
+  width: 100%;
+}
 
 .header_menubutton {
   position: absolute;
@@ -192,7 +229,9 @@ span {
 
 .friendnamecontainer {
   background: white;
+  z-index: 2;
   position: fixed;
+  height: 50px;
   top: 0px;
   width: calc(100% - 210px);
   h2 {
@@ -227,5 +266,14 @@ span {
     padding: 6px;
     outline: none;
   }
+}
+
+input {
+  border-radius: 20px;
+  border: 1px solid $border-color;
+  font-size: 20px;
+  font-weight: 100;
+  padding: 6px;
+  outline: none;
 }
 </style>

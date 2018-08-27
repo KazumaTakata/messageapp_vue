@@ -27,7 +27,20 @@
         </ul>
       </div>
       <div class="menu__container" v-bind:class="{active: menuActive}">
-        <input type="text">
+        <input v-model="query_input" v-on:keyup.enter="elasticsearchtalk" type="text">
+        <ul>
+          <li v-for="(result, index) in this.query_result" v-bind:key="index">
+            <div>
+              <img class="profile-img" v-bind:src="getphoto( result.friendid, result.which )"> {{getname(result.friendid, result.which)}}
+            </div>
+            <div class="time__container">
+              {{result.time}}
+            </div>
+            <div>
+              {{result.content}}
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
     <div id="chatinput__container">
@@ -40,12 +53,15 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
       chatinput: '',
       websocket: '',
-      menuActive: true
+      menuActive: true,
+      query_input: '',
+      query_result: []
     }
   },
   computed: {
@@ -55,12 +71,36 @@ export default {
     }
   },
   methods: {
+    elasticsearchtalk: async function(event) {
+      console.log(this.query_input)
+      const home_url = `http://localhost:8181`
+      const search_url = `/api/elastic/talk/${
+        this.$store.state.activefriendid
+      }/${this.query_input}`
+      const url = home_url + search_url
+
+      try {
+        let result = await axios({
+          method: 'get',
+          url: url,
+          headers: { 'x-access-token': this.$store.state.token }
+        })
+        result.data.sort(function(a, b) {
+          return Date.parse(a.time) - Date.parse(b.time)
+        })
+
+        console.log(result)
+        this.query_result = result.data
+      } catch (err) {
+        console.log(err)
+      }
+    },
     openmenu: function(event) {
       console.log(event)
       this.menuActive = !this.menuActive
     },
     getphoto: function(id, which) {
-      if (which == 0) {
+      if (which == 0 || which === true) {
         return this.$store.state.myState.photourl
       } else {
         let photourl = this.$store.state.friends.filter(f => f.id == id)[0]
@@ -69,7 +109,7 @@ export default {
       }
     },
     getname: function(id, which) {
-      if (which == 0) {
+      if (which == 0 || which === true) {
         return this.$store.state.myState.name
       } else {
         let name = this.$store.state.friends.filter(f => f.id == id)[0].name
@@ -101,7 +141,6 @@ export default {
   },
   created() {
     this.websocket = this.$store.state.websocket_chat
-
     this.websocket.onmessage = jsonmessage => {
       console.log('message: ', jsonmessage.data)
       let parseddata = JSON.parse(event.data)
@@ -129,10 +168,9 @@ export default {
   top: 50px;
   right: 0;
   height: 100vh;
-  background: green;
   width: 200px;
   transition: 0.5s;
-
+  border-left: 1px solid $border-color;
   input {
     width: 80%;
     margin-top: 20px;

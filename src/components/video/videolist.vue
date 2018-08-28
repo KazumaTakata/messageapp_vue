@@ -1,7 +1,7 @@
 <template>
     <div>
         <ul>
-            <li v-for="(item, index) in videolist" v-bind:key="index">
+            <li v-on:click="videoopen" v-for="(item, index) in videolist" v-bind:key="index" v-bind:id="index">
 
                 <div>
                     <img class="profile-img" v-bind:src="getphoto(item.friendid)"> {{getname(item.friendid)}}
@@ -9,15 +9,23 @@
                 <div>
                     {{item.time}}
                 </div>
-                <div class="video__container">
-                    <div class="inner__video__container">
-                        <video id="gum" v-bind:src="item.video_local" playsinline></video>
-                        <video id="gum" v-bind:src="item.video_remote" playsinline></video>
+                <template v-if=" String( whichvideo ) === String( index )">
+                    <div class="video__container">
+                        <button v-on:click="videoclose" class="closebutton">
+                            <font-awesome-icon icon="times" />
+                        </button>
+                        <div class="inner__video__container">
+                            <video id="gum" v-bind:src="item.video_local" playsinline></video>
+                            <video id="gum" v-bind:src="item.video_remote" playsinline></video>
+                        </div>
+                        <div class="video__comment">
+                            Note
+                        </div>
+                        <div>
+                            ofiewjfoewjfoewajoifejwa
+                        </div>
                     </div>
-                    <div>
-                        Note
-                    </div>
-                </div>
+                </template>
             </li>
         </ul>
     </div>
@@ -29,13 +37,22 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      videolist: []
+      videolist: [],
+      whichvideo: ''
     }
   },
   created() {
     this.getVideoList()
   },
   methods: {
+    videoopen: function(event) {
+      //   console.log(event.target.id)
+      this.whichvideo = String(event.target.id)
+    },
+    videoclose: function(event) {
+      console.log(event.target.id)
+      this.whichvideo = ''
+    },
     getVideoList: async function(event) {
       const home_url = `http://localhost:8181`
       const url = home_url + `/api/video/${this.$store.state.activefriendid}`
@@ -72,6 +89,10 @@ li {
   padding: 20px;
 }
 
+li * {
+  pointer-events: none;
+}
+
 li:hover {
   background: $hover-color;
   //   color: white;
@@ -81,10 +102,11 @@ li:hover {
   top: 0;
   left: 0;
   position: fixed;
-  //   height: 100vh;
-  background: white;
+  height: 100vh;
+  background: black;
   width: 100%;
   z-index: 10;
+  color: white;
 
   .inner__video__container {
     display: flex;
@@ -92,6 +114,9 @@ li:hover {
     video {
       width: 50%;
       height: auto;
+    }
+
+    .video__comment {
     }
   }
 }

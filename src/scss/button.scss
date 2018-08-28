@@ -130,6 +130,22 @@ input [type='file'] {
   border: 1px solid white;
 }
 
+.basicbutton-white {
+  background: transparent;
+  font-size: 1.3rem;
+  border-radius: 10px;
+  border: 1px solid $font-color;
+  padding: 10px;
+  color: $font-color;
+  outline: none;
+  margin: 0 30px;
+}
+
+.basicbutton-white:hover {
+  color: $hover-color;
+  border: 1px solid $hover-color;
+}
+
 input[type='submit'] {
   background: transparent;
   font-size: 1.3rem;

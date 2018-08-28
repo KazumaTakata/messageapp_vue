@@ -4,48 +4,77 @@
       <div class="friendnamecontainer">
         <h2>{{this.$store.state.acitvename}}</h2>
       </div>
+      <div class="mode__container">
+        <button v-on:click="tolivemode" class="basicbutton-white">
+          LIVE
+        </button>
+        <button v-on:click="toarchivemode" class="basicbutton-white">
+          ARCHIVE
+        </button>
+      </div>
       <div id="video__innercontainer">
-        <video width="130" height="100" muted ref="video" id="mevideo"></video>
-        <video width="500" height="420" ref="video2" id="youvideo"></video>
 
-        <template v-if="!callcomming">
-          <template v-if="offering">
-            <div class="calling">
-              {{this.callingmessage}} {{this.$store.state.acitvename}}
-            </div>
-          </template>
-          <template v-if="talking">
-            <button v-on:click="hangup" id="callbutton">
-              <font-awesome-icon icon="times" />
-            </button>
+        <div class="video_frame">
+          <video width="130" height="100" muted ref="video" id="mevideo"></video>
+          <video width="500" height="420" ref="video2" id="youvideo"></video>
+
+          <template v-if="!callcomming">
+            <template v-if="offering">
+              <div class="calling">
+                {{this.callingmessage}} {{this.$store.state.acitvename}}
+              </div>
+            </template>
+            <template v-if="talking">
+              <button v-on:click="hangup" id="callbutton">
+                <font-awesome-icon icon="times" />
+              </button>
+            </template>
+            <template v-else>
+              <button v-on:click="offercall" id="callbutton">
+                <font-awesome-icon icon="phone" />
+              </button>
+            </template>
           </template>
           <template v-else>
-            <button v-on:click="offercall" id="callbutton">
-              <font-awesome-icon icon="phone" />
-            </button>
+            <div class="callcomming__container">
+              <button v-on:click="responsecallaccept" class="callcommingbutton accept">
+                <font-awesome-icon icon="phone" />
+              </button>
+              <button v-on:click="responsecallreject" class="callcommingbutton reject">
+                <font-awesome-icon icon="times" />
+              </button>
+            </div>
           </template>
-        </template>
-        <template v-else>
-          <div class="callcomming__container">
-            <button v-on:click="responsecallaccept" class="callcommingbutton accept">
-              <font-awesome-icon icon="phone" />
-            </button>
-            <button v-on:click="responsecallreject" class="callcommingbutton reject">
-              <font-awesome-icon icon="times" />
-            </button>
-          </div>
-        </template>
-
+        </div>
       </div>
       <template v-if="callcomming">
         <p>incoming call ...</p>
       </template>
+      <p>
+        RECORD
+      </p>
+
+      <div>
+        <button v-on:click="startrecording" class="basicbutton-white">
+          START
+        </button>
+        <button v-on:click="stoprecording" class="basicbutton-white">
+          STOP
+        </button>
+        <button v-on:click="saverecording" class="basicbutton-white">
+          SAVE
+        </button>
+      </div>
+      <div class="recordfeedback">
+        {{recordfeedbackmessage}}
+      </div>
     </div>
   </div>
 </template>
 
 
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
@@ -56,7 +85,13 @@ export default {
       offering: false,
       responced: false,
       callcommingid: '',
-      callingmessage: 'Calling to'
+      callingmessage: 'Calling to',
+      recordfeedbackmessage: '',
+      recordedBlobs_local: [],
+      recordedBlobs_remote: [],
+      mediaRecorder_local: null,
+      mediaRecorder_remote: null,
+      remotestream: null
     }
   },
   beforeDestroy() {
@@ -138,6 +173,7 @@ export default {
           console.log('Remote stream added.')
 
           this.$refs.video2.srcObject = event.stream
+          this.remotestream = event.stream
           this.$refs.video2.play()
         }
 
@@ -157,8 +193,112 @@ export default {
     }
   },
   methods: {
+    saverecording() {
+      this.saveRecording()
+    },
+    startrecording() {
+      this.startRecording()
+    },
+    stoprecording() {
+      this.stopRecording()
+    },
+    tolivemode() {},
+    toarchivemode() {},
     handleRemoteHangup() {
       this.stop()
+    },
+    saveRecording() {
+      const blob_local = new Blob(this.recordedBlobs_local, {
+        type: 'video/webm'
+      })
+      const blob_remote = new Blob(this.recordedBlobs_remote, {
+        type: 'video/webm'
+      })
+      let d = new Date()
+      const home_url = `http://localhost:8181`
+      const url = home_url + '/api/video'
+      let formData = new FormData()
+      formData.append('video', blob_local, 'local')
+      formData.append('video', blob_remote, 'remote')
+      formData.append('friendid', this.$store.state.activefriendid)
+      formData.append('time', d.toLocaleString())
+      axios
+        .post(url, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'x-access-token': this.$store.state.token
+          }
+        })
+        .then(res => {
+          console.log(res.data.videourl)
+        })
+        .catch(function() {
+          console.log('FAILURE!!')
+        })
+    },
+    stopRecording() {
+      this.mediaRecorder_local.stop()
+      this.mediaRecorder_remote.stop()
+      console.log('Recorded Blobs: ', this.recordedBlobs_local)
+      // recordedVideo.controls = true
+    },
+    startRecording() {
+      this.recordedBlobs_local = []
+      this.recordedBlobs_remote = []
+      let options = { mimeType: 'video/webm;codecs=vp9' }
+      if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+        console.log(options.mimeType + ' is not Supported')
+        options = { mimeType: 'video/webm;codecs=vp8' }
+        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+          console.log(options.mimeType + ' is not Supported')
+          options = { mimeType: 'video/webm' }
+          if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+            console.log(options.mimeType + ' is not Supported')
+            options = { mimeType: '' }
+          }
+        }
+      }
+      try {
+        this.mediaRecorder_local = new MediaRecorder(localStream, options)
+        this.mediaRecorder_remote = new MediaRecorder(
+          this.remotestream,
+          options
+        )
+      } catch (e) {
+        console.error(`Exception while creating MediaRecorder: ${e}`)
+        alert(
+          `Exception while creating MediaRecorder: ${e}. mimeType: ${
+            options.mimeType
+          }`
+        )
+        return
+      }
+      console.log(
+        'Created MediaRecorder',
+        this.mediaRecorder_local,
+        'with options',
+        options
+      )
+      // recordButton.textContent = 'Stop Recording'
+      // playButton.disabled = true
+      // downloadButton.disabled = true
+      // mediaRecorder.onstop = handleStop
+      this.mediaRecorder_local.ondataavailable = this.handleDataAvailable
+      this.mediaRecorder_local.start(10) // collect 10ms of data
+
+      this.mediaRecorder_remote.ondataavailable = this.handleDataAvailable_remote
+      this.mediaRecorder_remote.start(10)
+      console.log('MediaRecorder started', this.mediaRecorder_local)
+    },
+    handleDataAvailable(event) {
+      if (event.data && event.data.size > 0) {
+        this.recordedBlobs_local.push(event.data)
+      }
+    },
+    handleDataAvailable_remote(event) {
+      if (event.data && event.data.size > 0) {
+        this.recordedBlobs_remote.push(event.data)
+      }
     },
 
     hangup() {
@@ -273,6 +413,7 @@ export default {
         pc.onaddstream = event => {
           console.log('Remote stream added.')
           this.$refs.video2.srcObject = event.stream
+          this.remotestream = event.stream
           this.$refs.video2.play()
         }
       } catch (e) {
@@ -328,6 +469,9 @@ var OrigPeerConnection = window.RTCPeerConnection
 @import '../scss/color.scss';
 @import '../scss/form.scss';
 @import '../scss/button.scss';
+.mode__container {
+  margin: 30px;
+}
 
 .calling {
   position: absolute;
@@ -349,20 +493,18 @@ var OrigPeerConnection = window.RTCPeerConnection
 }
 
 #video__innercontainer {
-  width: 500px;
-  position: absolute;
+  position: relative;
+}
 
-  height: 420px;
-  top: 50%;
-  right: 50%;
-  transform: translate(50%, -50%);
+.video_frame {
+  position: relative;
+  width: 80%;
+  margin: 0 auto;
 }
 
 #youvideo {
   background: black;
-  position: absolute;
-  left: 0;
-  top: 0;
+  width: 100%;
   border-radius: 10px;
   outline: none;
 }
@@ -371,8 +513,8 @@ var OrigPeerConnection = window.RTCPeerConnection
   border-radius: 10px;
   position: absolute;
   z-index: 3;
-  left: 370px;
-  top: 320px;
+  right: 0;
+  bottom: 5px;
 }
 
 #callbutton {
@@ -382,11 +524,10 @@ var OrigPeerConnection = window.RTCPeerConnection
   color: white;
   font-size: 1.5rem;
   border: 1px solid white;
-  bottom: 10px;
+  bottom: 20px;
   border-radius: 50%;
   width: 60px;
   height: 60px;
-  padding: 15px;
   outline: none;
 }
 

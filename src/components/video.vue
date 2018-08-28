@@ -67,6 +67,7 @@
         <div class="recordfeedback">
           {{recordfeedbackmessage}}
         </div>
+        <textarea v-model="textcontent" class="videotextarea"></textarea>
       </template>
       <template v-else>
         <VideoList></VideoList>
@@ -99,7 +100,8 @@ export default {
       mediaRecorder_remote: null,
       remotestream: null,
       liveorarchive: true,
-      startstoptext: 'START'
+      startstoptext: 'START',
+      textcontent: ''
     }
   },
   beforeDestroy() {
@@ -246,6 +248,7 @@ export default {
       let formData = new FormData()
       formData.append('video', blob_local, 'local')
       formData.append('video', blob_remote, 'remote')
+      formData.append('textcontent', this.textcontent)
       formData.append('friendid', this.$store.state.activefriendid)
       formData.append('time', d.toLocaleString())
       axios
@@ -495,6 +498,17 @@ var OrigPeerConnection = window.RTCPeerConnection
 @import '../scss/color.scss';
 @import '../scss/form.scss';
 @import '../scss/button.scss';
+
+.videotextarea {
+  width: 80%;
+  resize: none;
+  outline: none;
+  height: 200px;
+  font-size: 1.3rem;
+  color: $font-color;
+  padding: 10px;
+  border-radius: 10px;
+}
 
 .recordfeedback {
   margin: 20px;

@@ -1,16 +1,21 @@
 <template>
     <div>
-        <ul>
-            <li v-on:click="videoopen" v-for="(item, index) in videolist" v-bind:key="index" v-bind:id="index">
-                <div>
-                    <img class="profile-img" v-bind:src="getphoto(item.friendid)"> {{getname(item.friendid)}}
-                </div>
-                <div>
-                    {{item.time}}
-                </div>
+        <template v-if="videolist.length != 0">
+            <ul>
+                <li v-on:click="videoopen" v-for="(item, index) in videolist" v-bind:key="index" v-bind:id="index">
+                    <div>
+                        <img class="profile-img" v-bind:src="getphoto(item.friendid)"> {{getname(item.friendid)}}
+                    </div>
+                    <div>
+                        {{item.time}}
+                    </div>
 
-            </li>
-        </ul>
+                </li>
+            </ul>
+        </template>
+        <template v-else>
+            <p>There is no recorded video.</p>
+        </template>
         <template v-if=" videotoggle ">
             <div class="video__container">
                 <button v-on:click="videoclose" class="closebutton">
@@ -50,7 +55,7 @@
                     Note
                 </div>
                 <div>
-                    ofiewjfoewjfoewajoifejwa
+                    {{videolist[activeindex].textcontent}}
                 </div>
             </div>
         </template>
@@ -142,13 +147,15 @@ export default {
       const home_url = `http://localhost:8181`
       const url = home_url + `/api/video/${this.$store.state.activefriendid}`
 
-      let result = await axios({
-        method: 'get',
-        url: url,
-        headers: { 'x-access-token': this.$store.state.token }
-      })
-      console.log(result)
-      this.videolist = result.data
+      try {
+        let result = await axios({
+          method: 'get',
+          url: url,
+          headers: { 'x-access-token': this.$store.state.token }
+        })
+        console.log(result)
+        this.videolist = result.data
+      } catch (err) {}
     },
     getphoto: function(id) {
       let photourl = this.$store.state.friends.filter(f => f.id == id)[0]

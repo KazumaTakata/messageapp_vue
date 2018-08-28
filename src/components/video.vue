@@ -12,62 +12,68 @@
           ARCHIVE
         </button>
       </div>
-      <div id="video__innercontainer">
+      <template v-if="liveorarchive">
+        <div id="video__innercontainer">
 
-        <div class="video_frame">
-          <video width="130" height="100" muted ref="video" id="mevideo"></video>
-          <video width="500" height="420" ref="video2" id="youvideo"></video>
+          <div class="video_frame">
+            <video width="130" height="100" muted ref="video" id="mevideo"></video>
+            <video width="500" height="420" ref="video2" id="youvideo"></video>
 
-          <template v-if="!callcomming">
-            <template v-if="offering">
-              <div class="calling">
-                {{this.callingmessage}} {{this.$store.state.acitvename}}
-              </div>
-            </template>
-            <template v-if="talking">
-              <button v-on:click="hangup" id="callbutton">
-                <font-awesome-icon icon="times" />
-              </button>
+            <template v-if="!callcomming">
+              <template v-if="offering">
+                <div class="calling">
+                  {{this.callingmessage}} {{this.$store.state.acitvename}}
+                </div>
+              </template>
+              <template v-if="talking">
+                <button v-on:click="hangup" id="callbutton">
+                  <font-awesome-icon icon="times" />
+                </button>
+              </template>
+              <template v-else>
+                <button v-on:click="offercall" id="callbutton">
+                  <font-awesome-icon icon="phone" />
+                </button>
+              </template>
             </template>
             <template v-else>
-              <button v-on:click="offercall" id="callbutton">
-                <font-awesome-icon icon="phone" />
-              </button>
+              <div class="callcomming__container">
+                <button v-on:click="responsecallaccept" class="callcommingbutton accept">
+                  <font-awesome-icon icon="phone" />
+                </button>
+                <button v-on:click="responsecallreject" class="callcommingbutton reject">
+                  <font-awesome-icon icon="times" />
+                </button>
+              </div>
             </template>
-          </template>
-          <template v-else>
-            <div class="callcomming__container">
-              <button v-on:click="responsecallaccept" class="callcommingbutton accept">
-                <font-awesome-icon icon="phone" />
-              </button>
-              <button v-on:click="responsecallreject" class="callcommingbutton reject">
-                <font-awesome-icon icon="times" />
-              </button>
-            </div>
-          </template>
+          </div>
         </div>
-      </div>
-      <template v-if="callcomming">
-        <p>incoming call ...</p>
-      </template>
-      <p>
-        RECORD
-      </p>
+        <template v-if="callcomming">
+          <p>incoming call ...</p>
+        </template>
+        <p>
+          RECORD
+        </p>
 
-      <div>
-        <button v-on:click="startrecording" class="basicbutton-white">
-          START
-        </button>
-        <button v-on:click="stoprecording" class="basicbutton-white">
-          STOP
-        </button>
-        <button v-on:click="saverecording" class="basicbutton-white">
-          SAVE
-        </button>
-      </div>
-      <div class="recordfeedback">
-        {{recordfeedbackmessage}}
-      </div>
+        <div>
+          <button v-on:click="startrecording" class="basicbutton-white">
+            START
+          </button>
+          <button v-on:click="stoprecording" class="basicbutton-white">
+            STOP
+          </button>
+          <button v-on:click="saverecording" class="basicbutton-white">
+            SAVE
+          </button>
+        </div>
+        <div class="recordfeedback">
+          {{recordfeedbackmessage}}
+        </div>
+      </template>
+      <template v-else>
+        <VideoList></VideoList>
+      </template>
+
     </div>
   </div>
 </template>
@@ -75,7 +81,9 @@
 
 <script>
 import axios from 'axios'
+import VideoList from './video/videolist'
 export default {
+  components: { VideoList },
   data() {
     return {
       test: 'test',
@@ -91,7 +99,8 @@ export default {
       recordedBlobs_remote: [],
       mediaRecorder_local: null,
       mediaRecorder_remote: null,
-      remotestream: null
+      remotestream: null,
+      liveorarchive: true
     }
   },
   beforeDestroy() {
@@ -202,8 +211,12 @@ export default {
     stoprecording() {
       this.stopRecording()
     },
-    tolivemode() {},
-    toarchivemode() {},
+    tolivemode() {
+      this.liveorarchive = true
+    },
+    toarchivemode() {
+      this.liveorarchive = false
+    },
     handleRemoteHangup() {
       this.stop()
     },

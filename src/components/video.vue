@@ -56,12 +56,10 @@
         </p>
 
         <div>
-          <button v-on:click="startrecording" class="basicbutton-white">
-            START
+          <button ref="startstopbutton" v-on:click="startrecording" class="basicbutton-white">
+            {{startstoptext}}
           </button>
-          <button v-on:click="stoprecording" class="basicbutton-white">
-            STOP
-          </button>
+
           <button v-on:click="saverecording" class="basicbutton-white">
             SAVE
           </button>
@@ -100,7 +98,8 @@ export default {
       mediaRecorder_local: null,
       mediaRecorder_remote: null,
       remotestream: null,
-      liveorarchive: true
+      liveorarchive: true,
+      startstoptext: 'START'
     }
   },
   beforeDestroy() {
@@ -203,14 +202,28 @@ export default {
   },
   methods: {
     saverecording() {
-      this.saveRecording()
+      if (this.recordedBlobs_local.length != 0) {
+        this.saveRecording()
+      } else {
+        this.recordfeedbackmessage = 'There is no recorded video.'
+      }
     },
     startrecording() {
-      this.startRecording()
+      if (this.remotestream != null) {
+        if (this.startstoptext == 'START') {
+          this.startRecording()
+          this.startstoptext = 'STOP'
+          this.recordfeedbackmessage = 'RECORDING'
+        } else {
+          this.stopRecording()
+          this.startstoptext = 'START'
+          this.recordfeedbackmessage = 'RECORDED'
+        }
+      } else {
+        this.recordfeedbackmessage = 'You are not talking.'
+      }
     },
-    stoprecording() {
-      this.stopRecording()
-    },
+
     tolivemode() {
       this.liveorarchive = true
     },
@@ -482,6 +495,10 @@ var OrigPeerConnection = window.RTCPeerConnection
 @import '../scss/color.scss';
 @import '../scss/form.scss';
 @import '../scss/button.scss';
+
+.recordfeedback {
+  margin: 20px;
+}
 .mode__container {
   margin: 30px;
 }
@@ -532,7 +549,7 @@ var OrigPeerConnection = window.RTCPeerConnection
 
 #callbutton {
   position: absolute;
-  z-index: 3;
+  z-index: 2;
   background: transparent;
   color: white;
   font-size: 1.5rem;

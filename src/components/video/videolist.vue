@@ -22,10 +22,10 @@
                 </div>
                 <ul id="video-controls" class="controls">
                     <li>
-                        <button id="playpause" v-on:click="playbutton" type="button">Play/Pause</button>
+                        <button class="videobutton" v-on:click="playbutton" type="button">Play</button>
                     </li>
                     <li>
-                        <button id="stop" v-on:click="stopbutton" type="button">Stop</button>
+                        <button class="videobutton" v-on:click="stopbutton" type="button">Stop</button>
                     </li>
                     <li class="progress">
                         <progress ref="progress" id="progress" value="0" min="0">
@@ -36,10 +36,10 @@
                         <button id="mute" type="button">Mute/Unmute</button>
                     </li> -->
                     <li>
-                        <button id="volinc" type="button">Vol+</button>
+                        <button class="videobutton" v-on:click="upvolume" type="button">Vol+</button>
                     </li>
                     <li>
-                        <button id="voldec" type="button">Vol-</button>
+                        <button class="videobutton" v-on:click="downvolume" type="button">Vol-</button>
                     </li>
                     <!-- <li>
                         <button id="fs" type="button">Fullscreen</button>
@@ -71,19 +71,25 @@ export default {
   },
   created() {
     this.getVideoList()
-
-    // this.$refs.video_local.ontimeupdate = () => {
-    //   this.$refs.progress.value = this.$refs.video_local.currentTime
-    //   this.$refs.progressbar.style.width =
-    //     Math.floor(
-    //       this.$refs.video_local.currentTime /
-    //         this.$refs.video_local.duration *
-    //         100
-    //     ) + '%'
-    // }
   },
   mounted: function() {},
   methods: {
+    upvolume: function() {
+      this.alterVolume('+', this.$refs.video_local)
+      this.alterVolume('+', this.$refs.video_remote)
+    },
+    downvolume: function() {
+      this.alterVolume('-', this.$refs.video_local)
+      this.alterVolume('-', this.$refs.video_remote)
+    },
+    alterVolume: function(dir, video) {
+      var currentVolume = Math.floor(video.volume * 10) / 10
+      if (dir === '+') {
+        if (currentVolume < 1) video.volume += 0.1
+      } else if (dir === '-') {
+        if (currentVolume > 0) video.volume -= 0.1
+      }
+    },
     progressbarinit: function(event) {
       this.$refs.video_local.ontimeupdate = () => {
         try {
@@ -100,6 +106,15 @@ export default {
               100
           ) + '%'
       }
+      let that = this
+
+      this.$refs.progress.addEventListener('click', function(e) {
+        var pos = (e.pageX - this.offsetLeft) / this.offsetWidth
+        that.$refs.video_local.currentTime =
+          pos * that.$refs.video_local.duration
+        that.$refs.video_remote.currentTime =
+          pos * that.$refs.video_remote.duration
+      })
     },
 
     playbutton: function(event) {
@@ -167,7 +182,6 @@ ul {
 }
 
 li:hover {
-  background: $hover-color;
   //   color: white;
 }
 
@@ -201,9 +215,11 @@ progress {
   z-index: 10;
   color: white;
 
-  button {
+  button,
+  progress {
     pointer-events: auto;
   }
+
   .inner__video__container {
     display: flex;
 

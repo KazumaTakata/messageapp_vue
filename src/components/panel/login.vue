@@ -77,6 +77,26 @@ export default {
           })
 
           this.$store.commit('setfriend', result2.data)
+
+          let result5 = await axios({
+            method: 'get',
+            url: `http://localhost:8181/api/group`,
+            headers: { 'x-access-token': result.data.token }
+          })
+
+          this.$store.commit('setgroup', result5.data)
+        } catch (err) {
+          console.log(err)
+        }
+
+        try {
+          let result3 = await axios({
+            method: 'get',
+            url: `http://localhost:8181/api/group`,
+            headers: { 'x-access-token': result.data.token }
+          })
+
+          this.$store.commit('setgroup', result3.data)
         } catch (err) {
           console.log(err)
         }

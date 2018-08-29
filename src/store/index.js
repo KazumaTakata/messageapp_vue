@@ -16,9 +16,11 @@ const store = new Vuex.Store({
     isActiveLogin: true,
     isActiveProfile: false,
     isActiveNotification: false,
+    isActiveCreateGroup: false,
     websocket_video: "",
     websocket_chat: "",
     notificationlist: [],
+    groups: [],
   },
   getters: {
     getfriend: state => i => {
@@ -59,6 +61,9 @@ const store = new Vuex.Store({
     toggleprofile(state) {
       state.isActiveProfile = !state.isActiveProfile;
     },
+    toggleGroup(state) {
+      state.isActiveCreateGroup = !state.isActiveCreateGroup;
+    },
     togglenotification(state) {
       state.isActiveNotification = !state.isActiveNotification;
     },
@@ -83,6 +88,9 @@ const store = new Vuex.Store({
     },
     pushtalk(state, talk) {
       state.talks.push(talk);
+    },
+    setgroup(state, group) {
+      state.groups = group;
     },
   },
 });

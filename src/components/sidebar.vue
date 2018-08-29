@@ -20,6 +20,7 @@
     <EditProfile></EditProfile>
     <Login></Login>
     <AddFriend></AddFriend>
+    <CreateGroup></CreateGroup>
     <div class="notification" v-bind:class="{active: this.$store.state.isActiveNotification}">
       <ul>
         <li v-for="(item, index) in this.$store.state.notificationlist" v-bind:key="index">
@@ -35,13 +36,15 @@
 import AddFriend from './panel/addfriend'
 import Login from './panel/login'
 import EditProfile from './panel/editprofile'
+import CreateGroup from './panel/creategroup'
 import axios from 'axios'
 
 export default {
   components: {
     Login,
     EditProfile,
-    AddFriend
+    AddFriend,
+    CreateGroup
   },
   data() {
     return {

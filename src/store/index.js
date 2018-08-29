@@ -21,6 +21,7 @@ const store = new Vuex.Store({
     websocket_chat: "",
     notificationlist: [],
     groups: [],
+    isActiveChatmenu: true,
   },
   getters: {
     getfriend: state => i => {
@@ -66,6 +67,9 @@ const store = new Vuex.Store({
     },
     togglenotification(state) {
       state.isActiveNotification = !state.isActiveNotification;
+    },
+    togglechatmenu(state) {
+      state.isActiveChatmenu = !state.isActiveChatmenu;
     },
     setwebsocket_video(state, websocket) {
       state.websocket_video = websocket;

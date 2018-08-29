@@ -2,20 +2,20 @@
   <div class="friend__container">
 
     <div class="friend__title">
-      <h3>friend</h3>
-      <button class="addfriendbutton">
-        <font-awesome-icon icon="plus" />
-      </button>
+      <h5>friend</h5>
+
     </div>
     <ul>
       <template v-if="this.$store.state.friends.length != 0">
         <li v-on:click="friendchosen" v-bind:id="index" v-for="(friend, index) in getfriendlist" :key="friend.id">
-          <div class="list__container">
-            <img class="profile-img" v-bind:src="friend.photourl">
-            <div class="list__name">
-              {{friend.name}}
+          <router-link to="individual">
+            <div class="list__container">
+              <img class="profile-img" v-bind:src="friend.photourl">
+              <div class="list__name">
+                {{friend.name}}
+              </div>
             </div>
-          </div>
+          </router-link>
         </li>
       </template>
       <template v-else>
@@ -25,7 +25,7 @@
       </template>
     </ul>
     <div class="friend__title">
-      <h3>Group</h3>
+      <h5>Group</h5>
       <button v-on:click="creategroup" class="addfriendbutton">
         <font-awesome-icon icon="plus" />
       </button>
@@ -34,11 +34,13 @@
     <ul>
       <template v-if="this.$store.state.groups.length != 0">
         <li v-on:click="friendchosen" v-bind:id="index" v-for="(group, index) in getgrouplist" :key="index">
-          <div class="list__container">
-            <div class="list__name">
-              {{group.groupname}}
+          <router-link to="individual">
+            <div class="list__container">
+              <div class="list__name">
+                {{group.groupname}}
+              </div>
             </div>
-          </div>
+          </router-link>
         </li>
       </template>
       <template v-else>

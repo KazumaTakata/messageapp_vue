@@ -151,13 +151,21 @@ export default {
     this.websocket.onmessage = jsonmessage => {
       console.log('message: ', jsonmessage.data)
       let parseddata = JSON.parse(event.data)
-      if (parseddata.id == this.$store.state.activefriendid) {
-        this.$store.commit('pushtalk', {
+      if (parseddata.groupid != undefined) {
+        this.$store.commit('pushgrouptalk', {
           content: parseddata.content,
-          friendid: parseddata.id,
-          time: parseddata.time,
-          which: 1
+          senderid: parseddata.id,
+          time: parseddata.time
         })
+      } else {
+        if (parseddata.id == this.$store.state.activefriendid) {
+          this.$store.commit('pushtalk', {
+            content: parseddata.content,
+            friendid: parseddata.id,
+            time: parseddata.time,
+            which: 1
+          })
+        }
       }
     }
   }

@@ -106,11 +106,24 @@ export default {
         this.$store.getters.getfriend(event.target.id).name
       )
     },
-    groupchosen: function(event) {
+    groupchosen: async function(event) {
       this.$store.commit(
         'setactivegroup',
         this.$store.state.groups[event.target.id]._id
       )
+
+      const home_url = `http://localhost:8181`
+      const grouptalk_url =
+        '/api/group/talk/' + this.$store.state.groups[event.target.id]._id
+      const url = home_url + grouptalk_url
+
+      let result = await axios({
+        method: 'get',
+        url: url,
+        headers: { 'x-access-token': this.$store.state.token }
+      })
+
+      this.$store.commit('setgrouptalks', result.data)
     }
   },
   created() {}

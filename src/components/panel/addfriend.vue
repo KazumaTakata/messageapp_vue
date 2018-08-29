@@ -4,26 +4,52 @@
       <button v-on:click="searchopen" class="closebutton">
         <font-awesome-icon icon="times" />
       </button>
+
       <div class="form__container">
-        <h2>Find Your Friend!!</h2>
         <div>
-          <input v-model="friendname" placeholder="name" type="text">
-          <button v-on:click="findfriend" class="searchbutton">
-            <font-awesome-icon icon="search" />
-          </button>
-          <p>{{nofindmessage}}</p>
+          <button v-on:click="toFriend" class="basicbutton">Friend</button>
+          <button v-on:click="toGroup" class="basicbutton">Group</button>
         </div>
-        <div class="result__container">
+        <template v-if="friendorgroup">
+          <h2>Find Your Friend!!</h2>
           <div>
-            <img　v-bind:src="this.searchuserphotourl" alt="">
+            <input v-model="friendname" placeholder="name" type="text">
+            <button v-on:click="findfriend" class="searchbutton">
+              <font-awesome-icon icon="search" />
+            </button>
+            <p>{{nofindmessage}}</p>
           </div>
-          <p>{{searchusername}}</p>
-          <button v-on:click="addfriend" class="skelltonbutton">
-            ADD THIS FRIEND
-          </button>
-          <p>{{friendaddmessage}}</p>
-        </div>
+          <div class="result__container">
+            <div>
+              <img　v-bind:src="this.searchuserphotourl" alt="">
+            </div>
+            <p>{{searchusername}}</p>
+            <button v-on:click="addfriend" class="basicbutton">
+              ADD THIS FRIEND
+            </button>
+            <p>{{friendaddmessage}}</p>
+          </div>
+        </template>
+        <template v-else>
+          <h2>Find Group!!</h2>
+          <div>
+            <input v-model="friendname" placeholder="name" type="text">
+            <button v-on:click="findfriend" class="searchbutton">
+              <font-awesome-icon icon="search" />
+            </button>
+            <p>{{nofindmessage}}</p>
+          </div>
+          <div class="result__container">
+            <p>{{searchusername}}</p>
+            <button v-on:click="addfriend" class="basicbutton">
+              Join this group
+            </button>
+            <p>{{friendaddmessage}}</p>
+          </div>
+        </template>
+
       </div>
+
     </div>
 
   </div>
@@ -42,11 +68,18 @@ export default {
       searchuserphotourl: 'http://localhost:8181/img/defaultprofile.jpg',
       nofindmessage: '',
       previewimageurl: this.$store.state,
-      profilephoto: ''
+      profilephoto: '',
+      friendorgroup: true
     }
   },
 
   methods: {
+    toGroup() {
+      this.friendorgroup = false
+    },
+    toFriend() {
+      this.friendorgroup = true
+    },
     searchopen(e) {
       this.$store.commit('toggleaddfriend')
     },

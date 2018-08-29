@@ -117,13 +117,14 @@ input [type='file'] {
 
 .basicbutton {
   background: transparent;
-  font-size: 1.3rem;
-  border-radius: 10px;
-  border: 1px solid $font-color;
-  padding: 10px;
-  color: $font-color;
+  color: $border-color;
+  font-size: 15px;
+  border: 1px solid $border-color;
+  border-radius: 20px;
+  background: transparent;
   outline: none;
-  margin: 0 30px;
+  margin-left: 10px;
+  padding: 10px;
 }
 
 .basicbutton:hover {
@@ -161,7 +162,7 @@ input[type='submit']:hover {
   border: 1px solid white;
 }
 
-.videobutton {
+.button {
   background: none;
   border: none;
   color: white;

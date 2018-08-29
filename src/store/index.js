@@ -23,6 +23,7 @@ const store = new Vuex.Store({
     groups: [],
     isActiveChatmenu: true,
     activegroupid: "",
+    grouptalks: [],
   },
   getters: {
     getfriend: state => i => {
@@ -94,11 +95,17 @@ const store = new Vuex.Store({
     pushtalk(state, talk) {
       state.talks.push(talk);
     },
+    pushgrouptalk(state, talk) {
+      state.grouptalks.push(talk);
+    },
     setgroup(state, group) {
       state.groups = group;
     },
     setactivegroup(state, groupid) {
       state.activegroupid = groupid;
+    },
+    setgrouptalks(state, talks) {
+      state.grouptalks = talks;
     },
   },
 });

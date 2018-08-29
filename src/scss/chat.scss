@@ -143,7 +143,7 @@ span {
 }
 
 #chatinput {
-  width: 100%;
+  width: 80%;
   color: $font-color;
 }
 
@@ -162,10 +162,12 @@ span {
 }
 
 #chatinput__container {
-  position: absolute;
-  bottom: 30px;
-  left: 220px;
-  width: calc(90% - 210px);
+  position: fixed;
+  bottom: 0px;
+  //   left: 220px;
+  width: calc(100% - 210px);
+  background: white;
+  padding: 20px;
   //   min-width: 600px;
   margin: 0 auto;
   display: flex;

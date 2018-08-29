@@ -12,7 +12,7 @@
       </button>
       <ul>
         <li v-for="(item, index) in sidebarItems" v-bind:key="index">
-          <router-link v-bind:to="item">{{item}}</router-link>
+          <router-link v-bind:to="'/' + item">{{item}}</router-link>
         </li>
       </ul>
     </div>

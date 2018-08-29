@@ -7,7 +7,7 @@
           <font-awesome-icon icon="bars" />
         </button>
       </div>
-      <IndividualChat></IndividualChat>
+      <router-view></router-view>
       <div class="menu__container" v-bind:class="{active: this.$store.state.isActiveChatmenu}">
         <input v-model="query_input" v-on:keyup.enter="elasticsearchtalk" type="text">
         <ul>
@@ -100,24 +100,48 @@ export default {
       }
     },
     addchat: function() {
-      var d = new Date()
+      let currentroute = this.$router.currentRoute
+      if (currentroute.fullPath.split('/')[2] == 'individual') {
+        var d = new Date()
 
-      this.$store.commit('pushtalk', {
-        content: this.chatinput,
-        which: 0,
-        friendid: this.$store.state.activefriendid,
-        time: d.toLocaleString()
-      })
+        this.$store.commit('pushtalk', {
+          content: this.chatinput,
+          which: 0,
+          friendid: this.$store.state.activefriendid,
+          time: d.toLocaleString()
+        })
 
-      let sendobj = {
-        myId: this.$store.state.token,
-        friendId: this.$store.state.activefriendid,
-        time: d.toLocaleString(),
-        content: this.chatinput
+        let sendobj = {
+          myId: this.$store.state.token,
+          friendId: this.$store.state.activefriendid,
+          time: d.toLocaleString(),
+          content: this.chatinput
+        }
+
+        this.websocket.send(JSON.stringify(sendobj))
+      } else if (currentroute.fullPath.split('/')[2] == 'group') {
+        let d = new Date()
+
+        let insertobj = {
+          content: this.chatinput,
+          senderid: this.$store.state.myState.id,
+          groupid: this.$store.state.activegroupid,
+          time: d.toLocaleString()
+        }
+
+        this.$store.commit('pushtalkgroup', insertobj)
+
+        let sendobj = {
+          content: this.chatinput,
+          myId: this.$store.state.token,
+          groupid: this.$store.state.activegroupid,
+          time: d.toLocaleString()
+        }
+
+        this.websocket.send(JSON.stringify(sendobj))
       }
-
-      this.websocket.send(JSON.stringify(sendobj))
     },
+
     chatbubblestyle: function(person) {
       return person == 0 ? 'mechat' : 'youchat'
     }

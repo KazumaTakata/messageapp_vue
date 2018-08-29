@@ -85,6 +85,8 @@ export default {
           })
 
           this.$store.commit('setgroup', result5.data)
+
+          this.$router.push('chat')
         } catch (err) {
           console.log(err)
         }

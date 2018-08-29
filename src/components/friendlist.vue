@@ -8,7 +8,7 @@
     <ul>
       <template v-if="this.$store.state.friends.length != 0">
         <li v-on:click="friendchosen" v-bind:id="index" v-for="(friend, index) in getfriendlist" :key="friend.id">
-          <router-link to="individual">
+          <router-link v-bind:to="  nextroute( 'individual' )" v-bind:id="index">
             <div class="list__container">
               <img class="profile-img" v-bind:src="friend.photourl">
               <div class="list__name">
@@ -33,8 +33,8 @@
 
     <ul>
       <template v-if="this.$store.state.groups.length != 0">
-        <li v-on:click="friendchosen" v-bind:id="index" v-for="(group, index) in getgrouplist" :key="index">
-          <router-link to="individual">
+        <li v-on:click="groupchosen" v-bind:id="index" v-for="(group, index) in getgrouplist" :key="index">
+          <router-link v-bind:id="index" v-bind:to="  nextroute( 'group' )">
             <div class="list__container">
               <div class="list__name">
                 {{group.groupname}}
@@ -76,6 +76,11 @@ export default {
     }
   },
   methods: {
+    nextroute: function(next) {
+      let currentroute = this.$router.currentRoute
+      let nextpath = '/' + currentroute.fullPath.split('/')[1] + '/' + next
+      return nextpath
+    },
     creategroup: function() {
       this.$store.commit('toggleGroup')
     },
@@ -99,6 +104,12 @@ export default {
       this.$store.commit(
         'setactivename',
         this.$store.getters.getfriend(event.target.id).name
+      )
+    },
+    groupchosen: function(event) {
+      this.$store.commit(
+        'setactivegroup',
+        this.$store.state.groups[event.target.id]._id
       )
     }
   },
@@ -157,10 +168,12 @@ li * {
 
 .list__container {
   display: flex;
+  justify-content: center;
 }
 
 .list__name {
   line-height: 40px;
-  margin-left: 20px;
+  margin-left: 10px;
+  text-align: center;
 }
 </style>

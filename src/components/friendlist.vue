@@ -85,6 +85,7 @@ export default {
       this.$store.commit('toggleGroup')
     },
     friendchosen: async function(event) {
+      this.$store.commit('setindividualorgroup', 'individual')
       this.$store.commit(
         'setactivefriendid',
         this.$store.getters.getfriend(event.target.id).id
@@ -107,6 +108,8 @@ export default {
       )
     },
     groupchosen: async function(event) {
+      this.$store.commit('setindividualorgroup', 'group')
+
       this.$store.commit(
         'setactivegroup',
         this.$store.state.groups[event.target.id]._id
@@ -132,7 +135,11 @@ export default {
 
 <style lang="scss" scoped>
 @import '../scss/color.scss';
-
+a {
+  text-decoration: none;
+  color: $font-color;
+  font-weight: 500;
+}
 .addfriendbutton {
   background: none;
   outline: none;

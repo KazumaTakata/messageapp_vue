@@ -7,14 +7,14 @@
                         <div>
                             <img class="profile-img" v-bind:src="getphoto(chat.friendid,  chat.which)"> {{getname(chat.friendid, chat.which)}}
                         </div>
-                        <div class="time__container">
-                            {{chat.time}}
-                        </div>
                         <div class="bubble__container">
                             <span>
                                 {{chat.content}}
                             </span>
                         </div>
+                    </div>
+                    <div class="time__container">
+                        {{chat.time}}
                     </div>
                 </li>
             </ul>

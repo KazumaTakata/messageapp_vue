@@ -16,7 +16,14 @@
                             {{chat.content}}
                         </div>
                     </div>
-
+                    <div class="chat_hover_menu">
+                        <button>
+                            <font-awesome-icon icon="comment" />
+                        </button>
+                        <button v-on:click="addstar">
+                            <font-awesome-icon icon="star" />
+                        </button>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -32,6 +39,7 @@ export default {
     }
   },
   methods: {
+    addstar: function() {},
     chatbubblestyle: function(person) {
       return person == 0 ? 'mechat' : 'youchat'
     },
@@ -68,8 +76,31 @@ export default {
   line-height: 25px;
   margin-left: 10px;
 }
+.chat_hover_menu {
+  height: 20px;
+  width: 80px;
+  opacity: 0;
+  position: relative;
+  border-radius: 10px;
+  box-shadow: 1px 1px 3px $border-color;
+
+  button {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: $hover-color;
+    font-size: 1rem;
+  }
+  button:hover {
+    color: $sidebar-background;
+  }
+}
+.profile__container:hover ~ .chat_hover_menu,
+.chat_hover_menu:hover {
+  opacity: 1;
+}
 
 li {
-  padding: 15px;
+  padding: 25px;
 }
 </style>

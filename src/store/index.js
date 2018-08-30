@@ -24,6 +24,7 @@ const store = new Vuex.Store({
     isActiveChatmenu: true,
     activegroupid: "",
     grouptalks: [],
+    individualorgroup: "individual",
   },
   getters: {
     getfriend: state => i => {
@@ -106,6 +107,9 @@ const store = new Vuex.Store({
     },
     setgrouptalks(state, talks) {
       state.grouptalks = talks;
+    },
+    setindividualorgroup(state, individualorgroup) {
+      state.individualorgroup = individualorgroup;
     },
   },
 });

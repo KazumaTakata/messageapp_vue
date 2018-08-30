@@ -33,15 +33,15 @@
         <template v-else>
           <h2>Find Group!!</h2>
           <div>
-            <input v-model="friendname" placeholder="name" type="text">
-            <button v-on:click="findfriend" class="searchbutton">
+            <input v-model="groupname" placeholder="name" type="text">
+            <button v-on:click="findgroup" class="searchbutton">
               <font-awesome-icon icon="search" />
             </button>
             <p>{{nofindmessage}}</p>
           </div>
           <div class="result__container">
-            <p>{{searchusername}}</p>
-            <button v-on:click="addfriend" class="basicbutton">
+            <p>{{resultgroupname}}</p>
+            <button v-on:click="joingroup" class="basicbutton">
               Join this group
             </button>
             <p>{{friendaddmessage}}</p>
@@ -63,8 +63,11 @@ export default {
     return {
       friendaddmessage: '',
       friendname: '',
+      groupname: '',
       searchusername: '',
       searchuserid: '',
+      searchgroupid: '',
+      resultgroupname: '',
       searchuserphotourl: 'http://localhost:8181/img/defaultprofile.jpg',
       nofindmessage: '',
       previewimageurl: this.$store.state,
@@ -82,6 +85,47 @@ export default {
     },
     searchopen(e) {
       this.$store.commit('toggleaddfriend')
+    },
+    findgroup: async function() {
+      const home_url = `http://localhost:8181`
+      const group_url = '/api/group/' + this.groupname
+      const url = home_url + group_url
+      try {
+        let result = await axios({
+          method: 'get',
+          url: url,
+          headers: { 'x-access-token': this.$store.state.token }
+        })
+        if (result.data.id != undefined) {
+          this.searchgroupid = result.data.id
+          this.resultgroupname = result.data.name
+        } else {
+          this.nofindmessage = 'No Group found !!'
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    joingroup: async function() {
+      if (this.searchgroupid != '') {
+        const home_url = `http://localhost:8181`
+        const login_url = '/api/group'
+        const url = home_url + login_url
+
+        try {
+          let result = await axios({
+            method: 'put',
+            url: url,
+            data: {
+              groupid: this.searchgroupid
+            },
+            headers: { 'x-access-token': this.$store.state.token }
+          })
+        } catch (err) {
+          console.log(err)
+        }
+      } else {
+      }
     },
     addfriend: async function(event) {
       if (this.searchuserid != '') {
@@ -109,7 +153,7 @@ export default {
           }
         } catch (err) {
           console.log(err)
-          this.friendaddmessage = 'This person is aleady yor friend'
+          this.friendaddmessage = 'This person is aleady your friend'
         }
       } else {
         this.friendaddmessage = 'Please find friend by name first!!'

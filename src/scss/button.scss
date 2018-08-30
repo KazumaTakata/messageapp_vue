@@ -13,6 +13,21 @@
   transform: scale(1.1);
 }
 
+.icon_button_black {
+  background: transparent;
+  border: none;
+  font-size: 1.6rem;
+  margin-top: 10px;
+  margin-left: 10px;
+  color: $font-color;
+  transition: 0.2s;
+  outline: none;
+}
+
+.icon_button_black:hover {
+  transform: scale(1.1);
+}
+
 #menu_button {
   color: $border-color;
   position: absolute;
@@ -134,13 +149,14 @@ input [type='file'] {
 
 .basicbutton-white {
   background: transparent;
-  font-size: 1.3rem;
-  border-radius: 10px;
-  border: 1px solid $font-color;
-  padding: 10px;
-  color: $font-color;
+  color: $border-color;
+  font-size: 15px;
+  border: 1px solid $border-color;
+  border-radius: 20px;
+  background: transparent;
   outline: none;
-  margin: 0 30px;
+  margin-left: 10px;
+  padding: 10px;
 }
 
 .basicbutton-white:hover {

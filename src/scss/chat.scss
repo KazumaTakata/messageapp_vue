@@ -27,16 +27,6 @@
   margin: 20px;
 }
 
-.inner__chat__container {
-  position: relative;
-  width: calc(100% - 200px);
-  transition: 0.5s;
-}
-
-.inner__chat__container.active {
-  width: 100%;
-}
-
 .youchat span {
   background: rgb(103, 199, 65);
 }

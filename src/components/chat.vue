@@ -9,25 +9,65 @@
       </div>
       <router-view></router-view>
       <div class="menu__container" v-bind:class="{active: this.$store.state.isActiveChatmenu}">
-        <input v-model="query_input" v-on:keyup.enter="elasticsearchtalk" type="text">
-        <ul>
-          <li v-for="(result, index) in this.query_result" v-bind:key="index">
+        <div id="icon__container">
+          <button v-on:click="talklist" class="icon_button_black">
+            <font-awesome-icon icon="search" />
+          </button>
+          <template v-if="this.$store.state.individualorgroup =='group' ">
+            <button v-on:click="memberlist " class="icon_button_black">
+              <font-awesome-icon icon="user-circle" />
+            </button>
+          </template>
+          <button v-on:click="starlist " class="icon_button_black ">
+            <font-awesome-icon icon="star" />
+          </button>
+        </div>
+        <template v-if="menustate=='search' ">
+          <input v-model="query_input " v-on:keyup.enter="elasticsearchtalk " type="text">
+          <ul>
+            <li v-for="(result, index) in this.query_result " v-bind:key="index ">
+              <div>
+                <img class="profile-img" v-bind:src="getphoto( result.friendid, result.which ) "> {{getname(result.friendid, result.which)}}
+              </div>
+              <div class="time__container">
+                {{result.time}}
+              </div>
+              <div>
+                {{result.content}}
+              </div>
+            </li>
+          </ul>
+        </template>
+        <template v-else-if=" menustate=='member' ">
+          <template v-if="this.$store.state.individualorgroup =='group' ">
             <div>
-              <img class="profile-img" v-bind:src="getphoto( result.friendid, result.which )"> {{getname(result.friendid, result.which)}}
+              GROUP DESCRIPTION
             </div>
-            <div class="time__container">
-              {{result.time}}
+            <div class="text_container">
+              {{getgroupdescription()}}
             </div>
             <div>
-              {{result.content}}
+              GROUP MEMBER
             </div>
-          </li>
-        </ul>
+            <ul>
+              <li v-for="(member, index) in groupmember " v-bind:key="index ">
+                <div>
+                  <img class="profile-img" v-bind:src="member.photourl ">
+                </div>
+                <div>
+                  {{member.name}}
+                </div>
+              </li>
+            </ul>
+          </template>
+        </template>
+        <template v-else-if=" menustate=='star' ">
+        </template>
       </div>
     </div>
     <div id="chatinput__container">
-      <input v-model="chatinput" type="text" id="chatinput">
-      <button v-on:click="addchat" class="addbutton">
+      <input v-model="chatinput " type="text" id="chatinput">
+      <button v-on:click="addchat " class="addbutton">
         SEND
       </button>
     </div>
@@ -44,16 +84,46 @@ export default {
       chatinput: '',
       websocket: '',
       query_input: '',
-      query_result: []
+      query_result: [],
+      menustate: 'search',
+      groupmember: []
     }
   },
-  computed: {
-    chats() {
-      console.log('ee')
-      return this.$store.state.talks
-    }
-  },
+  computed: {},
   methods: {
+    getgroupdescription() {
+      let group = this.$store.state.groups.find(
+        g => g._id == this.$store.state.activegroupid
+      )
+      return group.groupdescription
+    },
+    getfriendnameandphoto: async function() {
+      const home_url = `http://localhost:8181`
+      const search_url = `/api/group/member/${this.$store.state.activegroupid}`
+      const url = home_url + search_url
+
+      try {
+        let result = await axios({
+          method: 'get',
+          url: url,
+          headers: { 'x-access-token': this.$store.state.token }
+        })
+        console.log(result)
+        this.groupmember = result.data
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    memberlist: async function() {
+      this.menustate = 'member'
+      let groupmember = await this.getfriendnameandphoto()
+    },
+    talklist() {
+      this.menustate = 'search'
+    },
+    starlist() {
+      this.menustate = 'star'
+    },
     elasticsearchtalk: async function(event) {
       console.log(this.query_input)
       const home_url = `http://localhost:8181`
@@ -178,4 +248,17 @@ export default {
 @import '../scss/color.scss';
 @import '../scss/button.scss';
 @import '../scss/chat.scss';
+
+#icon__container {
+  color: $font-color;
+  padding: 20px 0px;
+}
+
+.text_container {
+  margin: 30px;
+}
+
+li {
+  padding: 10px;
+}
 </style>

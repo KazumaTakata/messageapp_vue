@@ -1,65 +1,60 @@
 <template>
-    <div>
-        <template v-if="videolist.length != 0">
-            <ul>
-                <li v-on:click="videoopen" v-for="(item, index) in videolist" v-bind:key="index" v-bind:id="index">
-                    <div>
-                        <img class="profile-img" v-bind:src="getphoto(item.friendid)"> {{getname(item.friendid)}}
-                    </div>
-                    <div>
-                        {{item.time}}
-                    </div>
+  <div>
+    <template v-if="videolist.length != 0">
+      <ol>
+        <li v-on:click="videoopen" v-for="(item, index) in videolist" v-bind:key="index" v-bind:id="index">
+          <div>
+            <img class="profile-img" v-bind:src="getphoto(item.friendid)"> {{getname(item.friendid)}}
+          </div>
+          <div>
+            {{item.time}}
+          </div>
 
-                </li>
-            </ul>
-        </template>
-        <template v-else>
-            <p>There is no recorded video.</p>
-        </template>
-        <template v-if=" videotoggle ">
-            <div class="video__container">
-                <button v-on:click="videoclose" class="closebutton">
-                    <font-awesome-icon icon="times" />
-                </button>
-                <div class="inner__video__container">
-                    <video ref="video_local" id="gum" v-bind:src="videolist[activeindex].video_local"></video>
-                    <video ref="video_remote" id="gum" v-bind:src="videolist[activeindex].video_remote"></video>
-                </div>
-                <ul id="video-controls" class="controls">
-                    <li>
-                        <button class="videobutton" v-on:click="playbutton" type="button">Play</button>
-                    </li>
-                    <li>
-                        <button class="videobutton" v-on:click="stopbutton" type="button">Stop</button>
-                    </li>
-                    <li class="progress">
-                        <progress ref="progress" id="progress" value="0" min="0">
-                            <span ref="progressbar" id="progress-bar"></span>
-                        </progress>
-                    </li>
-                    <!-- <li>
-                        <button id="mute" type="button">Mute/Unmute</button>
-                    </li> -->
-                    <li>
-                        <button class="videobutton" v-on:click="upvolume" type="button">Vol+</button>
-                    </li>
-                    <li>
-                        <button class="videobutton" v-on:click="downvolume" type="button">Vol-</button>
-                    </li>
-                    <!-- <li>
-                        <button id="fs" type="button">Fullscreen</button>
-                    </li> -->
-                </ul>
+        </li>
+      </ol>
+    </template>
+    <template v-else>
+      <p>There is no recorded video.</p>
+    </template>
+    <template v-if=" videotoggle ">
+      <div class="video__container">
+        <button v-on:click="videoclose" class="closebutton">
+          <font-awesome-icon icon="times" />
+        </button>
+        <div class="inner__video__container">
+          <video ref="video_local" id="gum" v-bind:src="videolist[activeindex].video_local"></video>
+          <video ref="video_remote" id="gum" v-bind:src="videolist[activeindex].video_remote"></video>
+        </div>
+        <ul id="video-controls" class="controls">
+          <li>
+            <button class="videobutton" v-on:click="playbutton" type="button">Play</button>
+          </li>
+          <li>
+            <button class="videobutton" v-on:click="stopbutton" type="button">Stop</button>
+          </li>
+          <li class="progress">
+            <progress ref="progress" id="progress" value="0" min="0">
+              <span ref="progressbar" id="progress-bar"></span>
+            </progress>
+          </li>
+          <li>
+            <button class="videobutton" v-on:click="upvolume" type="button">Vol+</button>
+          </li>
+          <li>
+            <button class="videobutton" v-on:click="downvolume" type="button">Vol-</button>
+          </li>
 
-                <div class="video__comment">
-                    Note
-                </div>
-                <div>
-                    {{videolist[activeindex].textcontent}}
-                </div>
-            </div>
-        </template>
-    </div>
+        </ul>
+
+        <div class="video__comment">
+          Note
+        </div>
+        <div>
+          {{videolist[activeindex].textcontent}}
+        </div>
+      </div>
+    </template>
+  </div>
 </template>
 
 
@@ -179,6 +174,14 @@ export default {
 
 li {
   padding: 20px;
+}
+
+ol {
+  margin: 10px;
+  li:hover {
+    background: $hover-color;
+    color: white;
+  }
 }
 
 li * {

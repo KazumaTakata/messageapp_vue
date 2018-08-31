@@ -52,22 +52,29 @@
           <p>incoming call ...</p>
         </template>
         <p>
-          RECORD
+          Do you record this video chat?
         </p>
 
-        <div>
-          <button ref="startstopbutton" v-on:click="startrecording" class="basicbutton-white">
+        <div class="text__container">
+          <div class="onoffswitch">
+            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch">
+            <label class="onoffswitch-label" for="myonoffswitch">
+              <span class="onoffswitch-inner"></span>
+              <span class="onoffswitch-switch"></span>
+            </label>
+          </div>
+          <!-- <button ref="startstopbutton" v-on:click="startrecording" class="basicbutton-white">
             {{startstoptext}}
           </button>
 
           <button v-on:click="saverecording" class="basicbutton-white">
             SAVE
-          </button>
+          </button> -->
         </div>
-        <div class="recordfeedback">
+        <!-- <div class="recordfeedback">
           {{recordfeedbackmessage}}
-        </div>
-        <textarea v-model="textcontent" class="videotextarea"></textarea>
+        </div> -->
+        <!-- <textarea v-model="textcontent" class="videotextarea"></textarea> -->
       </template>
       <template v-else>
         <VideoList></VideoList>
@@ -118,13 +125,6 @@ export default {
       .catch(error => console.error('getUserMedia() error:', error))
 
     this.webSocket = this.$store.state.websocket_video
-
-    // this.webSocket.onopen = event => {
-    //   console.log('open')
-    //   this.webSocket.send(
-    //     JSON.stringify({ pingid: this.$store.state.myState.id })
-    //   )
-    // }
     if (
       this.$store.state.callcoming.includes(this.$store.state.activefriendid)
     ) {
@@ -228,6 +228,10 @@ export default {
 
     tolivemode() {
       this.liveorarchive = true
+      this.$nextTick(() => {
+        this.$refs.video.srcObject = localStream
+        this.$refs.video.play()
+      })
     },
     toarchivemode() {
       this.liveorarchive = false
@@ -498,7 +502,8 @@ var OrigPeerConnection = window.RTCPeerConnection
 @import '../scss/color.scss';
 @import '../scss/form.scss';
 @import '../scss/button.scss';
-
+@import '../scss/basic.scss';
+@import '../scss/switchbutton.scss';
 .videotextarea {
   width: 80%;
   resize: none;
@@ -526,9 +531,19 @@ var OrigPeerConnection = window.RTCPeerConnection
 }
 
 .friendnamecontainer {
-  padding: 10px;
-  border-bottom: 1px solid $border-color;
+  background: $main-color;
+  height: 50px;
+  top: 0px;
+
+  h2 {
+    margin: 0px;
+    padding: 6px;
+    color: white;
+  }
+  border-bottom: 1px solid $border-color2;
+  border-left: 1px solid $border-color2;
 }
+
 #video__container {
   min-width: 600px;
   margin: 0 auto;
@@ -576,7 +591,8 @@ var OrigPeerConnection = window.RTCPeerConnection
 }
 
 #callbutton:hover {
-  transform: scale(1.1);
+  color: $hover-color;
+  border: 1px solid $hover-color;
 }
 
 .callcommingbutton {
@@ -595,12 +611,12 @@ var OrigPeerConnection = window.RTCPeerConnection
 }
 
 .accept {
-  color: greenyellow;
-  border-color: greenyellow;
+  color: rgb(52, 202, 109);
+  border-color: rgb(52, 202, 109);
 }
 .reject {
-  color: red;
-  border-color: red;
+  color: $main-color;
+  border-color: $main-color;
 }
 
 .callcomming__container {

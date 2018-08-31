@@ -1,6 +1,9 @@
 <template>
     <div>
         <input v-model="query_input" placeholder="chat search" v-on:keyup.enter="elasticsearchtalk" type="text">
+        <div class="text__container">
+            Found {{this.query_result.length}} results.
+        </div>
         <ul>
             <li v-for="(result, index) in this.query_result " v-bind:key="index ">
                 <div>
@@ -9,7 +12,7 @@
                 <div class="time__container">
                     {{result.time}}
                 </div>
-                <div>
+                <div class="text__container">
                     {{result.content}}
                 </div>
             </li>
@@ -78,4 +81,5 @@ export default {
 @import '../../scss/color.scss';
 @import '../../scss/button.scss';
 @import '../../scss/chat.scss';
+@import '../../scss/basic.scss';
 </style>

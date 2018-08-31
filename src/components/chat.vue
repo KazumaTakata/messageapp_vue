@@ -2,7 +2,7 @@
   <div>
     <div id="chat__container">
       <div class="friendnamecontainer">
-        <h2>{{this.$store.state.acitvename}}</h2>
+        <h2>{{this.chattitle}}</h2>
         <button v-on:click="openmenu" class="header_menubutton">
           <font-awesome-icon icon="bars" />
         </button>
@@ -17,10 +17,11 @@
             <button v-on:click="memberlist " class="icon_button_black">
               <font-awesome-icon icon="user-circle" />
             </button>
+            <button v-on:click="starlist " class="icon_button_black">
+              <font-awesome-icon icon="star" />
+            </button>
           </template>
-          <button v-on:click="starlist " class="icon_button_black">
-            <font-awesome-icon icon="star" />
-          </button>
+
         </div>
         <template v-if="menustate=='search'">
           <template v-if="this.$store.state.individualorgroup =='individual' ">
@@ -32,13 +33,13 @@
         </template>
         <template v-else-if=" menustate=='member' ">
           <template v-if="this.$store.state.individualorgroup =='group' ">
-            <div>
+            <div class="text__container subheader">
               GROUP DESCRIPTION
             </div>
-            <div class="text_container">
+            <div class="text__container">
               {{getgroupdescription()}}
             </div>
-            <div>
+            <div class="text__container subheader margin10">
               GROUP MEMBER
             </div>
             <ul>
@@ -54,6 +55,23 @@
           </template>
         </template>
         <template v-else-if=" menustate=='star' ">
+          <ul>
+            <li v-for="(chat, index) in staredchat" v-bind:key="index ">
+              <div class="text__container subheader">{{chat.star}} stared</div>
+              <div class="profile__container margin10">
+                <img class="profile-img" v-bind:src="getphoto(chat.senderid)">
+                <div class="name__container">
+                  {{getname(chat.senderid)}}
+                  <div class="time__container">
+                    {{chat.time}}
+                  </div>
+                </div>
+                <div class="bubble__container">
+                  {{chat.content}}
+                </div>
+              </div>
+            </li>
+          </ul>
         </template>
       </div>
     </div>
@@ -83,7 +101,20 @@ export default {
       groupmember: []
     }
   },
-  computed: {},
+  computed: {
+    chattitle() {
+      if (this.$store.state.individualorgroup == 'group') {
+        return this.$store.state.acitvegroupname
+      } else {
+        return this.$store.state.acitvename
+      }
+    },
+    staredchat() {
+      let grouptalks = this.$store.state.grouptalks
+      let staredtalks = grouptalks.filter(talk => talk.star > 0)
+      return staredtalks
+    }
+  },
   methods: {
     getgroupdescription() {
       let group = this.$store.state.groups.find(
@@ -122,22 +153,20 @@ export default {
       console.log(event)
       this.$store.commit('togglechatmenu')
     },
-    getphoto: function(id, which) {
-      if (which == 0 || which === true) {
+    getphoto: function(id) {
+      if (id == this.$store.state.myState.id) {
         return this.$store.state.myState.photourl
-      } else {
-        let photourl = this.$store.state.friends.filter(f => f.id == id)[0]
-          .photourl
-        return photourl
       }
+      let photourl = this.$store.state.friends.filter(f => f.id == id)[0]
+        .photourl
+      return photourl
     },
-    getname: function(id, which) {
-      if (which == 0 || which === true) {
+    getname: function(id) {
+      if (id == this.$store.state.myState.id) {
         return this.$store.state.myState.name
-      } else {
-        let name = this.$store.state.friends.filter(f => f.id == id)[0].name
-        return name
       }
+      let name = this.$store.state.friends.filter(f => f.id == id)[0].name
+      return name
     },
     addchat: function() {
       let currentroute = this.$router.currentRoute
@@ -218,17 +247,18 @@ export default {
 @import '../scss/color.scss';
 @import '../scss/button.scss';
 @import '../scss/chat.scss';
-
+@import '../scss/basic.scss';
 #icon__container {
   color: $font-color;
   padding: 5px 0px;
 }
 
-.text_container {
-  margin: 30px;
+.subheader {
+  background: $main-color;
+  color: white;
 }
 
 li {
-  padding: 10px;
+  padding: 0px;
 }
 </style>

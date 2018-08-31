@@ -16,7 +16,6 @@
                             </span>
                         </div>
                     </div>
-
                 </li>
             </ul>
         </div>

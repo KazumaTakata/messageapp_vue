@@ -129,6 +129,11 @@ export default {
         this.$store.state.groups[event.target.id]._id
       )
 
+      this.$store.commit(
+        'setactivegroupname',
+        this.$store.state.groups[event.target.id].groupname
+      )
+
       const home_url = `http://localhost:8181`
       const grouptalk_url =
         '/api/group/talk/' + this.$store.state.groups[event.target.id]._id

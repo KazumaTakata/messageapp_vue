@@ -11,7 +11,6 @@
                                 {{chat.time}}
                             </div>
                         </div>
-
                         <div class="bubble__container">
                             {{chat.content}}
                         </div>

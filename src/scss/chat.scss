@@ -42,7 +42,7 @@
   position: relative;
   width: calc(100% - 200px);
   transition: 0.5s;
-  padding: 40px;
+  padding: 55px 40px;
 }
 
 .inner__chat__container.active {
@@ -175,7 +175,7 @@ span {
   input {
     border-radius: 20px;
     border: 1px solid $border-color;
-    font-size: 15px;
+    font-size: 10px;
     font-weight: 100;
     padding: 10px;
     outline: none;

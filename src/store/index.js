@@ -10,6 +10,7 @@ const store = new Vuex.Store({
     myState: {},
     talks: "",
     acitvename: "No Friend Chosen",
+    acitvegroupname: "No Group Chosen",
     friends: [],
     callcoming: [],
     isActiveAddfriend: false,
@@ -110,6 +111,9 @@ const store = new Vuex.Store({
     },
     setindividualorgroup(state, individualorgroup) {
       state.individualorgroup = individualorgroup;
+    },
+    setactivegroupname(state, groupname) {
+      state.acitvegroupname = groupname;
     },
   },
 });

@@ -57,24 +57,14 @@
 
         <div class="text__container">
           <div class="onoffswitch">
-            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch">
+            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" v-model="recordEnabled" id="myonoffswitch">
             <label class="onoffswitch-label" for="myonoffswitch">
               <span class="onoffswitch-inner"></span>
               <span class="onoffswitch-switch"></span>
             </label>
           </div>
-          <!-- <button ref="startstopbutton" v-on:click="startrecording" class="basicbutton-white">
-            {{startstoptext}}
-          </button>
-
-          <button v-on:click="saverecording" class="basicbutton-white">
-            SAVE
-          </button> -->
         </div>
-        <!-- <div class="recordfeedback">
-          {{recordfeedbackmessage}}
-        </div> -->
-        <!-- <textarea v-model="textcontent" class="videotextarea"></textarea> -->
+
       </template>
       <template v-else>
         <VideoList></VideoList>
@@ -108,7 +98,8 @@ export default {
       remotestream: null,
       liveorarchive: true,
       startstoptext: 'START',
-      textcontent: ''
+      textcontent: '',
+      recordEnabled: false
     }
   },
   beforeDestroy() {
@@ -185,6 +176,8 @@ export default {
           this.$refs.video2.srcObject = event.stream
           this.remotestream = event.stream
           this.$refs.video2.play()
+
+          this.startRecording()
         }
 
         pc.setRemoteDescription(new RTCSessionDescription(message))
@@ -203,29 +196,6 @@ export default {
     }
   },
   methods: {
-    saverecording() {
-      if (this.recordedBlobs_local.length != 0) {
-        this.saveRecording()
-      } else {
-        this.recordfeedbackmessage = 'There is no recorded video.'
-      }
-    },
-    startrecording() {
-      if (this.remotestream != null) {
-        if (this.startstoptext == 'START') {
-          this.startRecording()
-          this.startstoptext = 'STOP'
-          this.recordfeedbackmessage = 'RECORDING'
-        } else {
-          this.stopRecording()
-          this.startstoptext = 'START'
-          this.recordfeedbackmessage = 'RECORDED'
-        }
-      } else {
-        this.recordfeedbackmessage = 'You are not talking.'
-      }
-    },
-
     tolivemode() {
       this.liveorarchive = true
       this.$nextTick(() => {
@@ -240,88 +210,90 @@ export default {
       this.stop()
     },
     saveRecording() {
-      const blob_local = new Blob(this.recordedBlobs_local, {
-        type: 'video/webm'
-      })
-      const blob_remote = new Blob(this.recordedBlobs_remote, {
-        type: 'video/webm'
-      })
-      let d = new Date()
-      const home_url = `http://localhost:8181`
-      const url = home_url + '/api/video'
-      let formData = new FormData()
-      formData.append('video', blob_local, 'local')
-      formData.append('video', blob_remote, 'remote')
-      formData.append('textcontent', this.textcontent)
-      formData.append('friendid', this.$store.state.activefriendid)
-      formData.append('time', d.toLocaleString())
-      axios
-        .post(url, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'x-access-token': this.$store.state.token
-          }
+      if (this.recordEnabled) {
+        const blob_local = new Blob(this.recordedBlobs_local, {
+          type: 'video/webm'
         })
-        .then(res => {
-          console.log(res.data.videourl)
+        const blob_remote = new Blob(this.recordedBlobs_remote, {
+          type: 'video/webm'
         })
-        .catch(function() {
-          console.log('FAILURE!!')
-        })
+        let d = new Date()
+        const home_url = `http://localhost:8181`
+        const url = home_url + '/api/video'
+        let formData = new FormData()
+        formData.append('video', blob_local, 'local')
+        formData.append('video', blob_remote, 'remote')
+        formData.append('textcontent', this.textcontent)
+        formData.append('friendid', this.$store.state.activefriendid)
+        formData.append('time', d.toLocaleString())
+        axios
+          .post(url, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'x-access-token': this.$store.state.token
+            }
+          })
+          .then(res => {
+            console.log(res.data.videourl)
+          })
+          .catch(function() {
+            console.log('FAILURE!!')
+          })
+      }
     },
     stopRecording() {
-      this.mediaRecorder_local.stop()
-      this.mediaRecorder_remote.stop()
-      console.log('Recorded Blobs: ', this.recordedBlobs_local)
-      // recordedVideo.controls = true
+      if (this.recordEnabled) {
+        this.mediaRecorder_local.stop()
+        this.mediaRecorder_remote.stop()
+        console.log('Recorded Blobs: ', this.recordedBlobs_local)
+        // recordedVideo.controls = true
+      }
     },
     startRecording() {
-      this.recordedBlobs_local = []
-      this.recordedBlobs_remote = []
-      let options = { mimeType: 'video/webm;codecs=vp9' }
-      if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-        console.log(options.mimeType + ' is not Supported')
-        options = { mimeType: 'video/webm;codecs=vp8' }
+      if (this.recordEnabled) {
+        this.recordedBlobs_local = []
+        this.recordedBlobs_remote = []
+        let options = { mimeType: 'video/webm;codecs=vp9' }
         if (!MediaRecorder.isTypeSupported(options.mimeType)) {
           console.log(options.mimeType + ' is not Supported')
-          options = { mimeType: 'video/webm' }
+          options = { mimeType: 'video/webm;codecs=vp8' }
           if (!MediaRecorder.isTypeSupported(options.mimeType)) {
             console.log(options.mimeType + ' is not Supported')
-            options = { mimeType: '' }
+            options = { mimeType: 'video/webm' }
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+              console.log(options.mimeType + ' is not Supported')
+              options = { mimeType: '' }
+            }
           }
         }
-      }
-      try {
-        this.mediaRecorder_local = new MediaRecorder(localStream, options)
-        this.mediaRecorder_remote = new MediaRecorder(
-          this.remotestream,
+        try {
+          this.mediaRecorder_local = new MediaRecorder(localStream, options)
+          this.mediaRecorder_remote = new MediaRecorder(
+            this.remotestream,
+            options
+          )
+        } catch (e) {
+          console.error(`Exception while creating MediaRecorder: ${e}`)
+          alert(
+            `Exception while creating MediaRecorder: ${e}. mimeType: ${
+              options.mimeType
+            }`
+          )
+          return
+        }
+        console.log(
+          'Created MediaRecorder',
+          this.mediaRecorder_local,
+          'with options',
           options
         )
-      } catch (e) {
-        console.error(`Exception while creating MediaRecorder: ${e}`)
-        alert(
-          `Exception while creating MediaRecorder: ${e}. mimeType: ${
-            options.mimeType
-          }`
-        )
-        return
-      }
-      console.log(
-        'Created MediaRecorder',
-        this.mediaRecorder_local,
-        'with options',
-        options
-      )
-      // recordButton.textContent = 'Stop Recording'
-      // playButton.disabled = true
-      // downloadButton.disabled = true
-      // mediaRecorder.onstop = handleStop
-      this.mediaRecorder_local.ondataavailable = this.handleDataAvailable
-      this.mediaRecorder_local.start(10) // collect 10ms of data
+        this.mediaRecorder_local.ondataavailable = this.handleDataAvailable
+        this.mediaRecorder_local.start(10) // collect 10ms of data
 
-      this.mediaRecorder_remote.ondataavailable = this.handleDataAvailable_remote
-      this.mediaRecorder_remote.start(10)
-      console.log('MediaRecorder started', this.mediaRecorder_local)
+        this.mediaRecorder_remote.ondataavailable = this.handleDataAvailable_remote
+        this.mediaRecorder_remote.start(10)
+        console.log('MediaRecorder started', this.mediaRecorder_local)
+      }
     },
     handleDataAvailable(event) {
       if (event.data && event.data.size > 0) {
@@ -347,6 +319,8 @@ export default {
 
     stop() {
       if (pc != null) {
+        this.stopRecording()
+        this.saveRecording()
         pc.close()
         pc = null
       }
@@ -448,6 +422,7 @@ export default {
           this.$refs.video2.srcObject = event.stream
           this.remotestream = event.stream
           this.$refs.video2.play()
+          this.startRecording()
         }
       } catch (e) {
         console.log('Failed to create PeerConnection, exception: ' + e.message)

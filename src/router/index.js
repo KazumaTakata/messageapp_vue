@@ -4,7 +4,7 @@ import Chat from "../components/chat.vue";
 import GroupChat from "../components/chat/groupchat.vue";
 import IndividualChat from "../components/chat/individualchat.vue";
 import Feed from "../components/feed.vue";
-import Video from "../components/video.vue";
+import Video from "../components/video/video.vue";
 
 Vue.use(Router);
 

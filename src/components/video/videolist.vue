@@ -27,10 +27,14 @@
         </div>
         <ul id="video-controls" class="controls">
           <li>
-            <button class="videobutton" v-on:click="playbutton" type="button">Play</button>
+            <button class="videobutton" v-on:click="playbutton" type="button">
+              <font-awesome-icon icon="play" />
+            </button>
           </li>
           <li>
-            <button class="videobutton" v-on:click="stopbutton" type="button">Stop</button>
+            <button class="videobutton" v-on:click="stopbutton" type="button">
+              <font-awesome-icon icon="stop" />
+            </button>
           </li>
           <li class="progress">
             <progress ref="progress" id="progress" value="0" min="0">
@@ -213,6 +217,18 @@ progress span {
 
 progress {
   width: 100%;
+}
+
+.videobutton {
+  background: transparent;
+  outline: none;
+  border: none;
+  font-size: 1rem;
+  color: white;
+}
+
+.videobutton:hover {
+  color: $hover-color;
 }
 
 .video__container {

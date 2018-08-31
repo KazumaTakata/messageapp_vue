@@ -77,7 +77,7 @@
 
 <script>
 import axios from 'axios'
-import VideoList from './video/videolist'
+import VideoList from './videolist'
 export default {
   components: { VideoList },
   data() {
@@ -474,11 +474,11 @@ var OrigPeerConnection = window.RTCPeerConnection
 
 
 <style lang="scss" scoped>
-@import '../scss/color.scss';
-@import '../scss/form.scss';
-@import '../scss/button.scss';
-@import '../scss/basic.scss';
-@import '../scss/switchbutton.scss';
+@import '../../scss/color.scss';
+@import '../../scss/form.scss';
+@import '../../scss/button.scss';
+@import '../../scss/basic.scss';
+@import '../../scss/switchbutton.scss';
 .videotextarea {
   width: 80%;
   resize: none;

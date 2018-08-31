@@ -14,6 +14,8 @@ import {
   faPhone,
   faComment,
   faStar,
+  faPlay,
+  faStop,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -26,7 +28,9 @@ library.add(
   faTimes,
   faPhone,
   faComment,
-  faStar
+  faStar,
+  faPlay,
+  faStop
 );
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);

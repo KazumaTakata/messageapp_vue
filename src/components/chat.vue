@@ -221,7 +221,7 @@ export default {
 
 #icon__container {
   color: $font-color;
-  padding: 20px 0px;
+  padding: 5px 0px;
 }
 
 .text_container {

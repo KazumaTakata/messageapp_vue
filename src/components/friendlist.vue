@@ -1,54 +1,59 @@
 <template>
   <div class="friend__container">
-
-    <div class="friend__title">
-      <h5>friend</h5>
-
+    <div v-on:click="click_friend_title" class="friend__title">
+      <h3>friend</h3>
     </div>
-    <ul>
-      <template v-if="this.$store.state.friends.length != 0">
-        <li v-on:click="friendchosen" v-bind:id="index" v-for="(friend, index) in getfriendlist" :key="friend.id">
-          <router-link v-bind:to="  nextroute( 'individual' )" v-bind:id="index">
-            <div class="list__container">
-              <img class="profile-img" v-bind:src="friend.photourl">
-              <div class="list__name">
-                {{friend.name}}
-              </div>
-            </div>
-          </router-link>
-        </li>
+    <transition name="fade">
+      <template v-if="friendlistactive">
+        <ul>
+          <template v-if="this.$store.state.friends.length != 0">
+            <li v-on:click="friendchosen" v-bind:id="index" v-for="(friend, index) in getfriendlist" :key="friend.id">
+              <router-link v-bind:to="  nextroute( 'individual' )" v-bind:id="index">
+                <div class="friend__list__container">
+                  <img class="profile-img" v-bind:src="friend.photourl">
+                  <div class="list__name">
+                    {{friend.name}}
+                  </div>
+                </div>
+              </router-link>
+            </li>
+          </template>
+          <template v-else>
+            <li>
+              You have no friend. Please find your friend.
+            </li>
+          </template>
+        </ul>
       </template>
-      <template v-else>
-        <li>
-          You have no friend. Please find your friend.
-        </li>
-      </template>
-    </ul>
-    <div class="friend__title">
-      <h5>Group</h5>
+    </transition>
+    <div v-on:click="click_group_title" class="friend__title">
+      <h3>Group</h3>
       <button v-on:click="creategroup" class="addfriendbutton">
         <font-awesome-icon icon="plus" />
       </button>
     </div>
-
-    <ul>
-      <template v-if="this.$store.state.groups.length != 0">
-        <li v-on:click="groupchosen" v-bind:id="index" v-for="(group, index) in getgrouplist" :key="index">
-          <router-link v-bind:id="index" v-bind:to="  nextroute( 'group' )">
-            <div class="list__container">
-              <div class="list__name">
-                {{group.groupname}}
-              </div>
-            </div>
-          </router-link>
-        </li>
+    <transition name="fade">
+      <template v-if="grouplistactive">
+        <ul>
+          <template v-if="this.$store.state.groups.length != 0">
+            <li v-on:click="groupchosen" v-bind:id="index" v-for="(group, index) in getgrouplist" :key="index">
+              <router-link v-bind:id="index" v-bind:to="  nextroute( 'group' )">
+                <div class="list__container">
+                  <div class="list__name">
+                    {{group.groupname}}
+                  </div>
+                </div>
+              </router-link>
+            </li>
+          </template>
+          <template v-else>
+            <li>
+              You belong to no group. Please participate in a group.
+            </li>
+          </template>
+        </ul>
       </template>
-      <template v-else>
-        <li>
-          You belong to no group. Please participate in a group.
-        </li>
-      </template>
-    </ul>
+    </transition>
   </div>
 
 </template>
@@ -59,7 +64,10 @@ import axios from 'axios'
 export default {
   name: 'FriendList',
   data() {
-    return {}
+    return {
+      friendlistactive: false,
+      grouplistactive: false
+    }
   },
   computed: {
     getfriendlist: function() {
@@ -76,6 +84,12 @@ export default {
     }
   },
   methods: {
+    click_friend_title: function() {
+      this.friendlistactive = !this.friendlistactive
+    },
+    click_group_title: function() {
+      this.grouplistactive = !this.grouplistactive
+    },
     nextroute: function(next) {
       let currentroute = this.$router.currentRoute
       let nextpath = '/' + currentroute.fullPath.split('/')[1] + '/' + next
@@ -135,25 +149,37 @@ export default {
 
 <style lang="scss" scoped>
 @import '../scss/color.scss';
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
 a {
   text-decoration: none;
   color: $font-color;
   font-weight: 500;
 }
 .addfriendbutton {
+  font-size: 1rem;
   color: white;
   background: none;
   outline: none;
   border: none;
+  transition: 0.4s;
 }
 
 .addfriendbutton:hover {
-  color: $hover-color;
+  transform: rotate(45deg);
 }
 
 .friend__container {
   padding-top: 50px;
   color: white;
+  width: 210px;
 }
 
 .friend__title {
@@ -182,7 +208,7 @@ li {
 }
 
 li:hover {
-  background: $hover-color;
+  background: $sidebar-background;
   color: white;
 }
 
@@ -193,6 +219,10 @@ li * {
 .list__container {
   display: flex;
   justify-content: center;
+}
+
+.friend__list__container {
+  display: flex;
 }
 
 .list__name {

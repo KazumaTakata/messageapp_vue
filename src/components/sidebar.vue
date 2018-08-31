@@ -136,10 +136,6 @@ export default {
   }
 }
 
-// .notification.active {
-//   top: 0;
-// }
-
 .selectfile__container {
   margin: 30px;
 }

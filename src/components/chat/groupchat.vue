@@ -154,7 +154,7 @@ export default {
 }
 
 .profile__container {
-  display: flex;
+  text-align: left;
 }
 
 .feedback__container {
@@ -201,6 +201,6 @@ export default {
 }
 
 li {
-  padding: 25px;
+  padding: 10px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <input v-model="query_input" v-on:keyup.enter="elasticsearchtalk" type="text">
+        <input v-model="query_input" placeholder="chat search" v-on:keyup.enter="elasticsearchtalk" type="text">
         <ul>
             <li v-for="(result, index) in this.query_result " v-bind:key="index ">
                 <div>

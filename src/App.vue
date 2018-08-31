@@ -38,7 +38,9 @@ export default {
 .friendlist__container {
   position: absolute;
   height: 100vh;
-  border-right: 1px solid $border-color;
+  border-right: 1px solid white;
+  background: $main-color;
+  color: white;
 }
 
 body,

@@ -1,18 +1,7 @@
-.profile-img {
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 2px solid rgb(73, 53, 53);
-}
 #chat__container {
   padding-top: 50px;
   height: calc(100vh - 80px);
   overflow-y: scroll;
-}
-
-.time__container {
-  font-size: 0.5rem;
 }
 
 .mechat {
@@ -21,10 +10,6 @@
 
 .youchat {
   text-align: left;
-}
-
-.bubble__container {
-  margin: 20px;
 }
 
 .youchat span {
@@ -77,6 +62,15 @@
   border-radius: 50%;
   border: 2px solid rgb(73, 53, 53);
 }
+
+.profile-img-small {
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid rgb(73, 53, 53);
+}
+
 ul {
   list-style: none;
 }
@@ -96,6 +90,10 @@ li {
 
 .bubble__container {
   margin: 20px;
+}
+.bubble__container-small {
+  margin: 20px;
+  font-size: 0.5rem;
 }
 
 .youchat span {
@@ -120,9 +118,12 @@ span {
 }
 
 .time__container {
-  font-size: 0.5rem;
+  font-size: 0.2rem;
 }
 
+.time__container-small {
+  font-size: 5px;
+}
 .addbutton {
   background: transparent;
   color: $border-color;

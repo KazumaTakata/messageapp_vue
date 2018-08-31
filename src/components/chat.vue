@@ -18,25 +18,17 @@
               <font-awesome-icon icon="user-circle" />
             </button>
           </template>
-          <button v-on:click="starlist " class="icon_button_black ">
+          <button v-on:click="starlist " class="icon_button_black">
             <font-awesome-icon icon="star" />
           </button>
         </div>
-        <template v-if="menustate=='search' ">
-          <input v-model="query_input " v-on:keyup.enter="elasticsearchtalk " type="text">
-          <ul>
-            <li v-for="(result, index) in this.query_result " v-bind:key="index ">
-              <div>
-                <img class="profile-img" v-bind:src="getphoto( result.friendid, result.which ) "> {{getname(result.friendid, result.which)}}
-              </div>
-              <div class="time__container">
-                {{result.time}}
-              </div>
-              <div>
-                {{result.content}}
-              </div>
-            </li>
-          </ul>
+        <template v-if="menustate=='search'">
+          <template v-if="this.$store.state.individualorgroup =='individual' ">
+            <IndividualSearch></IndividualSearch>
+          </template>
+          <template v-else>
+            <GroupSearch></GroupSearch>
+          </template>
         </template>
         <template v-else-if=" menustate=='member' ">
           <template v-if="this.$store.state.individualorgroup =='group' ">
@@ -66,7 +58,7 @@
       </div>
     </div>
     <div id="chatinput__container">
-      <input v-model="chatinput " type="text" id="chatinput">
+      <input v-model="chatinput" type="text" id="chatinput">
       <button v-on:click="addchat " class="addbutton">
         SEND
       </button>
@@ -77,8 +69,10 @@
 <script>
 import axios from 'axios'
 import IndividualChat from './chat/individualchat'
+import IndividualSearch from './menu/individualsearch'
+import GroupSearch from './menu/groupsearch'
 export default {
-  components: { IndividualChat },
+  components: { IndividualChat, IndividualSearch, GroupSearch },
   data() {
     return {
       chatinput: '',
@@ -123,30 +117,6 @@ export default {
     },
     starlist() {
       this.menustate = 'star'
-    },
-    elasticsearchtalk: async function(event) {
-      console.log(this.query_input)
-      const home_url = `http://localhost:8181`
-      const search_url = `/api/elastic/talk/${
-        this.$store.state.activefriendid
-      }/${this.query_input}`
-      const url = home_url + search_url
-
-      try {
-        let result = await axios({
-          method: 'get',
-          url: url,
-          headers: { 'x-access-token': this.$store.state.token }
-        })
-        result.data.sort(function(a, b) {
-          return Date.parse(a.time) - Date.parse(b.time)
-        })
-
-        console.log(result)
-        this.query_result = result.data
-      } catch (err) {
-        console.log(err)
-      }
     },
     openmenu: function(event) {
       console.log(event)
@@ -199,7 +169,7 @@ export default {
           time: d.toLocaleString()
         }
 
-        this.$store.commit('pushtalkgroup', insertobj)
+        this.$store.commit('pushgrouptalk', insertobj)
 
         let sendobj = {
           content: this.chatinput,

@@ -29,7 +29,7 @@
 }
 
 #menu_button {
-  color: $border-color;
+  color: white;
   position: absolute;
   top: 10px;
   left: 10px;
@@ -112,7 +112,7 @@
   width: 40px;
   border-radius: 50%;
   background-color: $sidebar-background;
-  box-shadow: 2px 2px 1px $main-bg-color;
+  box-shadow: 2px 2px 1px $main-color;
   outline: none;
   border: none;
 }

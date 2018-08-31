@@ -141,6 +141,7 @@ a {
   font-weight: 500;
 }
 .addfriendbutton {
+  color: white;
   background: none;
   outline: none;
   border: none;
@@ -151,13 +152,14 @@ a {
 }
 
 .friend__container {
-  margin-top: 50px;
+  padding-top: 50px;
+  color: white;
 }
 
 .friend__title {
   justify-content: center;
   display: flex;
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid white;
 }
 
 .profile-img {
@@ -170,11 +172,13 @@ a {
 ul {
   list-style: none;
   padding: 0px 0px;
+  color: white;
 }
 li {
   padding: 10px 30px;
   width: 150px;
   border-bottom: 1px solid $border-color;
+  color: white;
 }
 
 li:hover {
@@ -195,5 +199,6 @@ li * {
   line-height: 40px;
   margin-left: 10px;
   text-align: center;
+  color: white;
 }
 </style>

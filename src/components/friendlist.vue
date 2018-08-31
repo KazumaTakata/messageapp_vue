@@ -91,8 +91,7 @@ export default {
       this.grouplistactive = !this.grouplistactive
     },
     nextroute: function(next) {
-      let currentroute = this.$router.currentRoute
-      let nextpath = '/' + currentroute.fullPath.split('/')[1] + '/' + next
+      let nextpath = '/' + this.$store.state.currentmode + '/' + next
       return nextpath
     },
     creategroup: function() {

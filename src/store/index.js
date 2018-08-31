@@ -18,6 +18,7 @@ const store = new Vuex.Store({
     isActiveProfile: false,
     isActiveNotification: false,
     isActiveCreateGroup: false,
+    currentmode: "chat",
     websocket_video: "",
     websocket_chat: "",
     notificationlist: [],
@@ -114,6 +115,9 @@ const store = new Vuex.Store({
     },
     setactivegroupname(state, groupname) {
       state.acitvegroupname = groupname;
+    },
+    changemode(state, mode) {
+      state.currentmode = mode;
     },
   },
 });

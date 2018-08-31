@@ -11,8 +11,8 @@
         <font-awesome-icon icon="user-circle" />
       </button>
       <ul>
-        <li v-for="(item, index) in sidebarItems" v-bind:key="index">
-          <router-link v-bind:to="'/' + item">{{item}}</router-link>
+        <li v-for="(item, index) in sidebarItems" v-on:click="modeclick(item)" v-bind:key="index">
+          <router-link v-bind:to="'/' + item + '/individual'">{{item}}</router-link>
         </li>
       </ul>
     </div>
@@ -57,6 +57,9 @@ export default {
   },
 
   methods: {
+    modeclick(mode) {
+      this.$store.commit('changemode', mode)
+    },
     sidebaropen: function(event) {
       this.isActive = !this.isActive
       this.sidebarActive = !this.sidebarActive

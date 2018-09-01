@@ -27,7 +27,11 @@ wss.on("connection", function connection(ws) {
         } else {
           let socket = loginuser[parsedmessage.id];
           if (senderid != undefined) {
-            socket.send(message);
+            try {
+              socket.send(message);
+            } catch (err) {
+              console.log(err);
+            }
           } else {
             if (typeof parsedmessage.data === "string") {
               console.log(parsedmessage.data);

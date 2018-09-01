@@ -31,68 +31,14 @@
                 </button>
             </div>
 
-            <video width="500" height="420" v-bind:ref="member.id" v-for="(member, index) in this.$store.state.groupmember" v-bind:key="index"></video>
-
-            <!-- <video width="500" height="420" v-bind:ref="this.$store.state.groupmember[1].id"></video> -->
-            <template v-if="liveorarchive">
-                <div id="video__innercontainer">
-                    <video width="130" height="100" muted ref="video" id="mevideo"></video>
-
-                    <!-- <div class="video_frame">
-                        <video width="130" height="100" muted ref="video" id="mevideo"></video>
-                        <video width="500" height="420" ref="video2" id="youvideo"></video>
-
-                        <template v-if="!callcomming">
-                            <template v-if="offering">
-                                <div class="calling">
-                                    {{this.callingmessage}} {{this.$store.state.acitvename}}
-                                </div>
-                            </template>
-                            <template v-if="talking">
-                                <button v-on:click="hangup" id="callbutton">
-                                    <font-awesome-icon icon="times" />
-                                </button>
-                            </template>
-                            <template v-else>
-                                <button v-on:click="offercall" id="callbutton">
-                                    <font-awesome-icon icon="phone" />
-                                </button>
-                            </template>
-                        </template>
-                        <template v-else>
-                            <div class="callcomming__container">
-                                <button v-on:click="responsecallaccept" class="callcommingbutton accept">
-                                    <font-awesome-icon icon="phone" />
-                                </button>
-                                <button v-on:click="responsecallreject" class="callcommingbutton reject">
-                                    <font-awesome-icon icon="times" />
-                                </button>
-                            </div>
-                        </template>
-                    </div> -->
-                </div>
-                <template v-if="callcomming">
-                    <p>incoming call ...</p>
+            <div v-if="fullscreenmode" class="fullscreen">
+                <button v-on:click="videoclose" class="closebutton">
+                    <font-awesome-icon icon="times" />
+                </button>
+                <template v-for="(member, index) in this.$store.state.groupmember">
+                    <video width="500" height="420" v-bind:ref="member.id" v-bind:key="index"></video>
                 </template>
-                <p>
-                    Do you record this video chat?
-                </p>
-
-                <div class="text__container">
-                    <div class="onoffswitch">
-                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" v-model="recordEnabled" id="myonoffswitch">
-                        <label class="onoffswitch-label" for="myonoffswitch">
-                            <span class="onoffswitch-inner"></span>
-                            <span class="onoffswitch-switch"></span>
-                        </label>
-                    </div>
-                </div>
-
-            </template>
-            <!-- <template v-else>
-                <VideoList></VideoList>
-            </template> -->
-
+            </div>
         </div>
     </div>
 </template>
@@ -123,7 +69,8 @@ export default {
       startstoptext: 'START',
       textcontent: '',
       recordEnabled: false,
-      groupmember: []
+      groupmember: [],
+      fullscreenmode: false
     }
   },
   beforeDestroy() {
@@ -205,7 +152,13 @@ export default {
     }
   },
   methods: {
+    videoclose: function(event) {
+      this.fullscreenmode = false
+      let keys = Object.keys(pc)
+      this.stop()
+    },
     startchat: function() {
+      this.fullscreenmode = true
       let member = this.$store.state.groupmember
       this.createPeerConnection()
     },
@@ -350,11 +303,15 @@ export default {
     },
 
     stop() {
-      if (pc != null) {
+      let keys = Object.keys(pc)
+      if (keys.length > 0) {
         this.stopRecording()
         this.saveRecording()
-        pc.close()
-        pc = null
+        for (let i = 0; i < keys.length; i++) {
+          pc[keys[i]].close()
+        }
+
+        pc = {}
       }
 
       this.talking = false
@@ -516,6 +473,22 @@ var OrigPeerConnection = window.RTCPeerConnection
 @import '../../scss/button.scss';
 @import '../../scss/basic.scss';
 @import '../../scss/switchbutton.scss';
+
+.fullscreen {
+  position: fixed;
+  display: grid;
+  height: 100vh;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  video {
+    width: 100%;
+    height: 100%;
+    background: black;
+  }
+}
+
 ul {
   list-style: none;
 }

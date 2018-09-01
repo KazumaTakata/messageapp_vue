@@ -133,6 +133,10 @@ const store = new Vuex.Store({
         friend.login = true;
       }
     },
+    makefriendlogout(state, logoutuserid) {
+      let friend = state.friends.find(f => f.id == logoutuserid);
+      friend.login = false;
+    },
   },
 });
 

@@ -58,20 +58,16 @@ export default {
         this.$store.commit('settoken', result.data.token)
         this.$store.commit('setmyState', result.data)
 
-        this.$store.state.websocket_video.send(
-          JSON.stringify({ pingid: result.data.id })
-        )
-
-        this.$store.state.websocket_chat.send(
-          JSON.stringify({ type: 'ping', myId: this.$store.state.token })
-        )
-
         try {
           let result2 = await axios({
             method: 'get',
             url: `http://localhost:8181/api/friend`,
             headers: { 'x-access-token': result.data.token }
           })
+
+          for (let i = 0; i < result2.data.length; i++) {
+            result2.data[i].login = false
+          }
 
           this.$store.commit('setfriend', result2.data)
 
@@ -99,6 +95,14 @@ export default {
         } catch (err) {
           console.log(err)
         }
+
+        this.$store.state.websocket_video.send(
+          JSON.stringify({ pingid: result.data.id })
+        )
+
+        this.$store.state.websocket_chat.send(
+          JSON.stringify({ type: 'ping', myId: this.$store.state.token })
+        )
       } catch (err) {
         console.log(err)
         this.loginerrmessage =

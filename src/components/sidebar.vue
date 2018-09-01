@@ -105,6 +105,9 @@ export default {
 
       if (type == 'loginuserlist') {
         this.$store.commit('makefriendlogin', parseddata.loginfriendids)
+      } else if (type == 'newloginuser') {
+        let loginuserid = parseddata.loginuserid
+        this.$store.commit('makefriendlogin', [loginuserid])
       } else if (type == 'newchat') {
         let name = this.$store.state.friends.filter(
           f => f.id == parseddata.id
@@ -115,6 +118,9 @@ export default {
         setTimeout(() => {
           this.$store.commit('popnotificationlist')
         }, 10000)
+      } else if (type == 'logout') {
+        let logoutuserid = parseddata.logoutuserid
+        this.$store.commit('makefriendlogout', logoutuserid)
       }
     })
   }

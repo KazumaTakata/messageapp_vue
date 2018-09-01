@@ -81,6 +81,7 @@ export default {
     addchat: function() {
       let d = new Date()
       let sendobj = {
+        type: 'grouptalk',
         content: this.responcemessage,
         myId: this.$store.state.token,
         groupid: this.$store.state.activegroupid,

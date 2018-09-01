@@ -14,7 +14,6 @@
             </div>
             <div class="text__container margin10">
                 <h3>Group Member</h3>
-
             </div>
             <ul>
                 <li v-for="(member, index) in this.$store.state.groupmember" v-bind:key="index">

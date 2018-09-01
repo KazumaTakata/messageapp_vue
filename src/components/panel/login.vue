@@ -62,11 +62,8 @@ export default {
           JSON.stringify({ pingid: result.data.id })
         )
 
-        // this.$store.state.websocket_chat.send(
-        //   JSON.stringify({ pingid: result.data.id })
-        // )
         this.$store.state.websocket_chat.send(
-          JSON.stringify({ ping: 'hey', myId: this.$store.state.token })
+          JSON.stringify({ type: 'ping', myId: this.$store.state.token })
         )
 
         try {

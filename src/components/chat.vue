@@ -181,6 +181,7 @@ export default {
         })
 
         let sendobj = {
+          type: 'talk',
           myId: this.$store.state.token,
           friendId: this.$store.state.activefriendid,
           time: d.toLocaleString(),
@@ -201,6 +202,7 @@ export default {
         this.$store.commit('pushgrouptalk', insertobj)
 
         let sendobj = {
+          type: 'grouptalk',
           content: this.chatinput,
           myId: this.$store.state.token,
           groupid: this.$store.state.activegroupid,

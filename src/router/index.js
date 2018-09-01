@@ -5,6 +5,7 @@ import GroupChat from "../components/chat/groupchat.vue";
 import IndividualChat from "../components/chat/individualchat.vue";
 import Feed from "../components/feed.vue";
 import Video from "../components/video/video.vue";
+import VideoGroup from "../components/video/videogroup.vue";
 
 Vue.use(Router);
 
@@ -27,6 +28,10 @@ export default new Router({
     {
       path: "/video/individual",
       component: Video,
+    },
+    {
+      path: "/video/group",
+      component: VideoGroup,
     },
     {
       path: "/feed",

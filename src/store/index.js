@@ -27,6 +27,8 @@ const store = new Vuex.Store({
     activegroupid: "",
     grouptalks: [],
     individualorgroup: "individual",
+    videoactivemember: [],
+    groupmember: [],
   },
   getters: {
     getfriend: state => i => {
@@ -118,6 +120,12 @@ const store = new Vuex.Store({
     },
     changemode(state, mode) {
       state.currentmode = mode;
+    },
+    setvideoactivemember(state, member) {
+      state.videoactivemember = member;
+    },
+    setsetgroupmember(state, groupmember) {
+      state.groupmember = groupmember;
     },
   },
 });

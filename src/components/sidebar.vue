@@ -95,6 +95,8 @@ export default {
         setTimeout(() => {
           this.$store.commit('popcomingcall', parseddata.sender)
         }, 10000)
+      } else if (parseddata.type == 'loginuser') {
+        this.$store.commit('setvideoactivemember', parseddata.loginuser)
       }
     })
     this.websocket_chat.addEventListener('message', jsondata => {

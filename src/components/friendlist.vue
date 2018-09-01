@@ -66,7 +66,8 @@ export default {
   data() {
     return {
       friendlistactive: false,
-      grouplistactive: false
+      grouplistactive: false,
+      websocket_video: ''
     }
   },
   computed: {
@@ -84,6 +85,28 @@ export default {
     }
   },
   methods: {
+    getfriendnameandphoto: async function() {
+      const home_url = `http://localhost:8181`
+      const search_url = `/api/group/member/${this.$store.state.activegroupid}`
+      const url = home_url + search_url
+
+      try {
+        let result = await axios({
+          method: 'get',
+          url: url,
+          headers: { 'x-access-token': this.$store.state.token }
+        })
+        console.log(result)
+        this.$store.commit('setsetgroupmember', result.data)
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    checkifgroupmemberonline(groupid) {
+      let group = this.$store.state.groups.find(g => g._id == groupid)
+      let sendobj = { member: group.member, onlinecheck: true }
+      this.websocket_video.send(JSON.stringify(sendobj))
+    },
     click_friend_title: function() {
       this.friendlistactive = !this.friendlistactive
     },
@@ -145,9 +168,17 @@ export default {
       })
 
       this.$store.commit('setgrouptalks', result.data)
+
+      this.checkifgroupmemberonline(
+        this.$store.state.groups[event.target.id]._id
+      )
+      this.getfriendnameandphoto()
     }
   },
-  created() {}
+  created() {},
+  mounted() {
+    this.websocket_video = this.$store.state.websocket_video
+  }
 }
 </script>
 

@@ -261,4 +261,12 @@ export default {
 li {
   padding: 0px;
 }
+
+.profile-img-small {
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid rgb(73, 53, 53);
+}
 </style>

@@ -222,13 +222,8 @@ export default {
     this.websocket.onmessage = jsonmessage => {
       console.log('message: ', jsonmessage.data)
       let parseddata = JSON.parse(event.data)
-      if (parseddata.groupid != undefined) {
-        this.$store.commit('pushgrouptalk', {
-          content: parseddata.content,
-          senderid: parseddata.id,
-          time: parseddata.time
-        })
-      } else {
+      let type = parseddata.type
+      if (type == 'newchat') {
         if (parseddata.id == this.$store.state.activefriendid) {
           this.$store.commit('pushtalk', {
             content: parseddata.content,
@@ -237,6 +232,12 @@ export default {
             which: 1
           })
         }
+      } else if (type == 'newgroupchat') {
+        this.$store.commit('pushgrouptalk', {
+          content: parseddata.content,
+          senderid: parseddata.id,
+          time: parseddata.time
+        })
       }
     }
   }

@@ -7,9 +7,11 @@
       <template v-if="friendlistactive">
         <ul>
           <template v-if="this.$store.state.friends.length != 0">
-            <li v-on:click="friendchosen" v-bind:id="index" v-for="(friend, index) in getfriendlist" :key="friend.id">
+            <li v-on:click="friendchosen" v-bind:id="index" v-for="(friend, index) in this.$store.state.friends" :key="friend.id">
               <router-link v-bind:to="  nextroute( 'individual' )" v-bind:id="index">
                 <div class="friend__list__container">
+                  <div class="logincircle" v-if="friend.login">
+                  </div>
                   <img class="profile-img" v-bind:src="friend.photourl">
                   <div class="list__name">
                     {{friend.name}}
@@ -71,12 +73,6 @@ export default {
     }
   },
   computed: {
-    getfriendlist: function() {
-      if (this.$store.state.friends.length == 0) {
-      } else {
-        return this.$store.state.friends
-      }
-    },
     getgrouplist: function() {
       if (this.$store.state.groups.length == 0) {
       } else {
@@ -185,6 +181,14 @@ export default {
 <style lang="scss" scoped>
 @import '../scss/color.scss';
 
+.logincircle {
+  height: 10px;
+  width: 10px;
+  background: $login-color;
+  border-radius: 50%;
+  margin: 10px;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;
@@ -258,6 +262,7 @@ li * {
 
 .friend__list__container {
   display: flex;
+  align-items: center;
 }
 
 .list__name {

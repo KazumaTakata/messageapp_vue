@@ -127,6 +127,12 @@ const store = new Vuex.Store({
     setsetgroupmember(state, groupmember) {
       state.groupmember = groupmember;
     },
+    makefriendlogin(state, friendids) {
+      for (let i = 0; i < friendids.length; i++) {
+        let friend = state.friends.find(f => f.id == friendids[i]);
+        friend.login = true;
+      }
+    },
   },
 });
 

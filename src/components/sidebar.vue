@@ -101,14 +101,21 @@ export default {
     })
     this.websocket_chat.addEventListener('message', jsondata => {
       let parseddata = JSON.parse(jsondata.data)
-      let name = this.$store.state.friends.filter(f => f.id == parseddata.id)[0]
-        .name
-      let message = 'chat from ' + name
-      this.$store.commit('pushtonotificationlist', message)
+      let type = parseddata.type
 
-      setTimeout(() => {
-        this.$store.commit('popnotificationlist')
-      }, 10000)
+      if (type == 'loginuserlist') {
+        this.$store.commit('makefriendlogin', parseddata.loginfriendids)
+      } else if (type == 'newchat') {
+        let name = this.$store.state.friends.filter(
+          f => f.id == parseddata.id
+        )[0].name
+        let message = 'chat from ' + name
+        this.$store.commit('pushtonotificationlist', message)
+
+        setTimeout(() => {
+          this.$store.commit('popnotificationlist')
+        }, 10000)
+      }
     })
   }
 }

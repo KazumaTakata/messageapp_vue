@@ -2,7 +2,7 @@
     <div>
         <div id="video__container">
             <div class="friendnamecontainer">
-                <h2>{{this.$store.state.acitvename}}</h2>
+                <h2>{{this.$store.state.acitvegroupname}}</h2>
             </div>
             <div class="mode__container">
                 <button v-on:click="tolivemode" class="basicbutton-white">
@@ -13,16 +13,15 @@
                 </button>
             </div>
             <div class="text__container margin10">
-                Group Member
+                <h3>Group Member</h3>
+
             </div>
             <ul>
                 <li v-for="(member, index) in this.$store.state.groupmember" v-bind:key="index">
                     <div>
                         <img class="profile-img-small" v-bind:src="member.photourl ">
                     </div>
-                    <div>
-                        {{member.name}}
-                    </div>
+                    <h4>{{member.name}}</h4>
                 </li>
             </ul>
             <div class="text__container margin10">
@@ -32,12 +31,19 @@
             </div>
 
             <div v-if="fullscreenmode" class="fullscreen">
+                <h2>Group Video Chat In {{this.$store.state.acitvegroupname}}</h2>
                 <button v-on:click="videoclose" class="closebutton">
                     <font-awesome-icon icon="times" />
                 </button>
-                <template v-for="(member, index) in this.$store.state.groupmember">
-                    <video width="500" height="420" v-bind:ref="member.id" v-bind:key="index"></video>
-                </template>
+                <div class="inner__fullscreen">
+                    <template v-for="(member, index) in groupmemberwithoutme">
+                        <div v-bind:key="index">
+                            <h2>{{member.name}}</h2>
+                            <video width="500" height="420" v-bind:ref="member.id" v-bind:key="index">
+                            </video>
+                        </div>
+                    </template>
+                </div>
             </div>
         </div>
     </div>
@@ -71,6 +77,14 @@ export default {
       recordEnabled: false,
       groupmember: [],
       fullscreenmode: false
+    }
+  },
+  computed: {
+    groupmemberwithoutme: function() {
+      let arr = this.$store.state.groupmember.filter(item => {
+        return item.id != this.$store.state.myState.id
+      })
+      return arr
     }
   },
   beforeDestroy() {
@@ -474,18 +488,40 @@ var OrigPeerConnection = window.RTCPeerConnection
 @import '../../scss/basic.scss';
 @import '../../scss/switchbutton.scss';
 
+ul {
+  display: flex;
+  justify-content: center;
+  li {
+    padding: 0px 30px;
+  }
+}
+
 .fullscreen {
   position: fixed;
-  display: grid;
   height: 100vh;
   width: 100%;
   top: 0;
   left: 0;
   z-index: 4;
-  video {
-    width: 100%;
-    height: 100%;
+  background: black;
+
+  h2 {
     background: black;
+    color: white;
+    margin: 0;
+    padding: 20px;
+  }
+}
+
+.inner__fullscreen {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  height: 100vh;
+  width: 100%;
+  video {
+    background: black;
+    color: white;
+    width: 100%;
   }
 }
 

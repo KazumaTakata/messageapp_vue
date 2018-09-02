@@ -22,6 +22,9 @@
     <AddFriend></AddFriend>
     <CreateGroup></CreateGroup>
     <div class="notification" v-bind:class="{active: this.$store.state.view.isActiveNotification}">
+      <div class="notification_title">
+        notification
+      </div>
       <ul>
         <li v-for="(item, index) in this.$store.state.notificationlist" v-bind:key="index">
           {{item}}
@@ -117,7 +120,7 @@ export default {
 
         setTimeout(() => {
           this.$store.commit('popnotificationlist')
-        }, 10000)
+        }, 5000)
       } else if (type == 'logout') {
         let logoutuserid = parseddata.logoutuserid
         this.$store.commit('makefriendlogout', logoutuserid)
@@ -147,18 +150,30 @@ export default {
   right: 10px;
   background: white;
   z-index: 10;
-  border-top-left-radius: 25px;
-  border-top-right-radius: 25px;
-
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border: 1px solid $border-color;
   box-shadow: 1px 1px 4px black;
   color: black;
+
+  .notification_title {
+    border-bottom: 1px solid $border-color;
+    padding: 5px;
+    background: $main-color;
+    color: white;
+  }
 
   ul {
     list-style: none;
     top: 0;
     li {
-      padding: 30px;
+      padding: 14px;
       color: black;
+      border-bottom: 1px solid $border-color;
+      font-weight: 500;
+    }
+    li:hover {
+      color: white;
     }
   }
 }
@@ -196,6 +211,7 @@ li {
 
 li:hover {
   background: $hover-color;
+  color: white;
 }
 
 a {

@@ -130,6 +130,7 @@ span {
 }
 .addbutton {
   background: transparent;
+  padding: 10px;
   color: $border-color;
   font-size: 10px;
   border: 1px solid $border-color;
@@ -139,11 +140,6 @@ span {
   margin-left: 10px;
 }
 .addbutton:hover {
-  color: $font-color;
-}
-
-#chatinput {
-  width: 80%;
   color: $font-color;
 }
 
@@ -174,6 +170,9 @@ span {
 
   input {
     border-radius: 20px;
+    width: calc(100% - 300px);
+    color: $font-color;
+
     border: 1px solid $border-color;
     font-size: 10px;
     font-weight: 100;

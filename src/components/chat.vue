@@ -77,7 +77,13 @@
     </div>
     <div id="chatinput__container">
       <input v-model="chatinput" type="text" id="chatinput">
-      <button v-on:click="addchat " class="addbutton">
+      <label class="addbutton">
+        <input @change="onFileChange" style="display:none" type="file" accept="image/*"> FILE
+      </label>
+      <template v-if="uploadfile != null">
+        <font-awesome-icon icon="file" />
+      </template>
+      <button v-on:click="addchat" class="addbutton">
         SEND
       </button>
     </div>
@@ -98,7 +104,8 @@ export default {
       query_input: '',
       query_result: [],
       menustate: 'search',
-      groupmember: []
+      groupmember: [],
+      uploadfile: null
     }
   },
   computed: {
@@ -116,6 +123,9 @@ export default {
     }
   },
   methods: {
+    onFileChange(e) {
+      this.uploadfile = e.target.files[0]
+    },
     getgroupdescription() {
       let group = this.$store.state.friend.groups.find(
         g => g._id == this.$store.state.friend.activegroupid
@@ -172,6 +182,33 @@ export default {
       return name
     },
     addchat: function() {
+      if (this.uploadfile != '') {
+        const home_url = `http://localhost:8181`
+        const url = home_url + '/api/user/talks/file'
+        let formData = new FormData()
+        formData.append('file', this.uploadfile)
+        axios
+          .post(url, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'x-access-token': this.$store.state.token
+            }
+          })
+          .then(res => {
+            console.log(res.data.filepath)
+            // this.setprofilemessage = 'New profile photo is set!!'
+            // this.$store.commit('setPhoto', res.data.photourl)
+            this.sendchat(res.data.filepath)
+          })
+          .catch(function() {
+            console.log('FAILURE!!')
+          })
+      } else {
+        this.sendchat()
+      }
+    },
+
+    sendchat: function(filepath) {
       let currentroute = this.$router.currentRoute
       if (currentroute.fullPath.split('/')[2] == 'individual') {
         var d = new Date()
@@ -180,7 +217,8 @@ export default {
           content: this.chatinput,
           which: 0,
           friendid: this.$store.state.friend.activefriendid,
-          time: d.toLocaleString()
+          time: d.toLocaleString(),
+          filepath
         })
 
         let sendobj = {
@@ -188,7 +226,8 @@ export default {
           myId: this.$store.state.token,
           friendId: this.$store.state.friend.activefriendid,
           time: d.toLocaleString(),
-          content: this.chatinput
+          content: this.chatinput,
+          filepath
         }
 
         this.websocket.send(JSON.stringify(sendobj))
@@ -199,7 +238,8 @@ export default {
           content: this.chatinput,
           senderid: this.$store.state.myState.id,
           groupid: this.$store.state.friend.activegroupid,
-          time: d.toLocaleString()
+          time: d.toLocaleString(),
+          filepath
         }
 
         this.$store.commit('pushgrouptalk', insertobj)
@@ -209,7 +249,8 @@ export default {
           content: this.chatinput,
           myId: this.$store.state.token,
           groupid: this.$store.state.friend.activegroupid,
-          time: d.toLocaleString()
+          time: d.toLocaleString(),
+          filepath
         }
 
         this.websocket.send(JSON.stringify(sendobj))
@@ -232,14 +273,16 @@ export default {
             content: parseddata.content,
             friendid: parseddata.id,
             time: parseddata.time,
-            which: 1
+            which: 1,
+            filepath: parseddata.filepath
           })
         }
       } else if (type == 'newgroupchat') {
         this.$store.commit('pushgrouptalk', {
           content: parseddata.content,
           senderid: parseddata.id,
-          time: parseddata.time
+          time: parseddata.time,
+          filepath: parseddata.filepath
         })
       }
     }

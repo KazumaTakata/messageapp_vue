@@ -8,12 +8,12 @@
         </button>
       </div>
       <router-view></router-view>
-      <div class="menu__container" v-bind:class="{active: this.$store.state.isActiveChatmenu}">
+      <div class="menu__container" v-bind:class="{active: this.$store.state.view.isActiveChatmenu}">
         <div id="icon__container">
           <button v-on:click="talklist" class="icon_button_black">
             <font-awesome-icon icon="search" />
           </button>
-          <template v-if="this.$store.state.individualorgroup =='group' ">
+          <template v-if="this.$store.state.friend.individualorgroup =='group' ">
             <button v-on:click="memberlist " class="icon_button_black">
               <font-awesome-icon icon="user-circle" />
             </button>
@@ -24,7 +24,7 @@
 
         </div>
         <template v-if="menustate=='search'">
-          <template v-if="this.$store.state.individualorgroup =='individual' ">
+          <template v-if="this.$store.state.friend.individualorgroup =='individual' ">
             <IndividualSearch></IndividualSearch>
           </template>
           <template v-else>
@@ -32,7 +32,7 @@
           </template>
         </template>
         <template v-else-if=" menustate=='member' ">
-          <template v-if="this.$store.state.individualorgroup =='group' ">
+          <template v-if="this.$store.state.friend.individualorgroup =='group' ">
             <div class="text__container subheader">
               GROUP DESCRIPTION
             </div>
@@ -103,28 +103,30 @@ export default {
   },
   computed: {
     chattitle() {
-      if (this.$store.state.individualorgroup == 'group') {
-        return this.$store.state.acitvegroupname
+      if (this.$store.state.friend.individualorgroup == 'group') {
+        return this.$store.state.friend.acitvegroupname
       } else {
-        return this.$store.state.acitvename
+        return this.$store.state.friend.acitvename
       }
     },
     staredchat() {
-      let grouptalks = this.$store.state.grouptalks
+      let grouptalks = this.$store.state.chat.grouptalks
       let staredtalks = grouptalks.filter(talk => talk.star > 0)
       return staredtalks
     }
   },
   methods: {
     getgroupdescription() {
-      let group = this.$store.state.groups.find(
-        g => g._id == this.$store.state.activegroupid
+      let group = this.$store.state.friend.groups.find(
+        g => g._id == this.$store.state.friend.activegroupid
       )
       return group.groupdescription
     },
     getfriendnameandphoto: async function() {
       const home_url = `http://localhost:8181`
-      const search_url = `/api/group/member/${this.$store.state.activegroupid}`
+      const search_url = `/api/group/member/${
+        this.$store.state.friend.activegroupid
+      }`
       const url = home_url + search_url
 
       try {
@@ -157,7 +159,7 @@ export default {
       if (id == this.$store.state.myState.id) {
         return this.$store.state.myState.photourl
       }
-      let photourl = this.$store.state.friends.filter(f => f.id == id)[0]
+      let photourl = this.$store.state.friend.friends.filter(f => f.id == id)[0]
         .photourl
       return photourl
     },
@@ -165,7 +167,8 @@ export default {
       if (id == this.$store.state.myState.id) {
         return this.$store.state.myState.name
       }
-      let name = this.$store.state.friends.filter(f => f.id == id)[0].name
+      let name = this.$store.state.friend.friends.filter(f => f.id == id)[0]
+        .name
       return name
     },
     addchat: function() {
@@ -176,14 +179,14 @@ export default {
         this.$store.commit('pushtalk', {
           content: this.chatinput,
           which: 0,
-          friendid: this.$store.state.activefriendid,
+          friendid: this.$store.state.friend.activefriendid,
           time: d.toLocaleString()
         })
 
         let sendobj = {
           type: 'talk',
           myId: this.$store.state.token,
-          friendId: this.$store.state.activefriendid,
+          friendId: this.$store.state.friend.activefriendid,
           time: d.toLocaleString(),
           content: this.chatinput
         }
@@ -195,7 +198,7 @@ export default {
         let insertobj = {
           content: this.chatinput,
           senderid: this.$store.state.myState.id,
-          groupid: this.$store.state.activegroupid,
+          groupid: this.$store.state.friend.activegroupid,
           time: d.toLocaleString()
         }
 
@@ -205,7 +208,7 @@ export default {
           type: 'grouptalk',
           content: this.chatinput,
           myId: this.$store.state.token,
-          groupid: this.$store.state.activegroupid,
+          groupid: this.$store.state.friend.activegroupid,
           time: d.toLocaleString()
         }
 
@@ -224,7 +227,7 @@ export default {
       let parseddata = JSON.parse(event.data)
       let type = parseddata.type
       if (type == 'newchat') {
-        if (parseddata.id == this.$store.state.activefriendid) {
+        if (parseddata.id == this.$store.state.friend.activefriendid) {
           this.$store.commit('pushtalk', {
             content: parseddata.content,
             friendid: parseddata.id,

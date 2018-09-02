@@ -1,48 +1,48 @@
 <template>
-    <div class="panel" v-bind:class="{active: this.$store.state.isActiveProfile}">
-        <button v-on:click="profileopen" class="closebutton">
-            <font-awesome-icon icon="times" />
-        </button>
-        <div class="form__container">
-            <div>
-                <h1>UPDATE YOUR PROFILE !!</h1>
-                <button v-on:click="tophoto" class="basicbutton">Name</button>
-                <button v-on:click="toname" class="basicbutton">Photo</button>
+  <div class="panel" v-bind:class="{active: this.$store.state.view.isActiveProfile}">
+    <button v-on:click="profileopen" class="closebutton">
+      <font-awesome-icon icon="times" />
+    </button>
+    <div class="form__container">
+      <div>
+        <h1>UPDATE YOUR PROFILE !!</h1>
+        <button v-on:click="tophoto" class="basicbutton">Name</button>
+        <button v-on:click="toname" class="basicbutton">Photo</button>
 
-                <div v-if="photoorname">
-                    <h2>Update your profile photo.</h2>
-                    <div>
-                        <img class="previewimg" v-bind:src='this.$store.state.myState.photourl'>
-                    </div>
-                    <div class="selectfile__container">
-                        <label class="basicbutton selectfile">
-                            <input @change="onFileChange" style="display:none" type="file" accept="image/*"> SELECT
-                        </label>
-                    </div>
-                    <div>
-                        <button v-on:click="sendProfilephoto" class="basicbutton">SET PHOTO</button>
-                    </div>
-                    <p>{{this.profilephotochosen}}</p>
-                    <p>{{this.setprofilemessage}}</p>
-                </div>
-                <div v-else>
-                    <div>
-                        <h2>Type in NEW NAME</h2>
-                        <p>Your current name is {{this.$store.state.myState.name}}</p>
-                        <div>
-                            <input placeholder="new name" v-model="newname" type="text">
-                        </div>
-                        <button v-on:click="sendNewname" class="skelltonbutton">
-                            SET PROFILE NAME
-                        </button>
-                        <p>{{setnamemessage}}</p>
-                    </div>
-                </div>
-
-            </div>
-
+        <div v-if="photoorname">
+          <h2>Update your profile photo.</h2>
+          <div>
+            <img class="previewimg" v-bind:src='this.$store.state.myState.photourl'>
+          </div>
+          <div class="selectfile__container">
+            <label class="basicbutton selectfile">
+              <input @change="onFileChange" style="display:none" type="file" accept="image/*"> SELECT
+            </label>
+          </div>
+          <div>
+            <button v-on:click="sendProfilephoto" class="basicbutton">SET PHOTO</button>
+          </div>
+          <p>{{this.profilephotochosen}}</p>
+          <p>{{this.setprofilemessage}}</p>
         </div>
+        <div v-else>
+          <div>
+            <h2>Type in NEW NAME</h2>
+            <p>Your current name is {{this.$store.state.myState.name}}</p>
+            <div>
+              <input placeholder="new name" v-model="newname" type="text">
+            </div>
+            <button v-on:click="sendNewname" class="skelltonbutton">
+              SET PROFILE NAME
+            </button>
+            <p>{{setnamemessage}}</p>
+          </div>
+        </div>
+
+      </div>
+
     </div>
+  </div>
 </template>
 
 
@@ -55,7 +55,6 @@ export default {
       loginerrmessage: '',
       friendaddmessage: '',
       friendname: '',
-      previewimageurl: this.$store.state,
       profilephoto: '',
       newname: '',
       profilephotochosen: '',

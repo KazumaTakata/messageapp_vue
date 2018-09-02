@@ -144,7 +144,8 @@ export default {
     },
     getVideoList: async function(event) {
       const home_url = `http://localhost:8181`
-      const url = home_url + `/api/video/${this.$store.state.activefriendid}`
+      const url =
+        home_url + `/api/video/${this.$store.state.friend.activefriendid}`
 
       try {
         let result = await axios({
@@ -157,12 +158,13 @@ export default {
       } catch (err) {}
     },
     getphoto: function(id) {
-      let photourl = this.$store.state.friends.filter(f => f.id == id)[0]
+      let photourl = this.$store.state.friend.friends.filter(f => f.id == id)[0]
         .photourl
       return photourl
     },
     getname: function(id) {
-      let name = this.$store.state.friends.filter(f => f.id == id)[0].name
+      let name = this.$store.state.friend.friends.filter(f => f.id == id)[0]
+        .name
       return name
     }
   }

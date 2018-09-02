@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="panel" v-bind:class="{active: this.$store.state.isActiveCreateGroup}">
+        <div class="panel" v-bind:class="{active: this.$store.state.view.isActiveCreateGroup}">
             <button v-on:click="close" class="closebutton">
                 <font-awesome-icon icon="times" />
             </button>
@@ -34,7 +34,6 @@ export default {
       searchuserid: '',
       searchuserphotourl: 'http://localhost:8181/img/defaultprofile.jpg',
       nofindmessage: '',
-      previewimageurl: this.$store.state,
       profilephoto: ''
     }
   },

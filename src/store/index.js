@@ -1,56 +1,34 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import ChatState from "./chatstate";
+import FriendState from "./friendstate";
+import ViewState from "./viewstate";
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
+  modules: {
+    friend: FriendState,
+    chat: ChatState,
+    view: ViewState,
+  },
   state: {
     token: "",
-    activefriendid: "",
     myState: {},
-    talks: "",
-    acitvename: "No Friend Chosen",
-    acitvegroupname: "No Group Chosen",
-    friends: [],
     callcoming: [],
-    isActiveAddfriend: false,
-    isActiveLogin: true,
-    isActiveProfile: false,
-    isActiveNotification: false,
-    isActiveCreateGroup: false,
     currentmode: "chat",
     websocket_video: "",
     websocket_chat: "",
     notificationlist: [],
-    groups: [],
-    isActiveChatmenu: true,
-    activegroupid: "",
-    grouptalks: [],
-    individualorgroup: "individual",
-    videoactivemember: [],
-    groupmember: [],
-    logingroupmember: [],
   },
   getters: {
     getfriend: state => i => {
-      return state.friends[i];
+      return state.friend.friends[i];
     },
   },
   mutations: {
     settoken(state, token) {
       state.token = token;
-    },
-    setactivefriendid(state, friendid) {
-      state.activefriendid = friendid;
-    },
-    settalks(state, talks) {
-      state.talks = talks;
-    },
-    setactivename(state, name) {
-      state.acitvename = name;
-    },
-    setfriend(state, friend) {
-      state.friends = friend;
     },
     setmyState(state, myState) {
       state.myState = myState;
@@ -60,24 +38,6 @@ const store = new Vuex.Store({
     },
     setName(state, newname) {
       state.myState.name = newname;
-    },
-    toggleaddfriend(state) {
-      state.isActiveAddfriend = !state.isActiveAddfriend;
-    },
-    togglelogin(state) {
-      state.isActiveLogin = !state.isActiveLogin;
-    },
-    toggleprofile(state) {
-      state.isActiveProfile = !state.isActiveProfile;
-    },
-    toggleGroup(state) {
-      state.isActiveCreateGroup = !state.isActiveCreateGroup;
-    },
-    togglenotification(state) {
-      state.isActiveNotification = !state.isActiveNotification;
-    },
-    togglechatmenu(state) {
-      state.isActiveChatmenu = !state.isActiveChatmenu;
     },
     setwebsocket_video(state, websocket) {
       state.websocket_video = websocket;
@@ -98,56 +58,8 @@ const store = new Vuex.Store({
       var index = state.callcoming.indexOf(comingid);
       if (index !== -1) state.callcoming.splice(index, 1);
     },
-    pushtalk(state, talk) {
-      state.talks.push(talk);
-    },
-    pushgrouptalk(state, talk) {
-      state.grouptalks.push(talk);
-    },
-    setgroup(state, group) {
-      state.groups = group;
-    },
-    setactivegroup(state, groupid) {
-      state.activegroupid = groupid;
-    },
-    setgrouptalks(state, talks) {
-      state.grouptalks = talks;
-    },
-    setindividualorgroup(state, individualorgroup) {
-      state.individualorgroup = individualorgroup;
-    },
-    setactivegroupname(state, groupname) {
-      state.acitvegroupname = groupname;
-    },
     changemode(state, mode) {
       state.currentmode = mode;
-    },
-    setvideoactivemember(state, member) {
-      state.videoactivemember = member;
-    },
-    setsetgroupmember(state, groupmember) {
-      state.groupmember = groupmember;
-    },
-    makefriendlogin(state, friendids) {
-      for (let i = 0; i < friendids.length; i++) {
-        let friend = state.friends.find(f => f.id == friendids[i]);
-        friend.login = true;
-      }
-    },
-    makefriendlogout(state, logoutuserid) {
-      let friend = state.friends.find(f => f.id == logoutuserid);
-      friend.login = false;
-    },
-    setlogingroupmember(state, logingroupmember) {
-      state.logingroupmember = logingroupmember;
-    },
-    addgroupmemberlogin(state, groupmemberid) {
-      state.logingroupmember.push(groupmemberid);
-    },
-    rmgroupmemberlogout(state, groupmemberid) {
-      state.logingroupmember = state.logingroupmember.filter(
-        item => item != groupmemberid
-      );
     },
   },
 });

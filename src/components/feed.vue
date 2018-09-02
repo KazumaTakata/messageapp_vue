@@ -64,11 +64,7 @@ export default {
       successorfailuremessage: ''
     }
   },
-  computed: {
-    // chats() {
-    //   return this.$store.state.talks
-    // }
-  },
+  computed: {},
   methods: {
     handleFileUpload() {
       this.file = this.$refs.file.files[0]
@@ -121,7 +117,7 @@ export default {
             res.data[i]['name'] = this.$store.state.myState.name
             res.data[i]['profileurl'] = this.$store.state.myState.photourl
           } else {
-            let u = this.$store.state.friends.find(
+            let u = this.$store.state.friend.friends.find(
               f => f.id == res.data[i].userId
             )
             res.data[i]['name'] = u.name

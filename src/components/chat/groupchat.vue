@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="inner__chat__container" v-bind:class="{active: this.$store.state.isActiveChatmenu }">
+        <div class="inner__chat__container" v-bind:class="{active: this.$store.state.view.isActiveChatmenu }">
             <ul>
                 <li v-for="(chat, index) in this.chats" v-bind:key="index">
                     <div class="profile__container">
@@ -74,7 +74,7 @@ export default {
   },
   computed: {
     chats() {
-      return this.$store.state.grouptalks
+      return this.$store.state.chat.grouptalks
     }
   },
   methods: {
@@ -84,7 +84,7 @@ export default {
         type: 'grouptalk',
         content: this.responcemessage,
         myId: this.$store.state.token,
-        groupid: this.$store.state.activegroupid,
+        groupid: this.$store.state.friend.activegroupid,
         time: d.toLocaleString(),
         chatindex: this.activeresponceindex
       }
@@ -98,7 +98,7 @@ export default {
     addstar: async function(event) {
       console.log(event.currentTarget.id)
       let chatindex = event.currentTarget.id
-      let groupid = this.$store.state.activegroupid
+      let groupid = this.$store.state.friend.activegroupid
 
       const home_url = `http://localhost:8181`
       const _url = `/api/group/talk/star`
@@ -127,7 +127,7 @@ export default {
       if (id == this.$store.state.myState.id) {
         return this.$store.state.myState.photourl
       }
-      let photourl = this.$store.state.friends.filter(f => f.id == id)[0]
+      let photourl = this.$store.state.friend.friends.filter(f => f.id == id)[0]
         .photourl
       return photourl
     },
@@ -135,7 +135,8 @@ export default {
       if (id == this.$store.state.myState.id) {
         return this.$store.state.myState.name
       }
-      let name = this.$store.state.friends.filter(f => f.id == id)[0].name
+      let name = this.$store.state.friend.friends.filter(f => f.id == id)[0]
+        .name
       return name
     }
   }

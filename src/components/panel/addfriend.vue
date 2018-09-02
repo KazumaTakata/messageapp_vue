@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="panel" v-bind:class="{active: this.$store.state.isActiveAddfriend}">
+    <div class="panel" v-bind:class="{active: this.$store.state.view.isActiveAddfriend}">
       <button v-on:click="searchopen" class="closebutton">
         <font-awesome-icon icon="times" />
       </button>
@@ -70,7 +70,6 @@ export default {
       resultgroupname: '',
       searchuserphotourl: 'http://localhost:8181/img/defaultprofile.jpg',
       nofindmessage: '',
-      previewimageurl: this.$store.state,
       profilephoto: '',
       friendorgroup: true
     }

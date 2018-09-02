@@ -1,8 +1,8 @@
 <template>
     <div>
-        <div class="inner__chat__container" v-bind:class="{active: this.$store.state.isActiveChatmenu }">
+        <div class="inner__chat__container" v-bind:class="{active: this.$store.state.view.isActiveChatmenu }">
             <ul>
-                <li v-for="(chat, index) in this.chats" v-bind:key="index">
+                <li v-for="(chat, index) in this.$store.state.chat.talks" v-bind:key="index">
                     <div v-bind:class="chatbubblestyle(chat.which)">
                         <div>
                             <img class="profile-img" v-bind:src="getphoto(chat.friendid,  chat.which)"> {{getname(chat.friendid, chat.which)}}
@@ -25,11 +25,7 @@
 
 <script>
 export default {
-  computed: {
-    chats() {
-      return this.$store.state.talks
-    }
-  },
+  computed: {},
   methods: {
     chatbubblestyle: function(person) {
       return person == 0 ? 'mechat' : 'youchat'
@@ -38,8 +34,9 @@ export default {
       if (which == 0 || which === true) {
         return this.$store.state.myState.photourl
       } else {
-        let photourl = this.$store.state.friends.filter(f => f.id == id)[0]
-          .photourl
+        let photourl = this.$store.state.friend.friends.filter(
+          f => f.id == id
+        )[0].photourl
         return photourl
       }
     },
@@ -47,7 +44,8 @@ export default {
       if (which == 0 || which === true) {
         return this.$store.state.myState.name
       } else {
-        let name = this.$store.state.friends.filter(f => f.id == id)[0].name
+        let name = this.$store.state.friend.friends.filter(f => f.id == id)[0]
+          .name
         return name
       }
     }

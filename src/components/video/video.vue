@@ -2,7 +2,7 @@
   <div>
     <div id="video__container">
       <div class="friendnamecontainer">
-        <h2>{{this.$store.state.acitvename}}</h2>
+        <h2>{{this.$store.state.friend.acitvename}}</h2>
       </div>
       <div class="mode__container">
         <button v-on:click="tolivemode" class="basicbutton-white">
@@ -22,7 +22,7 @@
             <template v-if="!callcomming">
               <template v-if="offering">
                 <div class="calling">
-                  {{this.callingmessage}} {{this.$store.state.acitvename}}
+                  {{this.callingmessage}} {{this.$store.state.friend.acitvename}}
                 </div>
               </template>
               <template v-if="talking">
@@ -117,7 +117,9 @@ export default {
 
     this.webSocket = this.$store.state.websocket_video
     if (
-      this.$store.state.callcoming.includes(this.$store.state.activefriendid)
+      this.$store.state.callcoming.includes(
+        this.$store.state.friend.activefriendid
+      )
     ) {
       this.callcomming = true
       this.talking = true
@@ -132,7 +134,7 @@ export default {
     this.webSocket.onmessage = jsonmessage => {
       let message = JSON.parse(jsonmessage.data)
       if (message.type === 'call') {
-        if (message.sender == this.$store.state.activefriendid) {
+        if (message.sender == this.$store.state.friend.activefriendid) {
           this.callcommingid = message.sender
           this.callcomming = true
           this.talking = true
@@ -164,7 +166,7 @@ export default {
                 id: event.candidate.sdpMid,
                 candidate: event.candidate.candidate
               },
-              id: this.$store.state.activefriendid
+              id: this.$store.state.friend.activefriendid
             })
           } else {
             console.log('End of candidates.')
@@ -224,7 +226,7 @@ export default {
         formData.append('video', blob_local, 'local')
         formData.append('video', blob_remote, 'remote')
         formData.append('textcontent', this.textcontent)
-        formData.append('friendid', this.$store.state.activefriendid)
+        formData.append('friendid', this.$store.state.friend.activefriendid)
         formData.append('time', d.toLocaleString())
         axios
           .post(url, formData, {
@@ -312,7 +314,7 @@ export default {
         data: {
           type: 'bye'
         },
-        id: this.$store.state.activefriendid
+        id: this.$store.state.friend.activefriendid
       }
       this.webSocket.send(JSON.stringify(sendobj))
     },
@@ -341,7 +343,7 @@ export default {
           type: 'call',
           sender: this.$store.state.myState.id
         },
-        id: this.$store.state.activefriendid
+        id: this.$store.state.friend.activefriendid
       }
       this.webSocket.send(JSON.stringify(sendobj))
     },
@@ -356,7 +358,7 @@ export default {
           res: 'accept',
           sender: this.$store.state.myState.id
         },
-        id: this.$store.state.activefriendid
+        id: this.$store.state.friend.activefriendid
       }
       this.webSocket.send(JSON.stringify(sendobj))
     },
@@ -370,7 +372,7 @@ export default {
           res: 'reject',
           sender: this.$store.state.myState.id
         },
-        id: this.$store.state.activefriendid
+        id: this.$store.state.friend.activefriendid
       }
       this.webSocket.send(JSON.stringify(sendobj))
     },
@@ -385,7 +387,7 @@ export default {
           pc.setLocalDescription(sessionDescription)
           this.sendMessage({
             data: sessionDescription,
-            id: this.$store.state.activefriendid
+            id: this.$store.state.friend.activefriendid
           })
         },
         onSignalingError,
@@ -411,7 +413,7 @@ export default {
                 id: event.candidate.sdpMid,
                 candidate: event.candidate.candidate
               },
-              id: this.$store.state.activefriendid
+              id: this.$store.state.friend.activefriendid
             })
           } else {
             console.log('End of candidates.')
@@ -435,7 +437,7 @@ export default {
           pc.setLocalDescription(sessionDescription)
           this.sendMessage({
             data: sessionDescription,
-            id: this.$store.state.activefriendid
+            id: this.$store.state.friend.activefriendid
           })
         },
         onSignalingError,

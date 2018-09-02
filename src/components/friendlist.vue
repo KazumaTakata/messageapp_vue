@@ -6,8 +6,8 @@
     <transition name="fade">
       <template v-if="friendlistactive">
         <ul>
-          <template v-if="this.$store.state.friends.length != 0">
-            <li v-on:click="friendchosen" v-bind:id="index" v-for="(friend, index) in this.$store.state.friends" :key="friend.id">
+          <template v-if="this.$store.state.friend.friends.length != 0">
+            <li v-on:click="friendchosen" v-bind:id="index" v-for="(friend, index) in this.$store.state.friend.friends" :key="friend.id">
               <router-link v-bind:to="  nextroute( 'individual' )" v-bind:id="index">
                 <div class="friend__list__container">
                   <div class="logincircle" v-if="friend.login">
@@ -37,7 +37,7 @@
     <transition name="fade">
       <template v-if="grouplistactive">
         <ul>
-          <template v-if="this.$store.state.groups.length != 0">
+          <template v-if="this.$store.state.friend.groups.length != 0">
             <li v-on:click="groupchosen" v-bind:id="index" v-for="(group, index) in getgrouplist" :key="index">
               <router-link v-bind:id="index" v-bind:to="  nextroute( 'group' )">
                 <div class="list__container">
@@ -74,16 +74,18 @@ export default {
   },
   computed: {
     getgrouplist: function() {
-      if (this.$store.state.groups.length == 0) {
+      if (this.$store.state.friend.groups.length == 0) {
       } else {
-        return this.$store.state.groups
+        return this.$store.state.friend.groups
       }
     }
   },
   methods: {
     getfriendnameandphoto: async function() {
       const home_url = `http://localhost:8181`
-      const search_url = `/api/group/member/${this.$store.state.activegroupid}`
+      const search_url = `/api/group/member/${
+        this.$store.state.friend.activegroupid
+      }`
       const url = home_url + search_url
 
       try {
@@ -99,7 +101,7 @@ export default {
       }
     },
     checkifgroupmemberonline(groupid) {
-      let group = this.$store.state.groups.find(g => g._id == groupid)
+      let group = this.$store.state.friend.groups.find(g => g._id == groupid)
       let sendobj = { member: group.member, onlinecheck: true }
       this.websocket_video.send(JSON.stringify(sendobj))
     },
@@ -144,17 +146,18 @@ export default {
 
       this.$store.commit(
         'setactivegroup',
-        this.$store.state.groups[event.target.id]._id
+        this.$store.state.friend.groups[event.target.id]._id
       )
 
       this.$store.commit(
         'setactivegroupname',
-        this.$store.state.groups[event.target.id].groupname
+        this.$store.state.friend.groups[event.target.id].groupname
       )
 
       const home_url = `http://localhost:8181`
       const grouptalk_url =
-        '/api/group/talk/' + this.$store.state.groups[event.target.id]._id
+        '/api/group/talk/' +
+        this.$store.state.friend.groups[event.target.id]._id
       const url = home_url + grouptalk_url
 
       let result = await axios({
@@ -166,7 +169,7 @@ export default {
       this.$store.commit('setgrouptalks', result.data)
 
       this.checkifgroupmemberonline(
-        this.$store.state.groups[event.target.id]._id
+        this.$store.state.friend.groups[event.target.id]._id
       )
       this.getfriendnameandphoto()
     }

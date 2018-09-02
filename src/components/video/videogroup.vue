@@ -2,7 +2,7 @@
     <div>
         <div id="video__container">
             <div class="friendnamecontainer">
-                <h2>{{this.$store.state.acitvegroupname}}</h2>
+                <h2>{{this.$store.state.friend.acitvegroupname}}</h2>
             </div>
             <div class="mode__container">
                 <button v-on:click="tolivemode" class="basicbutton-white">
@@ -16,7 +16,7 @@
                 <h3>Group Member</h3>
             </div>
             <ul>
-                <li v-for="(member, index) in this.$store.state.groupmember" v-bind:key="index">
+                <li v-for="(member, index) in this.$store.state.friend.groupmember" v-bind:key="index">
                     <div>
                         <img class="profile-img-small" v-bind:src="member.photourl ">
                     </div>
@@ -30,7 +30,7 @@
             </div>
 
             <div v-if="fullscreenmode" class="fullscreen">
-                <h2>Group Video Chat In {{this.$store.state.acitvegroupname}}</h2>
+                <h2>Group Video Chat In {{this.$store.state.friend.acitvegroupname}}</h2>
                 <button v-on:click="videoclose" class="closebutton">
                     <font-awesome-icon icon="times" />
                 </button>
@@ -80,7 +80,7 @@ export default {
   },
   computed: {
     groupmemberwithoutme: function() {
-      let arr = this.$store.state.groupmember.filter(item => {
+      let arr = this.$store.state.friend.groupmember.filter(item => {
         return item.id != this.$store.state.myState.id
       })
       return arr
@@ -101,7 +101,9 @@ export default {
 
     this.webSocket = this.$store.state.websocket_video
     if (
-      this.$store.state.callcoming.includes(this.$store.state.activefriendid)
+      this.$store.state.callcoming.includes(
+        this.$store.state.friend.activefriendid
+      )
     ) {
       this.callcomming = true
       this.talking = true
@@ -172,12 +174,14 @@ export default {
     },
     startchat: function() {
       this.fullscreenmode = true
-      let member = this.$store.state.groupmember
+      let member = this.$store.state.friend.groupmember
       this.createPeerConnection()
     },
     getfriendnameandphoto: async function() {
       const home_url = `http://localhost:8181`
-      const search_url = `/api/group/member/${this.$store.state.activegroupid}`
+      const search_url = `/api/group/member/${
+        this.$store.state.friend.activegroupid
+      }`
       const url = home_url + search_url
 
       try {
@@ -222,7 +226,7 @@ export default {
         formData.append('video', blob_local, 'local')
         formData.append('video', blob_remote, 'remote')
         formData.append('textcontent', this.textcontent)
-        formData.append('friendid', this.$store.state.activefriendid)
+        formData.append('friendid', this.$store.state.friend.activefriendid)
         formData.append('time', d.toLocaleString())
         axios
           .post(url, formData, {
@@ -310,7 +314,7 @@ export default {
         data: {
           type: 'bye'
         },
-        id: this.$store.state.activefriendid
+        id: this.$store.state.friend.activefriendid
       }
       this.webSocket.send(JSON.stringify(sendobj))
     },
@@ -343,7 +347,7 @@ export default {
           type: 'call',
           sender: this.$store.state.myState.id
         },
-        id: this.$store.state.activefriendid
+        id: this.$store.state.friend.activefriendid
       }
       this.webSocket.send(JSON.stringify(sendobj))
     },
@@ -358,7 +362,7 @@ export default {
           res: 'accept',
           sender: this.$store.state.myState.id
         },
-        id: this.$store.state.activefriendid
+        id: this.$store.state.friend.activefriendid
       }
       this.webSocket.send(JSON.stringify(sendobj))
     },
@@ -372,7 +376,7 @@ export default {
           res: 'reject',
           sender: this.$store.state.myState.id
         },
-        id: this.$store.state.activefriendid
+        id: this.$store.state.friend.activefriendid
       }
       this.webSocket.send(JSON.stringify(sendobj))
     },
@@ -397,7 +401,7 @@ export default {
     },
 
     createPeerConnection() {
-      let groupmember = this.$store.state.groupmember
+      let groupmember = this.$store.state.friend.groupmember
       for (let i = 0; i < groupmember.length; i++) {
         let memberid = groupmember[i].id
 

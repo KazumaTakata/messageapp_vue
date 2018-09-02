@@ -35,7 +35,7 @@ export default {
       console.log(this.query_input)
       const home_url = `http://localhost:8181`
       const search_url = `/api/elastic/talk/${
-        this.$store.state.activefriendid
+        this.$store.state.friend.activefriendid
       }/${this.query_input}`
       const url = home_url + search_url
 
@@ -59,8 +59,9 @@ export default {
       if (which == 0 || which === true) {
         return this.$store.state.myState.photourl
       } else {
-        let photourl = this.$store.state.friends.filter(f => f.id == id)[0]
-          .photourl
+        let photourl = this.$store.state.friend.friends.filter(
+          f => f.id == id
+        )[0].photourl
         return photourl
       }
     },
@@ -68,7 +69,8 @@ export default {
       if (which == 0 || which === true) {
         return this.$store.state.myState.name
       } else {
-        let name = this.$store.state.friends.filter(f => f.id == id)[0].name
+        let name = this.$store.state.friend.friends.filter(f => f.id == id)[0]
+          .name
         return name
       }
     }

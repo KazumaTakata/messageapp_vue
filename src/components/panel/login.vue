@@ -1,5 +1,5 @@
 <template>
-  <div class="panel" v-bind:class="{active:  this.$store.state.isActiveLogin}">
+  <div class="panel" v-bind:class="{active:  this.$store.state.view.isActiveLogin}">
     <div class="form__container">
       <h1>Messanger</h1>
       <button v-on:click="tosignup" class="basicbutton">SIGNUP</button>

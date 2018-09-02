@@ -21,7 +21,7 @@
     <Login></Login>
     <AddFriend></AddFriend>
     <CreateGroup></CreateGroup>
-    <div class="notification" v-bind:class="{active: this.$store.state.isActiveNotification}">
+    <div class="notification" v-bind:class="{active: this.$store.state.view.isActiveNotification}">
       <ul>
         <li v-for="(item, index) in this.$store.state.notificationlist" v-bind:key="index">
           {{item}}
@@ -80,7 +80,7 @@ export default {
     this.websocket_video.addEventListener('message', jsondata => {
       let parseddata = JSON.parse(jsondata.data)
       if (parseddata.type == 'call') {
-        let name = this.$store.state.friends.filter(
+        let name = this.$store.state.friend.friends.filter(
           f => f.id == parseddata.sender
         )[0].name
         let message = 'call from ' + name
@@ -109,7 +109,7 @@ export default {
         let loginuserid = parseddata.loginuserid
         this.$store.commit('makefriendlogin', [loginuserid])
       } else if (type == 'newchat') {
-        let name = this.$store.state.friends.filter(
+        let name = this.$store.state.friend.friends.filter(
           f => f.id == parseddata.id
         )[0].name
         let message = 'chat from ' + name

@@ -29,6 +29,7 @@ const store = new Vuex.Store({
     individualorgroup: "individual",
     videoactivemember: [],
     groupmember: [],
+    logingroupmember: [],
   },
   getters: {
     getfriend: state => i => {
@@ -136,6 +137,17 @@ const store = new Vuex.Store({
     makefriendlogout(state, logoutuserid) {
       let friend = state.friends.find(f => f.id == logoutuserid);
       friend.login = false;
+    },
+    setlogingroupmember(state, logingroupmember) {
+      state.logingroupmember = logingroupmember;
+    },
+    addgroupmemberlogin(state, groupmemberid) {
+      state.logingroupmember.push(groupmemberid);
+    },
+    rmgroupmemberlogout(state, groupmemberid) {
+      state.logingroupmember = state.logingroupmember.filter(
+        item => item != groupmemberid
+      );
     },
   },
 });

@@ -121,6 +121,15 @@ export default {
       } else if (type == 'logout') {
         let logoutuserid = parseddata.logoutuserid
         this.$store.commit('makefriendlogout', logoutuserid)
+      } else if (type == 'logingroupuserlist') {
+        let logingroupusers = parseddata.logingroupfriendids
+        this.$store.commit('setlogingroupmember', logingroupusers)
+      } else if (type == 'newlogingroupuser') {
+        let logingroupuserid = parseddata.logingroupuserid
+        this.$store.commit('addgroupmemberlogin', logingroupuserid)
+      } else if (type == 'logoutgroup') {
+        let logoutgroupuserid = parseddata.logoutgroupuserid
+        this.$store.commit('rmgroupmemberlogout', logoutgroupuserid)
       }
     })
   }

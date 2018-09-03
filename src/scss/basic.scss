@@ -10,3 +10,18 @@
 .white-title {
   color: white;
 }
+
+.paneltitlecontainer {
+  background: $main-color;
+  z-index: 2;
+  position: fixed;
+  height: 50px;
+  top: 0px;
+  width: calc(100% - 210px);
+  h2 {
+    margin: 6px;
+    color: white;
+  }
+  border-bottom: 1px solid $border-color2;
+  border-left: 1px solid $border-color2;
+}

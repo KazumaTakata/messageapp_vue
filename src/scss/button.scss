@@ -106,13 +106,13 @@
 #floating {
   position: absolute;
   color: white;
-  bottom: 30px;
+  bottom: 50px;
   right: 30px;
   height: 40px;
   width: 40px;
   border-radius: 50%;
   background-color: $sidebar-background;
-  box-shadow: 2px 2px 1px $main-color;
+  box-shadow: 2px 2px 1px $hover-color;
   outline: none;
   border: none;
 }

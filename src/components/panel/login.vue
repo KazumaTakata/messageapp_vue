@@ -1,14 +1,14 @@
 <template>
   <div class="panel" v-bind:class="{active:  this.$store.state.view.isActiveLogin}">
     <div class="form__container">
-      <h1>Messanger</h1>
+      <h1 class="white-title">Messanger</h1>
       <button v-on:click="tosignup" class="basicbutton">SIGNUP</button>
       <button v-on:click="tologin" class="basicbutton">LOGIN</button>
       <div v-if="loginorsignup">
-        <h2>SIGNUP</h2>
+        <h2 class="white-title">SIGNUP</h2>
       </div>
       <div v-else>
-        <h2>LOGIN</h2>
+        <h2 class="white-title">LOGIN</h2>
       </div>
 
       <form action="" onsubmit="event.preventDefault();">
@@ -117,4 +117,5 @@ export default {
 @import '../../scss/color.scss';
 @import '../../scss/form.scss';
 @import '../../scss/button.scss';
+@import '../../scss/basic.scss';
 </style>

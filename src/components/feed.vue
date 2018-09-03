@@ -1,5 +1,11 @@
 <template>
   <div class="container">
+    <div class="paneltitlecontainer">
+      <h2>Feeds</h2>
+    </div>
+    <div class="margin100px">
+
+    </div>
     <ul>
       <li v-for="(feed, index) in feeds" v-bind:key="index">
         <div class="feedcard">
@@ -27,7 +33,7 @@
       </button>
 
       <div class="form__container form__container_width">
-        <h2>Type in your Feed</h2>
+        <h2 class="white-title">Type in your Feed</h2>
         <div>
           <textarea v-model="feedcontent" type="text"></textarea>
         </div>
@@ -138,16 +144,20 @@ export default {
 @import '../scss/color.scss';
 @import '../scss/form.scss';
 @import '../scss/button.scss';
-
+@import '../scss/basic.scss';
 .panel {
   position: fixed;
-  background: pink;
+  background: $main-color;
   height: 100vh;
   width: 100vw;
   top: calc(100vh + 300px);
   left: 0;
   z-index: 3;
   transition: 0.3s;
+}
+
+.margin100px {
+  height: 50px;
 }
 
 .panel.active {
@@ -161,8 +171,9 @@ export default {
 
 .feedcard {
   width: 400px;
+  border-radius: 10px;
   box-shadow: 1px 1px 4px black;
-  margin: 0 auto;
+  margin: 0px auto;
 }
 
 .feedcontent {

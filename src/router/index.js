@@ -34,7 +34,7 @@ export default new Router({
       component: VideoGroup,
     },
     {
-      path: "/feed",
+      path: "/feed/individual",
       component: Feed,
     },
   ],

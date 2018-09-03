@@ -11,7 +11,7 @@
           <button v-on:click="toGroup" class="basicbutton">Group</button>
         </div>
         <template v-if="friendorgroup">
-          <h2>Find Your Friend!!</h2>
+          <h2 class="white-title">Find Your Friend!!</h2>
           <div>
             <input v-model="friendname" placeholder="name" type="text">
             <button v-on:click="findfriend" class="searchbutton">
@@ -31,7 +31,7 @@
           </div>
         </template>
         <template v-else>
-          <h2>Find Group!!</h2>
+          <h2 class="white-title">Find Group!!</h2>
           <div>
             <input v-model="groupname" placeholder="name" type="text">
             <button v-on:click="findgroup" class="searchbutton">
@@ -192,4 +192,5 @@ export default {
 @import '../../scss/color.scss';
 @import '../../scss/form.scss';
 @import '../../scss/button.scss';
+@import '../../scss/basic.scss';
 </style>

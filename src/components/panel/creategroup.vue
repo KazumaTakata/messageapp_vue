@@ -5,7 +5,7 @@
                 <font-awesome-icon icon="times" />
             </button>
             <div class="form__container">
-                <h2>Create New Group !!</h2>
+                <h3 class="white-title">Create New Group !!</h3>
                 <div>
                     <input v-model="groupname" placeholder="name" type="text">
                     <p>{{nofindmessage}}</p>
@@ -71,4 +71,5 @@ export default {
 @import '../../scss/color.scss';
 @import '../../scss/form.scss';
 @import '../../scss/button.scss';
+@import '../../scss/basic.scss';
 </style>

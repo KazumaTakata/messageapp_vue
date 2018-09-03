@@ -5,12 +5,12 @@
     </button>
     <div class="form__container">
       <div>
-        <h1>UPDATE YOUR PROFILE !!</h1>
+        <h2 class="white-title">UPDATE YOUR PROFILE !!</h2>
         <button v-on:click="tophoto" class="basicbutton">Name</button>
         <button v-on:click="toname" class="basicbutton">Photo</button>
 
         <div v-if="photoorname">
-          <h2>Update your profile photo.</h2>
+          <h4 class="white-title">Update your profile photo.</h4>
           <div>
             <img class="previewimg" v-bind:src='this.$store.state.myState.photourl'>
           </div>
@@ -27,12 +27,12 @@
         </div>
         <div v-else>
           <div>
-            <h2>Type in NEW NAME</h2>
-            <p>Your current name is {{this.$store.state.myState.name}}</p>
+            <h4 class="white-title">Type in NEW NAME</h4>
+            <p class="white-title">Your current name is {{this.$store.state.myState.name}}</p>
             <div>
               <input placeholder="new name" v-model="newname" type="text">
             </div>
-            <button v-on:click="sendNewname" class="skelltonbutton">
+            <button v-on:click="sendNewname" class="basicbutton">
               SET PROFILE NAME
             </button>
             <p>{{setnamemessage}}</p>
@@ -142,6 +142,7 @@ export default {
 @import '../../scss/color.scss';
 @import '../../scss/form.scss';
 @import '../../scss/button.scss';
+@import '../../scss/basic.scss';
 img {
   height: 100px;
   width: 100px;

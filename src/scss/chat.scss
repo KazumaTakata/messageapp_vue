@@ -75,6 +75,16 @@
   border: 2px solid rgb(73, 53, 53);
 }
 
+.file__container {
+  font-size: 0.5rem;
+}
+
+a {
+  text-decoration: none;
+  color: $font-color;
+  font-size: 30px;
+}
+
 ul {
   list-style: none;
 }
@@ -130,7 +140,7 @@ span {
 }
 .addbutton {
   background: transparent;
-  padding: 10px;
+  padding: 12px;
   color: $border-color;
   font-size: 10px;
   border: 1px solid $border-color;
@@ -174,7 +184,7 @@ span {
     color: $font-color;
 
     border: 1px solid $border-color;
-    font-size: 10px;
+    font-size: 15px;
     font-weight: 100;
     padding: 10px;
     outline: none;

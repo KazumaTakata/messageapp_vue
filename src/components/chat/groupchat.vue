@@ -43,6 +43,20 @@
                             </button>
                         </template>
                     </div>
+                    <div v-if="chat.filepath != undefined">
+                        <div class="profile__container">
+                            <h6>
+                                FILE
+                            </h6>
+                            <div class="file__container">
+                                {{chat.filepath.split("/")[chat.filepath.split("/").length -1]}}
+                            </div>
+
+                            <a :href="chat.filepath" download="sample.txt">
+                                <font-awesome-icon icon="download" />
+                            </a>
+                        </div>
+                    </div>
                     <div class="chat_hover_menu">
                         <button v-bind:id="index" v-on:click="addresponce">
                             <font-awesome-icon icon="comment" />

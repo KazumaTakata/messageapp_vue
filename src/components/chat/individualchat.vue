@@ -15,6 +15,22 @@
                                 {{chat.content}}
                             </span>
                         </div>
+                        <div v-if="chat.filepath != undefined">
+                            <!-- <div class="file__preview">
+                                <font-awesome-icon icon="file" />
+                            </div> -->
+                            <div>
+                                <h6>
+                                    FILE
+                                </h6>
+                                <div class="file__container">
+                                    {{chat.filepath.split("/")[chat.filepath.split("/").length -1]}}
+                                </div>
+                                <a :href="chat.filepath" download="sample.txt">
+                                    <font-awesome-icon icon="download" />
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </li>
             </ul>
@@ -58,4 +74,10 @@ export default {
 @import '../../scss/color.scss';
 @import '../../scss/button.scss';
 @import '../../scss/chat.scss';
+
+.file__preview {
+  font-size: 3rem;
+  width: 100px;
+  margin-left: auto;
+}
 </style>

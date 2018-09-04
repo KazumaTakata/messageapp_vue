@@ -19,6 +19,10 @@
           <input class="basicbutton" type="submit" value="SUBMIT" v-on:click="loginsubmit">
         </div>
       </form>
+      <div>
+        <a href="/auth/github"><img src="http://localhost:8181/icon/github.svg" alt="Kiwi standing on oval "> SIGNUP/LOGIN with GITHUB</a>
+      </div>
+
     </div>
   </div>
 </template>
@@ -42,6 +46,45 @@ export default {
     tosignup(e) {
       this.loginorsignup = true
     },
+    preparedata: async function(token, mystate) {
+      this.$store.commit('togglelogin')
+      this.$store.commit('settoken', token)
+      this.$store.commit('setmyState', mystate)
+
+      try {
+        let result2 = await axios({
+          method: 'get',
+          url: `http://localhost:8181/api/friend`,
+          headers: { 'x-access-token': token }
+        })
+
+        for (let i = 0; i < result2.data.length; i++) {
+          result2.data[i].login = false
+        }
+
+        this.$store.commit('setfriend', result2.data)
+
+        let result5 = await axios({
+          method: 'get',
+          url: `http://localhost:8181/api/group`,
+          headers: { 'x-access-token': token }
+        })
+
+        this.$store.commit('setgroup', result5.data)
+
+        this.$router.push('chat')
+      } catch (err) {
+        console.log(err)
+      }
+
+      this.$store.state.websocket_video.send(
+        JSON.stringify({ pingid: mystate.id })
+      )
+
+      this.$store.state.websocket_chat.send(
+        JSON.stringify({ type: 'ping', myId: token })
+      )
+    },
     loginsubmit: async function(event) {
       const home_url = `http://localhost:8181`
       const login_url = '/api/user/login'
@@ -54,60 +97,28 @@ export default {
           password: this.userpassword,
           loginorsignup: LorS
         })
-        this.$store.commit('togglelogin')
-        this.$store.commit('settoken', result.data.token)
-        this.$store.commit('setmyState', result.data)
 
-        try {
-          let result2 = await axios({
-            method: 'get',
-            url: `http://localhost:8181/api/friend`,
-            headers: { 'x-access-token': result.data.token }
-          })
-
-          for (let i = 0; i < result2.data.length; i++) {
-            result2.data[i].login = false
-          }
-
-          this.$store.commit('setfriend', result2.data)
-
-          let result5 = await axios({
-            method: 'get',
-            url: `http://localhost:8181/api/group`,
-            headers: { 'x-access-token': result.data.token }
-          })
-
-          this.$store.commit('setgroup', result5.data)
-
-          this.$router.push('chat')
-        } catch (err) {
-          console.log(err)
-        }
-
-        try {
-          let result3 = await axios({
-            method: 'get',
-            url: `http://localhost:8181/api/group`,
-            headers: { 'x-access-token': result.data.token }
-          })
-
-          this.$store.commit('setgroup', result3.data)
-        } catch (err) {
-          console.log(err)
-        }
-
-        this.$store.state.websocket_video.send(
-          JSON.stringify({ pingid: result.data.id })
-        )
-
-        this.$store.state.websocket_chat.send(
-          JSON.stringify({ type: 'ping', myId: this.$store.state.token })
-        )
+        this.preparedata(result.data.token, result.data)
       } catch (err) {
         console.log(err)
         this.loginerrmessage =
           'Your name is already used or your password is not correct'
       }
+    }
+  },
+  mounted: async function() {
+    let jwt = localStorage.getItem('JWT')
+
+    if (jwt != null) {
+      localStorage.clear()
+      let result = await axios({
+        method: 'get',
+        url: `http://localhost:8181/api/user/myState/`,
+        headers: { 'x-access-token': jwt }
+      })
+      result.data.token = jwt
+
+      this.preparedata(jwt, result.data)
     }
   }
 }

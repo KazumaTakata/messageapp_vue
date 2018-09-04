@@ -19,8 +19,8 @@
           <input class="basicbutton" type="submit" value="SUBMIT" v-on:click="loginsubmit">
         </div>
       </form>
-      <div>
-        <a href="/auth/github"><img src="http://localhost:8181/icon/github.svg" alt="Kiwi standing on oval "> SIGNUP/LOGIN with GITHUB</a>
+      <div class="margin10">
+        <a class="basicbutton" href="/auth/github"><img height=30 width=30 src="http://localhost:8181/icon/github.svg" alt="Kiwi standing on oval "> SIGNUP/LOGIN with GITHUB</a>
       </div>
 
     </div>
@@ -129,4 +129,15 @@ export default {
 @import '../../scss/form.scss';
 @import '../../scss/button.scss';
 @import '../../scss/basic.scss';
+
+a {
+  line-height: 10px;
+  position: relative;
+
+  img {
+    position: relative;
+    top: 10px;
+    vertical-align: center;
+  }
+}
 </style>

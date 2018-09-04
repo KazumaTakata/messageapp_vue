@@ -2,37 +2,42 @@
     <div>
         <div class="inner__chat__container" v-bind:class="{active: this.$store.state.view.isActiveChatmenu }">
             <ul>
-                <li v-for="(chat, index) in this.$store.state.chat.talks" v-bind:key="index">
-                    <div v-bind:class="chatbubblestyle(chat.which)">
-                        <div>
-                            <img class="profile-img" v-bind:src="getphoto(chat.friendid,  chat.which)"> {{getname(chat.friendid, chat.which)}}
-                        </div>
-                        <div class="time__container">
-                            {{chat.time}}
-                        </div>
-                        <div class="bubble__container">
-                            <span>
-                                {{chat.content}}
-                            </span>
-                        </div>
-                        <div v-if="chat.filepath != undefined">
-                            <!-- <div class="file__preview">
+                <template v-if="this.$store.state.chat.talks.length>0">
+                    <li v-for="(chat, index) in this.$store.state.chat.talks" v-bind:key="index">
+                        <div v-bind:class="chatbubblestyle(chat.which)">
+                            <div>
+                                <img class="profile-img" v-bind:src="getphoto(chat.friendid,  chat.which)"> {{getname(chat.friendid, chat.which)}}
+                            </div>
+                            <div class="time__container">
+                                {{chat.time}}
+                            </div>
+                            <div class="bubble__container">
+                                <span>
+                                    {{chat.content}}
+                                </span>
+                            </div>
+                            <div v-if="chat.filepath != undefined">
+                                <!-- <div class="file__preview">
                                 <font-awesome-icon icon="file" />
                             </div> -->
-                            <div>
-                                <h6>
-                                    FILE
-                                </h6>
-                                <div class="file__container">
-                                    {{chat.filepath.split("/")[chat.filepath.split("/").length -1]}}
+                                <div>
+                                    <h6>
+                                        FILE
+                                    </h6>
+                                    <div class="file__container">
+                                        {{chat.filepath.split("/")[chat.filepath.split("/").length -1]}}
+                                    </div>
+                                    <a :href="chat.filepath" download="sample.txt">
+                                        <font-awesome-icon icon="download" />
+                                    </a>
                                 </div>
-                                <a :href="chat.filepath" download="sample.txt">
-                                    <font-awesome-icon icon="download" />
-                                </a>
                             </div>
                         </div>
-                    </div>
-                </li>
+                    </li>
+                </template>
+                <template v-else>
+                    There is no talk with {{this.$store.state.friend.acitvename}}.
+                </template>
             </ul>
         </div>
     </div>

@@ -40,7 +40,7 @@
             <p>{{nofindmessage}}</p>
           </div>
           <div class="result__container">
-            <p>{{resultgroupname}}</p>
+            <p> {{resultgroupname}}</p>
             <button v-on:click="joingroup" class="basicbutton">
               Join this group
             </button>
@@ -78,12 +78,25 @@ export default {
   methods: {
     toGroup() {
       this.friendorgroup = false
+      this.friendaddmessage = ''
     },
     toFriend() {
       this.friendorgroup = true
+      this.nofindmessage = ''
     },
     searchopen(e) {
       this.$store.commit('toggleaddfriend')
+      this.friendaddmessage = ''
+      this.friendname = ''
+      this.groupname = ''
+      this.searchusername = ''
+      this.searchuserid = ''
+      this.searchgroupid = ''
+      this.resultgroupname = ''
+      this.searchuserphotourl = 'http://localhost:8181/img/defaultprofile.jpg'
+      this.nofindmessage = ''
+      this.profilephoto = ''
+      this.friendorgroup = true
     },
     findgroup: async function() {
       const home_url = `http://localhost:8181`
@@ -95,11 +108,11 @@ export default {
           url: url,
           headers: { 'x-access-token': this.$store.state.token }
         })
-        if (result.data.id != undefined) {
+        if (result.data.err == undefined) {
           this.searchgroupid = result.data.id
-          this.resultgroupname = result.data.name
+          this.resultgroupname = `You found ${result.data.name}`
         } else {
-          this.nofindmessage = 'No Group found !!'
+          this.resultgroupname = result.data.err
         }
       } catch (err) {
         console.log(err)
@@ -120,6 +133,19 @@ export default {
             },
             headers: { 'x-access-token': this.$store.state.token }
           })
+          if (result.data.err) {
+            this.friendaddmessage = result.data.err
+          } else {
+            this.friendaddmessage = 'You successfully entered this group.'
+
+            let result5 = await axios({
+              method: 'get',
+              url: `http://localhost:8181/api/group`,
+              headers: { 'x-access-token': this.$store.state.token }
+            })
+
+            this.$store.commit('setgroup', result5.data)
+          }
         } catch (err) {
           console.log(err)
         }

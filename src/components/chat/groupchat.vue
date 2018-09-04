@@ -2,7 +2,7 @@
     <div>
         <div class="inner__chat__container" v-bind:class="{active: this.$store.state.view.isActiveChatmenu }">
             <ul>
-                <li v-for="(chat, index) in this.chats" v-bind:key="index">
+                <li v-for="(chat, index) in this.$store.state.chat.grouptalks" v-bind:key="index">
                     <div class="profile__container">
                         <img class="profile-img" v-bind:src="getphoto(chat.senderid)">
                         <div class="name__container">
@@ -86,11 +86,7 @@ export default {
   created() {
     this.websocket = this.$store.state.websocket_chat
   },
-  computed: {
-    chats() {
-      return this.$store.state.chat.grouptalks
-    }
-  },
+  computed: {},
   methods: {
     addchat: function() {
       let d = new Date()
@@ -141,17 +137,33 @@ export default {
       if (id == this.$store.state.myState.id) {
         return this.$store.state.myState.photourl
       }
-      let photourl = this.$store.state.friend.friends.filter(f => f.id == id)[0]
-        .photourl
-      return photourl
+      let friend = this.$store.state.friend.friends.filter(f => f.id == id)[0]
+      if (friend != undefined) {
+        return friend.photourl
+      }
+
+      let groupmember = this.$store.state.friend.groupmember.filter(
+        f => f.id == id
+      )[0]
+      if (groupmember != undefined) {
+        return groupmember.photourl
+      }
     },
     getname: function(id) {
       if (id == this.$store.state.myState.id) {
         return this.$store.state.myState.name
       }
-      let name = this.$store.state.friend.friends.filter(f => f.id == id)[0]
-        .name
-      return name
+      let friend = this.$store.state.friend.friends.filter(f => f.id == id)[0]
+      if (friend != undefined) {
+        return friend.name
+      }
+
+      let groupmember = this.$store.state.friend.groupmember.filter(
+        f => f.id == id
+      )[0]
+      if (groupmember != undefined) {
+        return groupmember.name
+      }
     }
   }
 }

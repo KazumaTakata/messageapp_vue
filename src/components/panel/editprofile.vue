@@ -133,6 +133,13 @@ export default {
       this.friendaddmessage = ''
       this.setprofilemessage = ''
       this.setnamemessage = ''
+      this.friendname = ''
+      this.profilephoto = ''
+      this.newname = ''
+      this.profilephotochosen = ''
+      this.setprofilemessage = ''
+      this.setnamemessage = ''
+      this.photoorname = true
     }
   }
 }
@@ -155,8 +162,8 @@ img {
 }
 
 .selectfile:hover {
-  color: red;
-  border-color: red;
+  color: white;
+  border-color: white;
 }
 
 .selectfile__container {

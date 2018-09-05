@@ -43,7 +43,7 @@
               GROUP MEMBER
             </div>
             <ul>
-              <li v-for="(member, index) in groupmember " v-bind:key="index ">
+              <li v-for="(member, index) in this.$store.state.friend.groupmember " v-bind:key="index ">
                 <div>
                   <img class="profile-img" v-bind:src="member.photourl ">
                 </div>
@@ -123,6 +123,12 @@ export default {
     }
   },
   methods: {
+    groupmemberwithoutme: function() {
+      let arr = this.$store.state.friend.groupmember.filter(item => {
+        return item.id != this.$store.state.myState.id
+      })
+      return arr
+    },
     onFileChange(e) {
       this.uploadfile = e.target.files[0]
     },

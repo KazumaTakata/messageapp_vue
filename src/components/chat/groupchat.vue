@@ -1,80 +1,92 @@
 <template>
-    <div>
-        <div class="inner__chat__container" v-bind:class="{active: this.$store.state.view.isActiveChatmenu }">
-            <ul>
-                <li v-for="(chat, index) in this.$store.state.chat.grouptalks" v-bind:key="index">
-                    <div class="profile__container">
-                        <img class="profile-img" v-bind:src="getphoto(chat.senderid)">
-                        <div class="name__container">
-                            {{getname(chat.senderid)}}
-                            <div class="time__container">
-                                {{chat.time}}
-                            </div>
-                        </div>
-                        <div class="bubble__container">
-                            {{chat.content}}
-                        </div>
+  <div>
+    <div class="inner__chat__container" v-bind:class="{active: this.$store.state.view.isActiveChatmenu }">
+      <ul>
+        <template v-if="this.$store.state.chat.grouptalks.length > 0">
+          <li v-for="(chat, index) in this.$store.state.chat.grouptalks" v-bind:key="index">
+            <div v-if="showtime(index)" class="time__hr">
+              <span class="time__span">
+                {{showday(index)}}
+                <!--Padding is optional-->
+              </span>
+            </div>
+            <div class="profile__container">
+              <img class="profile-img" v-bind:src="getphoto(chat.senderid)">
+              <div class="name__container">
+                {{getname(chat.senderid)}}
+                <div class="time__container">
+                  {{chat.time}}
+                </div>
+              </div>
+              <div class="bubble__container">
+                {{chat.content}}
+              </div>
+            </div>
+            <div class="responce__container">
+              <li v-for="(responce, index) in chat.response" class="responce-li" v-bind:key="index">
+                <div class="profile__container">
+                  <img class="profile-img-small" v-bind:src="getphoto(responce.senderid)">
+                  <div class="name__container">
+                    {{getname(responce.senderid)}}
+                    <div class="time__container-small">
+                      {{responce.time}}
                     </div>
-                    <div class="responce__container">
-                        <li v-for="(responce, index) in chat.response" class="responce-li" v-bind:key="index">
-                            <div class="profile__container">
-                                <img class="profile-img-small" v-bind:src="getphoto(responce.senderid)">
-                                <div class="name__container">
-                                    {{getname(responce.senderid)}}
-                                    <div class="time__container-small">
-                                        {{responce.time}}
-                                    </div>
-                                </div>
+                  </div>
 
-                                <div class="bubble__container-small">
-                                    {{responce.content}}
-                                </div>
-                            </div>
-                        </li>
-                    </div>
-                    <div class="feedback__container">
-                        <template v-if="chat.star > 0">
-                            <font-awesome-icon icon="star" /> {{chat.star}}
-                        </template>
-                        <template v-if="String(index)===activeresponceindex">
-                            <input type="text" v-model="responcemessage">
-                            <button v-on:click="addchat " class="addbutton">
-                                RESPONCE
-                            </button>
-                        </template>
-                    </div>
-                    <div v-if="chat.filepath != undefined">
-                        <div class="profile__container">
-                            <h6>
-                                FILE
-                            </h6>
-                            <div class="file__container">
-                                {{chat.filepath.split("/")[chat.filepath.split("/").length -1]}}
-                            </div>
+                  <div class="bubble__container-small">
+                    {{responce.content}}
+                  </div>
+                </div>
+              </li>
+            </div>
+            <div class="feedback__container">
+              <template v-if="chat.star > 0">
+                <font-awesome-icon icon="star" /> {{chat.star}}
+              </template>
+              <template v-if="String(index)===activeresponceindex">
+                <input type="text" v-model="responcemessage">
+                <button v-on:click="addchat " class="addbutton">
+                  RESPONCE
+                </button>
+              </template>
+            </div>
+            <div v-if="chat.filepath != undefined">
+              <div class="profile__container">
+                <h6>
+                  FILE
+                </h6>
+                <div class="file__container">
+                  {{chat.filepath.split("/")[chat.filepath.split("/").length -1]}}
+                </div>
 
-                            <a :href="chat.filepath" download="sample.txt">
-                                <font-awesome-icon icon="download" />
-                            </a>
-                        </div>
-                    </div>
-                    <div class="chat_hover_menu">
-                        <button v-bind:id="index" v-on:click="addresponce">
-                            <font-awesome-icon icon="comment" />
-                        </button>
-                        <button v-bind:id="index" v-on:click="addstar">
-                            <font-awesome-icon icon="star" />
-                        </button>
-                    </div>
+                <a :href="chat.filepath" download="sample.txt">
+                  <font-awesome-icon icon="download" />
+                </a>
+              </div>
+            </div>
+            <div class="chat_hover_menu">
+              <button v-bind:id="index" v-on:click="addresponce">
+                <font-awesome-icon icon="comment" />
+              </button>
+              <button v-bind:id="index" v-on:click="addstar">
+                <font-awesome-icon icon="star" />
+              </button>
+            </div>
 
-                </li>
-            </ul>
-        </div>
+          </li>
+        </template>
+        <template v-else>
+          There is no talk.
+        </template>
+      </ul>
     </div>
+  </div>
 </template>
 
 
 <script>
 import axios from 'axios'
+var moment = require('moment')
 export default {
   data() {
     return {
@@ -88,6 +100,26 @@ export default {
   },
   computed: {},
   methods: {
+    showday: function(index) {
+      return moment(
+        this.$store.state.chat.grouptalks[index].time.split(',')[0],
+        'MM-DD-YYYY'
+      ).format('DD/MM/YYYY')
+    },
+    showtime: function(index) {
+      if (index != 0) {
+        let time = this.$store.state.chat.grouptalks[index - 1].time
+        let timenext = this.$store.state.chat.grouptalks[index].time
+        if (
+          moment(time.split(',')[0], 'MM-DD-YYYY').date() !=
+          moment(timenext.split(',')[0], 'MM-DD-YYYY').date()
+        ) {
+          return true
+        } else {
+          return false
+        }
+      }
+    },
     addchat: function() {
       let d = new Date()
       let sendobj = {
@@ -174,6 +206,22 @@ export default {
 @import '../../scss/color.scss';
 @import '../../scss/button.scss';
 @import '../../scss/chat.scss';
+
+.time__span {
+  font-size: 20px;
+  position: relative;
+  top: 7px;
+  background-color: $font-color;
+  padding: 0 10px;
+}
+
+.time__hr {
+  width: 100%;
+  height: 20px;
+  margin: 20px;
+  border-bottom: 1px solid $font-color;
+  text-align: center;
+}
 
 .responce-li {
   padding: 10px;

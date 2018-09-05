@@ -4,6 +4,12 @@
             <ul>
                 <template v-if="this.$store.state.chat.talks.length>0">
                     <li v-for="(chat, index) in this.$store.state.chat.talks" v-bind:key="index">
+                        <div v-if="showtime(index)" class="time__hr">
+                            <span class="time__span">
+                                {{showday(index)}}
+                                <!--Padding is optional-->
+                            </span>
+                        </div>
                         <div v-bind:class="chatbubblestyle(chat.which)">
                             <div>
                                 <img class="profile-img" v-bind:src="getphoto(chat.friendid,  chat.which)"> {{getname(chat.friendid, chat.which)}}
@@ -45,9 +51,30 @@
 
 
 <script>
+var moment = require('moment')
 export default {
   computed: {},
   methods: {
+    showday: function(index) {
+      return moment(
+        this.$store.state.chat.talks[index].time.split(',')[0],
+        'MM-DD-YYYY'
+      ).format('DD/MM/YYYY')
+    },
+    showtime: function(index) {
+      if (index != 0) {
+        let time = this.$store.state.chat.talks[index - 1].time
+        let timenext = this.$store.state.chat.talks[index].time
+        if (
+          moment(time.split(',')[0], 'MM-DD-YYYY').date() !=
+          moment(timenext.split(',')[0], 'MM-DD-YYYY').date()
+        ) {
+          return true
+        } else {
+          return false
+        }
+      }
+    },
     chatbubblestyle: function(person) {
       return person == 0 ? 'mechat' : 'youchat'
     },
@@ -84,5 +111,20 @@ export default {
   font-size: 3rem;
   width: 100px;
   margin-left: auto;
+}
+.time__span {
+  font-size: 20px;
+  position: relative;
+  top: 7px;
+  background-color: $font-color;
+  padding: 0 10px;
+}
+
+.time__hr {
+  width: 100%;
+  height: 20px;
+  margin: 20px;
+  border-bottom: 1px solid $font-color;
+  text-align: center;
 }
 </style>

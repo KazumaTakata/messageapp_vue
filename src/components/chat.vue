@@ -78,7 +78,7 @@
     <div id="chatinput__container">
       <input v-model="chatinput" type="text" id="chatinput">
       <label class="addbutton">
-        <input @change="onFileChange" style="display:none" type="file" accept="image/*"> FILE
+        <input @change="onFileChange" style="display:none" type="file" accept="image/*|file_extension"> FILE
       </label>
       <template v-if="uploadfile != null">
         <font-awesome-icon icon="file" />

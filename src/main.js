@@ -18,9 +18,13 @@ import {
   faStop,
   faFile,
   faDownload,
+  faEye,
 } from "@fortawesome/free-solid-svg-icons";
-
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
+import hljs from "highlight.js";
+import "highlight.js/styles/default.css";
+import VueHighlightJS from "vue-highlight.js";
 
 library.add(
   faBars,
@@ -34,11 +38,12 @@ library.add(
   faPlay,
   faStop,
   faFile,
-  faDownload
+  faDownload,
+  faEye
 );
-
+hljs.initHighlightingOnLoad();
 Vue.component("font-awesome-icon", FontAwesomeIcon);
-
+Vue.use(VueHighlightJS);
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */

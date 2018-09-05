@@ -33,10 +33,18 @@
                                     <div class="file__container">
                                         {{chat.filepath.split("/")[chat.filepath.split("/").length -1]}}
                                     </div>
-                                    <a :href="chat.filepath" download="sample.txt">
+                                    <a class="file_anchor" :href="chat.filepath" download target="_blank">
                                         <font-awesome-icon icon="download" />
                                     </a>
+                                    <button v-on:click="previewfile(index, chat.filepath)" class="file_anchor">
+                                        <font-awesome-icon icon="eye" />
+                                    </button>
                                 </div>
+                                <div v-if="activepreview == index">
+                                    <img class="preview_image" :ref="'img'+ index" alt="">
+                                    <highlight-code lang="go" class="code">{{previewtext}}</highlight-code>
+                                </div>
+
                             </div>
                         </div>
                     </li>
@@ -44,6 +52,8 @@
                 <template v-else>
                     There is no talk with {{this.$store.state.friend.acitvename}}.
                 </template>
+              
+
             </ul>
         </div>
     </div>
@@ -51,10 +61,54 @@
 
 
 <script>
+import hljs from 'highlight.js'
+
+import axios from 'axios'
 var moment = require('moment')
+hljs.initHighlightingOnLoad()
 export default {
+  data() {
+    return {
+      activepreview: '',
+      previewtext: '',
+      
+    }
+  },
   computed: {},
   methods: {
+    previewfile: async function(index, url) {
+      if (index == this.activepreview) {
+        this.activepreview = ''
+      } else {
+        this.activepreview = index
+
+        try {
+          let result = await axios({
+            method: 'get',
+            url: url,
+            responseType: 'arraybuffer',
+            headers: { 'x-access-token': this.$store.state.token }
+          })
+          let type = result.headers['content-type'].split('/')[0]
+          if (type == 'image') {
+            var prefix = 'data:' + result.headers['content-type'] + ';base64,'
+            let base64img =
+              prefix + new Buffer.from(result.data, 'binary').toString('base64')
+            this.$refs['img24'][0].src = base64img
+            this.previewtext = ''
+            console.log(base64img)
+          } else if (type == 'text') {
+            this.previewtext = new Buffer.from(result.data, 'binary').toString()
+          } else if (type == 'application') {
+               this.previewtext = new Buffer.from(result.data, 'binary').toString()
+          } else {
+            this.previewtext = 'This file can not be displayed.'
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    },
     showday: function(index) {
       return moment(
         this.$store.state.chat.talks[index].time.split(',')[0],
@@ -107,6 +161,11 @@ export default {
 @import '../../scss/button.scss';
 @import '../../scss/chat.scss';
 
+.preview_image {
+  object-fit: cover;
+  width: 100%;
+}
+
 .file__preview {
   font-size: 3rem;
   width: 100px;
@@ -119,6 +178,9 @@ export default {
   background-color: $font-color;
   padding: 0 10px;
 }
+.code {
+    text-align: initial;
+}
 
 .time__hr {
   width: 100%;
@@ -126,5 +188,10 @@ export default {
   margin: 20px;
   border-bottom: 1px solid $font-color;
   text-align: center;
+}
+button {
+  background: none;
+  border: none;
+  outline: none;
 }
 </style>

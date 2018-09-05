@@ -18,10 +18,12 @@
     "@fortawesome/free-solid-svg-icons": "^5.1.0",
     "@fortawesome/vue-fontawesome": "^0.1.0",
     "axios": "^0.18.0",
+    "highlight.js": "^9.12.0",
     "i": "^0.3.6",
     "moment": "^2.22.2",
     "npm": "^6.1.0",
     "vue": "^2.5.2",
+    "vue-highlight.js": "^2.2.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
     "ws": "^5.2.2"

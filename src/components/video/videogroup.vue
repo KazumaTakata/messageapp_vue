@@ -1,51 +1,55 @@
 <template>
-    <div>
-        <div id="video__container">
-            <div class="friendnamecontainer">
-                <h2>{{this.$store.state.friend.acitvegroupname}}</h2>
-            </div>
-            <div class="mode__container">
-                <button v-on:click="tolivemode" class="basicbutton-white">
-                    LIVE
-                </button>
-                <button v-on:click="toarchivemode" class="basicbutton-white">
-                    ARCHIVE
-                </button>
-            </div>
-            <div class="text__container margin10">
-                <h3>Group Member</h3>
-            </div>
-            <ul>
-                <li v-for="(member, index) in this.$store.state.friend.groupmember" v-bind:key="index">
-                    <div>
-                        <img class="profile-img-small" v-bind:src="member.photourl ">
-                    </div>
-                    <h4>{{member.name}}</h4>
-                </li>
-            </ul>
-            <div class="text__container margin10">
-                <button v-on:click="startchat" class="basicbutton-white">
-                    JOIN CHAT
-                </button>
+  <div>
+    <div id="video__container">
+      <div class="friendnamecontainer">
+        <h2>{{this.$store.state.friend.acitvegroupname}}</h2>
+      </div>
+      <!-- <div class="mode__container">
+        <button v-on:click="tolivemode" class="basicbutton-white">
+          LIVE
+        </button>
+        <button v-on:click="toarchivemode" class="basicbutton-white">
+          ARCHIVE
+        </button>
+      </div> -->
+      <div class="text__container margin10">
+        <h3>Group Member</h3>
+      </div>
+      <ul>
+        <li v-for="(member, index) in this.$store.state.friend.groupmember" v-bind:key="index">
+          <div>
+            <img class="profile-img-small" v-bind:src="member.photourl ">
+
+            <div class="logincircle" v-if="iflogin(member.id)">
             </div>
 
-            <div v-if="fullscreenmode" class="fullscreen">
-                <h2>Group Video Chat In {{this.$store.state.friend.acitvegroupname}}</h2>
-                <button v-on:click="videoclose" class="closebutton">
-                    <font-awesome-icon icon="times" />
-                </button>
-                <div class="inner__fullscreen">
-                    <template v-for="(member, index) in groupmemberwithoutme">
-                        <div v-bind:key="index">
-                            <h2>{{member.name}}</h2>
-                            <video width="500" height="420" v-bind:ref="member.id" v-bind:key="index">
-                            </video>
-                        </div>
-                    </template>
-                </div>
+          </div>
+          <h4>{{member.name}}</h4>
+        </li>
+      </ul>
+      <div class="text__container margin10">
+        <button v-on:click="startchat" class="basicbutton-white">
+          JOIN CHAT
+        </button>
+      </div>
+
+      <div v-if="fullscreenmode" class="fullscreen">
+        <h2>Group Video Chat In {{this.$store.state.friend.acitvegroupname}}</h2>
+        <button v-on:click="videoclose" class="closebutton">
+          <font-awesome-icon icon="times" />
+        </button>
+        <div class="inner__fullscreen">
+          <template v-for="(member, index) in groupmemberwithoutme">
+            <div v-bind:key="index">
+              <h2>{{member.name}}</h2>
+              <video width="500" height="420" v-bind:ref="member.id" v-bind:key="index">
+              </video>
             </div>
+          </template>
         </div>
+      </div>
     </div>
+  </div>
 </template>
 
 
@@ -167,6 +171,9 @@ export default {
     }
   },
   methods: {
+    iflogin: function(id) {
+      return this.$store.state.friend.logingroupmember.includes(id)
+    },
     videoclose: function(event) {
       this.fullscreenmode = false
       let keys = Object.keys(pc)
@@ -491,6 +498,13 @@ var OrigPeerConnection = window.RTCPeerConnection
 @import '../../scss/basic.scss';
 @import '../../scss/switchbutton.scss';
 
+.logincircle {
+  height: 10px;
+  width: 10px;
+  background: $login-color;
+  border-radius: 50%;
+  margin: 0 10px;
+}
 ul {
   display: flex;
   justify-content: center;

@@ -1,23 +1,23 @@
 <template>
-    <div>
-        <input v-model="query_input" placeholder="chat search" v-on:keyup.enter="elasticsearchtalk" type="text">
-        <div class="text__container">
-            Found {{this.query_result.length}} results.
-        </div>
-        <ul>
-            <li v-for="(result, index) in this.query_result " v-bind:key="index ">
-                <div>
-                    <img class="profile-img" v-bind:src="getphoto( result.friendid, result.which ) "> {{getname(result.friendid, result.which)}}
-                </div>
-                <div class="time__container">
-                    {{result.time}}
-                </div>
-                <div class="text__container">
-                    {{result.content}}
-                </div>
-            </li>
-        </ul>
+  <div>
+    <input v-model="query_input" placeholder="chat search" v-on:keyup.enter="elasticsearchtalk" type="text">
+    <div class="text__container">
+      Found {{this.query_result.length}} results.
     </div>
+    <ul>
+      <li v-for="(result, index) in this.query_result " v-bind:key="index ">
+        <div>
+          <img class="profile-img" v-bind:src="getphoto( result.friendid, result.which ) "> {{getname(result.friendid, result.which)}}
+        </div>
+        <div class="time__container">
+          {{result.time}}
+        </div>
+        <div class="text__container">
+          {{result.content}}
+        </div>
+      </li>
+    </ul>
+  </div>
 </template>
 
 
@@ -56,7 +56,7 @@ export default {
       }
     },
     getphoto: function(id, which) {
-      if (which == 0 || which === true) {
+      if (which === false) {
         return this.$store.state.myState.photourl
       } else {
         let photourl = this.$store.state.friend.friends.filter(
@@ -66,7 +66,7 @@ export default {
       }
     },
     getname: function(id, which) {
-      if (which == 0 || which === true) {
+      if (which === false) {
         return this.$store.state.myState.name
       } else {
         let name = this.$store.state.friend.friends.filter(f => f.id == id)[0]

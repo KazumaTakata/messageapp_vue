@@ -132,9 +132,9 @@ input [type='file'] {
 
 .basicbutton {
   background: transparent;
-  color: $border-color;
+  color: white;
   font-size: 15px;
-  border: 1px solid $border-color;
+  border: 1px solid white;
   border-radius: 20px;
   background: transparent;
   outline: none;
@@ -143,8 +143,8 @@ input [type='file'] {
 }
 
 .basicbutton:hover {
-  color: white;
-  border: 1px solid white;
+  background: white;
+  color: $main-color;
 }
 
 .basicbutton-white {

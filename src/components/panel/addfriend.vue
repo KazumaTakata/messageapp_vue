@@ -4,33 +4,49 @@
       <button v-on:click="searchopen" class="closebutton">
         <font-awesome-icon icon="times" />
       </button>
-
-      <div class="form__container">
+      <div>
+        <h2 class="white-title">{{search_title}}</h2>
         <div>
+          <input v-model="search_input" placeholder="name" type="text">
+          <button v-on:click="search" class="searchbutton">
+            <font-awesome-icon icon="search" />
+          </button>
           <button v-on:click="toFriend" class="basicbutton">Friend</button>
           <button v-on:click="toGroup" class="basicbutton">Group</button>
+          <p>{{nofindmessage}}</p>
         </div>
-        <template v-if="friendorgroup">
-          <h2 class="white-title">Find Your Friend!!</h2>
-          <div>
-            <input v-model="friendname" placeholder="name" type="text">
-            <button v-on:click="findfriend" class="searchbutton">
-              <font-awesome-icon icon="search" />
-            </button>
-            <p>{{nofindmessage}}</p>
-          </div>
-          <div class="result__container">
-            <div>
-              <img　v-bind:src="this.searchuserphotourl" alt="">
-            </div>
-            <p>{{searchusername}}</p>
-            <button v-on:click="addfriend" class="basicbutton">
-              ADD THIS FRIEND
-            </button>
-            <p>{{friendaddmessage}}</p>
-          </div>
-        </template>
-        <template v-else>
+        <div>
+          <ul>
+            <li v-for="(item, index) in this.search_result" v-bind:key="index">
+              <template v-if="friendorgroup">
+                <div class="friend_list_container">
+                  <img　class="profile_img" v-bind:src="item.photourl" alt="">
+                    <div class="name__container">
+                      {{item.name}}
+                    </div>
+                    <button v-on:click="addfriend(index)" class="basicbutton">
+                      ADD
+                    </button>
+                </div>
+              </template>
+              <template v-else>
+                <div class="friend_list_container">
+                  <div class="name__container">
+                    {{item.name}}
+                  </div>
+                  <div class="name__container">
+                    {{item.description}}
+                  </div>
+                  <button v-on:click="joingroup(index)" class="basicbutton">
+                    ADD
+                  </button>
+                </div>
+              </template>
+            </li>
+          </ul>
+        </div>
+
+        <!-- <template v-else>
           <h2 class="white-title">Find Group!!</h2>
           <div>
             <input v-model="groupname" placeholder="name" type="text">
@@ -46,7 +62,7 @@
             </button>
             <p>{{friendaddmessage}}</p>
           </div>
-        </template>
+        </template> -->
 
       </div>
 
@@ -62,7 +78,8 @@ export default {
   data() {
     return {
       friendaddmessage: '',
-      friendname: '',
+
+      search_input: '',
       groupname: '',
       searchusername: '',
       searchuserid: '',
@@ -71,7 +88,9 @@ export default {
       searchuserphotourl: 'http://localhost:8181/img/defaultprofile.jpg',
       nofindmessage: '',
       profilephoto: '',
-      friendorgroup: true
+      friendorgroup: true,
+      search_result: [],
+      search_title: 'Find Friends'
     }
   },
 
@@ -79,15 +98,19 @@ export default {
     toGroup() {
       this.friendorgroup = false
       this.friendaddmessage = ''
+      this.search_result = []
+      this.search_title = 'Find Group'
     },
     toFriend() {
       this.friendorgroup = true
       this.nofindmessage = ''
+      this.search_result = []
+      this.search_title = 'Find Friends'
     },
     searchopen(e) {
       this.$store.commit('toggleaddfriend')
       this.friendaddmessage = ''
-      this.friendname = ''
+      this.search_input = ''
       this.groupname = ''
       this.searchusername = ''
       this.searchuserid = ''
@@ -97,74 +120,54 @@ export default {
       this.nofindmessage = ''
       this.profilephoto = ''
       this.friendorgroup = true
+      this.search_result = []
     },
-    findgroup: async function() {
+
+    joingroup: async function(index) {
       const home_url = `http://localhost:8181`
-      const group_url = '/api/group/' + this.groupname
+      const group_url = '/api/group/'
       const url = home_url + group_url
+
       try {
         let result = await axios({
-          method: 'get',
+          method: 'put',
           url: url,
+          data: {
+            groupid: this.search_result[index].id
+          },
           headers: { 'x-access-token': this.$store.state.token }
         })
-        if (result.data.err == undefined) {
-          this.searchgroupid = result.data.id
-          this.resultgroupname = `You found ${result.data.name}`
+        if (result.data.err) {
+          this.$toasted.show(result.data.err)
         } else {
-          this.resultgroupname = result.data.err
+          this.$toasted.show('You successfully entered this group.')
+
+          let result5 = await axios({
+            method: 'get',
+            url: `http://localhost:8181/api/group`,
+            headers: { 'x-access-token': this.$store.state.token }
+          })
+
+          this.$store.commit('setgroup', result5.data)
         }
       } catch (err) {
         console.log(err)
+        this.$toasted.show(err)
       }
     },
-    joingroup: async function() {
-      if (this.searchgroupid != '') {
-        const home_url = `http://localhost:8181`
-        const login_url = '/api/group'
-        const url = home_url + login_url
+    addfriend: async function(index) {
+      const home_url = `http://localhost:8181`
+      const id_url = '/api/friend/add/' + this.search_result[index].id
+      const url = home_url + id_url
 
-        try {
-          let result = await axios({
-            method: 'put',
-            url: url,
-            data: {
-              groupid: this.searchgroupid
-            },
-            headers: { 'x-access-token': this.$store.state.token }
-          })
-          if (result.data.err) {
-            this.friendaddmessage = result.data.err
-          } else {
-            this.friendaddmessage = 'You successfully entered this group.'
-
-            let result5 = await axios({
-              method: 'get',
-              url: `http://localhost:8181/api/group`,
-              headers: { 'x-access-token': this.$store.state.token }
-            })
-
-            this.$store.commit('setgroup', result5.data)
-          }
-        } catch (err) {
-          console.log(err)
-        }
-      } else {
-      }
-    },
-    addfriend: async function(event) {
-      if (this.searchuserid != '') {
-        const home_url = `http://localhost:8181`
-        const login_url = '/api/friend/add/' + this.searchuserid
-        const url = home_url + login_url
-
+      if (this.search_result[index].id != this.$store.state.myState.id) {
         try {
           let result = await axios({
             method: 'get',
             url: url,
             headers: { 'x-access-token': this.$store.state.token }
           })
-          this.friendaddmessage = 'New friend added !!'
+          this.$toasted.show('New friend added !!')
           try {
             let result2 = await axios({
               method: 'get',
@@ -178,45 +181,89 @@ export default {
           }
         } catch (err) {
           console.log(err)
-          this.friendaddmessage = 'This person is aleady your friend'
+          this.$toasted.show('This person is aleady your friend')
         }
       } else {
-        this.friendaddmessage = 'Please find friend by name first!!'
+        this.$toasted.show('This is your account')
       }
     },
-    findfriend: async function(event) {
-      if (this.friendname != this.$store.state.myState.name) {
-        const home_url = `http://localhost:8181`
-        const login_url = '/api/friend/' + this.friendname
-        const url = home_url + login_url
-        try {
-          let result = await axios({
-            method: 'get',
-            url: url,
-            headers: { 'x-access-token': this.$store.state.token }
-          })
-          if (result.data.name != undefined) {
-            this.searchuserid = result.data.id
-            this.searchusername = result.data.name
-            this.searchuserphotourl = result.data.photourl
-            this.nofindmessage = ''
-          } else {
-            this.nofindmessage = 'No friend found !!'
-          }
-        } catch (err) {
-          console.log(err)
-        }
+    search: async function(event) {
+      const home_url = `http://localhost:8181`
+      let find_url
+      if (this.friendorgroup) {
+        find_url = '/api/elastic/user/' + this.search_input
       } else {
-        this.nofindmessage = 'This is your name'
+        find_url = '/api/elastic/group/' + this.search_input
+      }
+      const url = home_url + find_url
+      try {
+        let result = await axios({
+          method: 'get',
+          url,
+          headers: { 'x-access-token': this.$store.state.token }
+        })
+        if (result.data.length != 0) {
+          this.search_result = result.data
+          this.nofindmessage = ''
+        } else {
+          if (this.friendorgroup) {
+            this.nofindmessage = 'No friend found !!'
+          } else {
+            this.nofindmessage = 'No group found !!'
+          }
+
+          this.search_result = []
+        }
+      } catch (err) {
+        console.log(err)
       }
     }
   }
 }
 </script>
-
+  
 <style lang="scss" scoped>
 @import '../../scss/color.scss';
 @import '../../scss/form.scss';
 @import '../../scss/button.scss';
 @import '../../scss/basic.scss';
+
+input[type='text'],
+input[type='password'] {
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  padding: 10px;
+  margin: 10px;
+  width: 60%;
+}
+
+.friend_list_container {
+  display: flex;
+  .profile_img {
+    margin-left: 50px;
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid rgb(73, 53, 53);
+  }
+  .name__container {
+    line-height: 50px;
+    margin: 0 40px;
+    width: 100%;
+    color: white;
+  }
+  button {
+    float: right;
+  }
+}
+ul {
+  list-style: none;
+  li {
+    border-bottom: 1px solid white;
+    padding: 20px;
+  }
+}
 </style>

@@ -25,6 +25,7 @@
     "vue": "^2.5.2",
     "vue-highlight.js": "^2.2.0",
     "vue-router": "^3.0.1",
+    "vue-toasted": "^1.1.24",
     "vuex": "^3.0.1",
     "ws": "^5.2.2"
   },

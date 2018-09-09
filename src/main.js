@@ -20,6 +20,7 @@ import {
   faFile,
   faDownload,
   faEye,
+  faEdit,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -28,6 +29,7 @@ import "highlight.js/styles/default.css";
 import VueHighlightJS from "vue-highlight.js";
 
 library.add(
+  faEdit,
   faBars,
   faPlus,
   faSearch,

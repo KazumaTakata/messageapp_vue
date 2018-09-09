@@ -71,6 +71,9 @@
               <button v-bind:id="index" v-on:click="addstar">
                 <font-awesome-icon icon="star" />
               </button>
+              <button v-bind:id="index" v-on:click="addstar">
+                <font-awesome-icon icon="edit" />
+              </button>
             </div>
 
           </li>
@@ -249,8 +252,8 @@ export default {
 }
 .chat_hover_menu {
   top: 10px;
-  height: 20px;
-  width: 80px;
+  height: 30px;
+  width: 120px;
   background: white;
   opacity: 0;
   position: relative;
@@ -258,11 +261,12 @@ export default {
   box-shadow: 1px 1px 3px $border-color;
 
   button {
+    padding: 5px;
     border: none;
     outline: none;
     background: transparent;
-    color: $main-color;
     font-size: 1rem;
+    color: white;
   }
   button:hover {
     color: $sidebar-background;
@@ -274,8 +278,16 @@ export default {
 .responce__container:hover ~ .chat_hover_menu {
   opacity: 1;
 }
+.fa-star path,
+.fa-comment path,
+.fa-edit path {
+  stroke: red;
+
+  stroke-width: 20;
+}
 
 li {
   padding: 10px;
+  border-bottom: 1px solid $border-color;
 }
 </style>

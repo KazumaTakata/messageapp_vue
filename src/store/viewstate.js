@@ -6,6 +6,7 @@ const module = {
     isActiveNotification: false,
     isActiveCreateGroup: false,
     isActiveChatmenu: true,
+    isFeedMine: false,
   },
   mutations: {
     toggleaddfriend(state) {
@@ -25,6 +26,9 @@ const module = {
     },
     togglechatmenu(state) {
       state.isActiveChatmenu = !state.isActiveChatmenu;
+    },
+    toggleisFeedMine(state) {
+      state.isFeedMine = !state.isFeedMine;
     },
   },
 };

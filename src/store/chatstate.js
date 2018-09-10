@@ -1,6 +1,8 @@
+import Vue from "vue";
+
 const module = {
   state: {
-    talks: "",
+    talks: [],
     grouptalks: [],
   },
   mutations: {
@@ -15,6 +17,13 @@ const module = {
     },
     setgrouptalks(state, talks) {
       state.grouptalks = talks;
+    },
+    plusonestargroup(state, id) {
+      if (state.grouptalks[id].star != undefined) {
+        state.grouptalks[id].star += 1;
+      } else {
+        Vue.set(state.grouptalks[id], "star", 1);
+      }
     },
   },
 };

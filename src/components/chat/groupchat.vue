@@ -18,7 +18,7 @@
                   {{chat.time}}
                 </div>
               </div>
-              <div class="bubble__container">
+              <div v-bind:contenteditable="editableindex === index" v-bind:class="{underline: editableindex === index}" @input="updateeditable" class="bubble__container">
                 {{chat.content}}
               </div>
             </div>
@@ -71,9 +71,11 @@
               <button v-bind:id="index" v-on:click="addstar">
                 <font-awesome-icon icon="star" />
               </button>
-              <button v-bind:id="index" v-on:click="addstar">
-                <font-awesome-icon icon="edit" />
-              </button>
+              <template v-if="ifmychat(chat.senderid)">
+                <button v-bind:id="index" v-on:click="edittalk(index)">
+                  <font-awesome-icon icon="edit" />
+                </button>
+              </template>
             </div>
 
           </li>
@@ -95,7 +97,9 @@ export default {
     return {
       activeresponceindex: '',
       responcemessage: '',
-      websocket: ''
+      websocket: '',
+      editableindex: null,
+      editedtalk: ''
     }
   },
   created() {
@@ -103,6 +107,46 @@ export default {
   },
   computed: {},
   methods: {
+    ifmychat(id) {
+      return id == this.$store.state.myState.id
+    },
+    updateeditable: function(event) {
+      this.editedtalk = event.target.innerText
+    },
+    ifeditable: function(index) {},
+    edittalk: function(index) {
+      if (this.editableindex == index) {
+        this.editableindex = null
+        this.updatechat(index)
+      } else {
+        if (this.editableindex != null) {
+          this.updatechat(this.editableindex)
+        }
+        this.editableindex = index
+      }
+    },
+    updatechat: async function(index) {
+      const home_url = `http://localhost:8181`
+      const _url = `/api/group/talk`
+      const url = home_url + _url
+
+      try {
+        let result = await axios({
+          method: 'put',
+          url: url,
+          data: {
+            index,
+            content: this.editedtalk,
+            groupid: this.$store.state.friend.activegroupid
+          },
+          headers: { 'x-access-token': this.$store.state.token }
+        })
+        console.log(result)
+        // this.$store.commit('plusonestargroup', chatindex)
+      } catch (err) {
+        console.log(err)
+      }
+    },
     showday: function(index) {
       return moment(
         this.$store.state.chat.grouptalks[index].time.split(',')[0],
@@ -160,7 +204,7 @@ export default {
           headers: { 'x-access-token': this.$store.state.token }
         })
         console.log(result)
-        this.groupmember = result.data
+        this.$store.commit('plusonestargroup', chatindex)
       } catch (err) {
         console.log(err)
       }

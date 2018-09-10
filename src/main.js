@@ -21,6 +21,7 @@ import {
   faDownload,
   faEye,
   faEdit,
+  faHome,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -42,7 +43,8 @@ library.add(
   faStop,
   faFile,
   faDownload,
-  faEye
+  faEye,
+  faHome
 );
 hljs.initHighlightingOnLoad();
 Vue.component("font-awesome-icon", FontAwesomeIcon);
@@ -50,6 +52,19 @@ Vue.use(VueHighlightJS);
 Vue.use(Toasted);
 Vue.config.productionTip = false;
 
+Vue.component("editable", {
+  template: `
+    <div contenteditable="true" @blur="emitChange">
+      {{ content }}
+    </div>
+  `,
+  props: ["content"],
+  methods: {
+    emitChange(ev) {
+      this.$emit("update", ev.target.textContent);
+    },
+  },
+});
 /* eslint-disable no-new */
 new Vue({
   el: "#app",

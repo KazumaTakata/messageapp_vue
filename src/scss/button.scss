@@ -106,15 +106,29 @@
 #floating {
   position: absolute;
   color: white;
-  bottom: 50px;
-  right: 30px;
   height: 40px;
   width: 40px;
+  font-size: 1rem;
   border-radius: 50%;
   background-color: $sidebar-background;
-  box-shadow: 2px 2px 1px $hover-color;
+  box-shadow: 2px 2px 3px $border-color;
   outline: none;
   border: none;
+}
+
+.feedpluspos {
+  bottom: 100px;
+  right: 30px;
+}
+
+.feededitpos {
+  bottom: 150px;
+  right: 30px;
+}
+
+.feedhomepos {
+  bottom: 50px;
+  right: 30px;
 }
 
 input [type='file'] {

@@ -11,49 +11,36 @@
         <button v-on:click="toback" class="basicbutton">BackgroupPhoto</button>
 
         <div class="set__container" v-if="photoornameorback === 'photo'">
-          <h4 class="white-title">Update your profile photo.</h4>
           <div>
             <img class="previewimg" v-bind:src='this.$store.state.myState.photourl'>
           </div>
           <div class="selectfile__container">
             <label class="basicbutton selectfile">
-              <input @change="onFileChange" style="display:none" type="file" accept="image/*"> SELECT
+              <input @change="onFileChange" style="display:none" type="file" accept="image/*"> SELECT NEW PROFILE
             </label>
           </div>
-          <div>
-            <button v-on:click="sendProfilephoto" class="basicbutton">SET PHOTO</button>
-          </div>
-          <p>{{this.profilephotochosen}}</p>
-          <p>{{this.setprofilemessage}}</p>
+
         </div>
         <div class="set__container" v-else-if="photoornameorback === 'name'">
           <div>
-            <h4 class="white-title">Type in NEW NAME</h4>
-            <p class="white-title">Your current name is {{this.$store.state.myState.name}}</p>
-            <div>
+            <p class="white-title">YOUR NAME: {{this.$store.state.myState.name}}</p>
+            <div class="margin50">
               <input placeholder="new name" v-model="newname" type="text">
             </div>
             <button v-on:click="sendNewname" class="basicbutton">
               SET PROFILE NAME
             </button>
-            <p>{{setnamemessage}}</p>
           </div>
         </div>
         <div class="set__container" v-else-if="photoornameorback === 'back'">
-          <h4 class="white-title">Update your Background photo.</h4>
           <div>
-            <img class="previewimg" v-bind:src='this.$store.state.myState.photourl'>
+            <img class="previewimg" v-bind:src='this.$store.state.myState.backgroundurl'>
           </div>
           <div class="selectfile__container">
             <label class="basicbutton selectfile">
-              <input @change="onFileChange" style="display:none" type="file" accept="image/*"> SELECT
+              <input @change="onFileChange" style="display:none" type="file" accept="image/*"> SELECT NEW BACKGROUND PHOTO
             </label>
           </div>
-          <div>
-            <button v-on:click="sendProfilephoto" class="basicbutton">SET PHOTO</button>
-          </div>
-          <p>{{this.profilephotochosen}}</p>
-          <p>{{this.setprofilemessage}}</p>
         </div>
 
       </div>
@@ -98,7 +85,7 @@ export default {
         return this.backphoto != ''
       }
     },
-    sendProfilephoto: function(event) {
+    sendProfilephoto: function() {
       if (this.sendphotovalidation()) {
         const home_url = `http://localhost:8181`
         let url
@@ -120,8 +107,12 @@ export default {
           })
           .then(res => {
             console.log(res.data.photourl)
-            this.$toasted.show('New profile photo is set')
-            this.$store.commit('setPhoto', res.data.photourl)
+            if (this.photoornameorback == 'photo') {
+              this.$toasted.show('New profile photo is set')
+              this.$store.commit('setPhoto', res.data.photourl)
+            } else if (this.photoornameorback == 'back') {
+              this.$store.commit('setBackPhoto', res.data.photourl)
+            }
           })
           .catch(function() {
             console.log('FAILURE!!')
@@ -166,6 +157,7 @@ export default {
         this.backphoto = e.target.files[0]
         this.$toasted.show('New Background photo is chosen. SET IT!!')
       }
+      this.sendProfilephoto()
     },
 
     profileopen: function(event) {

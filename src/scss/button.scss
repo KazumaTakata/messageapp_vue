@@ -74,21 +74,6 @@
   transform: scale(1.1);
 }
 
-.skelltonbutton {
-  background: transparent;
-  border: none;
-  font-size: 1.6rem;
-  color: white;
-  transition: 0.2s;
-  outline: none;
-  margin-top: 20px;
-  border: 1px solid white;
-}
-
-.skelltonbutton:hover {
-  transform: scale(1.1);
-}
-
 .loginbutton {
   position: absolute;
   left: 10px;
@@ -147,7 +132,7 @@ input [type='file'] {
 .basicbutton {
   background: transparent;
   color: white;
-  font-size: 15px;
+  font-size: 1rem;
   border: 1px solid white;
   border-radius: 20px;
   background: transparent;
@@ -164,7 +149,7 @@ input [type='file'] {
 .basicbutton-white {
   background: transparent;
   color: $border-color;
-  font-size: 15px;
+  font-size: 0.6rem;
   border: 1px solid $border-color;
   border-radius: 20px;
   background: transparent;

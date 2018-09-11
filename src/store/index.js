@@ -36,6 +36,9 @@ const store = new Vuex.Store({
     setPhoto(state, photourl) {
       state.myState.photourl = photourl;
     },
+    setBackPhoto(state, backgroundurl) {
+      state.myState.backgroundurl = backgroundurl;
+    },
     setName(state, newname) {
       state.myState.name = newname;
     },

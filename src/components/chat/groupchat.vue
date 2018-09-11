@@ -45,7 +45,7 @@
               </template>
               <template v-if="String(index)===activeresponceindex">
                 <input type="text" v-model="responcemessage">
-                <button v-on:click="addchat " class="addbutton">
+                <button v-on:click="addchat " class="basicbutton-white">
                   RESPONCE
                 </button>
               </template>
@@ -95,7 +95,7 @@ var moment = require('moment')
 export default {
   data() {
     return {
-      activeresponceindex: '',
+      activeresponceindex: null,
       responcemessage: '',
       websocket: '',
       editableindex: null,
@@ -182,7 +182,11 @@ export default {
     },
     addresponce: function(event) {
       let chatindex = event.currentTarget.id
-      this.activeresponceindex = chatindex
+      if (this.activeresponceindex == chatindex) {
+        this.activeresponceindex = null
+      } else {
+        this.activeresponceindex = chatindex
+      }
     },
     addstar: async function(event) {
       console.log(event.currentTarget.id)
@@ -285,7 +289,13 @@ export default {
 
   input {
     width: 60%;
-    font-size: 0.9rem;
+    font-size: 0.7rem;
+    padding: 5px 10px;
+  }
+
+  bottom {
+    font-size: 0.5rem;
+    padding: 5px 10px;
   }
 }
 
@@ -331,7 +341,7 @@ export default {
 }
 
 li {
-  padding: 10px;
+  padding: 40px;
   border-bottom: 1px solid $border-color;
 }
 </style>

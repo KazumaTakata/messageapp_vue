@@ -17,15 +17,13 @@
               <div class="time__container">
                 {{chat.time}}
               </div>
-              <div class="bubble__container">
 
-                <div v-bind:ref="index" v-bind:contenteditable="editableindex === index" v-bind:class="{underline: editableindex === index}" @input="updateeditable" class="bubble__container">
-                  <span v-bind:class="{underline: editableindex === index}">
-                    {{chat.content}}
-                  </span>
-                </div>
-
+              <div v-bind:ref="index" v-bind:contenteditable="editableindex === index" v-bind:class="{underline: editableindex === index}" @input="updateeditable" class="bubble__container">
+                <span v-bind:class="{underline: editableindex === index}">
+                  {{chat.content}}
+                </span>
               </div>
+
               <div v-if="chat.which == 0" class="chat_hover_menu">
                 <template v-if="chat.which  == 0">
                   <button v-bind:id="index" v-on:click="edittalk(index)">
@@ -228,7 +226,8 @@ export default {
   position: relative;
   top: 7px;
   background-color: $font-color;
-  padding: 0 10px;
+  padding: 10px 10px;
+  margin: 10px;
 }
 .code {
   text-align: initial;

@@ -19,23 +19,30 @@
       </div>
     </div>
     <ul>
-      <li v-for="(feed, index) in currentFeed" v-bind:key="index">
-        <div class="feedcard">
-          <div class="profilecontainer">
-            <img class="profile" v-bind:src="feed.profileurl">
-            <div class="profilename">
-              {{feed.name}}
+      <template v-if="currentFeed.length != 0">
+        <li v-for="(feed, index) in currentFeed" v-bind:key="index">
+          <div class="feedcard">
+            <div class="profilecontainer">
+              <img class="profile" v-bind:src="feed.profileurl">
+              <div class="profilename">
+                {{feed.name}}
+              </div>
+            </div>
+            <template v-if="feed.photourl != ''">
+              <img v-bind:src="feed.photourl">
+            </template>
+
+            <div class="feedcontent">
+              {{feed.feedcontent}}
             </div>
           </div>
-          <template v-if="feed.photourl != ''">
-            <img v-bind:src="feed.photourl">
-          </template>
-
-          <div class="feedcontent">
-            {{feed.feedcontent}}
-          </div>
-        </div>
-      </li>
+        </li>
+      </template>
+      <template v-else>
+        <li>
+          There is not feed.
+        </li>
+      </template>
     </ul>
     <button v-on:click="editgroupprofile" v-if="showeditbutton" id="floating" class="feededitpos">
       <font-awesome-icon icon="edit" />
@@ -93,53 +100,63 @@ export default {
   },
   computed: {
     getbackground() {
-      if (this.$store.state.friend.individualorgroup == 'group') {
-        let group = this.$store.state.friend.groups.filter(
-          g => g._id == this.$store.state.friend.activegroupid
-        )
-        if (group[0].backgroundurl != undefined) {
-          return group[0].backgroundurl
+      if (!this.$store.state.view.isFeedMine) {
+        if (this.$store.state.friend.individualorgroup == 'group') {
+          let group = this.$store.state.friend.groups.filter(
+            g => g._id == this.$store.state.friend.activegroupid
+          )
+          if (group[0].backgroundurl != undefined) {
+            return group[0].backgroundurl
+          } else {
+            return 'http://localhost:8181/img/defaultbackground.jpg'
+          }
         } else {
-          return 'http://localhost:8181/img/defaultbackground.jpg'
+          let friend = this.$store.state.friend.friends.filter(
+            f => f.id == this.$store.state.friend.activefriendid
+          )
+          if (friend[0].backgroundurl != undefined) {
+            return friend[0].backgroundurl
+          } else {
+            return 'http://localhost:8181/img/defaultbackground.jpg'
+          }
         }
       } else {
-        let friend = this.$store.state.friend.friends.filter(
-          f => f.id == this.$store.state.friend.activefriendid
-        )
-        if (friend[0].backgroundurl != undefined) {
-          return friend[0].backgroundurl
-        } else {
-          return 'http://localhost:8181/img/defaultbackground.jpg'
-        }
+        return this.$store.state.myState.backgroundurl
       }
     },
     getprofile() {
-      if (this.$store.state.friend.individualorgroup == 'group') {
-        let group = this.$store.state.friend.groups.filter(
-          g => g._id == this.$store.state.friend.activegroupid
-        )
-        if (group[0].photourl != undefined) {
-          return group[0].photourl
+      if (!this.$store.state.view.isFeedMine) {
+        if (this.$store.state.friend.individualorgroup == 'group') {
+          let group = this.$store.state.friend.groups.filter(
+            g => g._id == this.$store.state.friend.activegroupid
+          )
+          if (group[0].photourl != undefined) {
+            return group[0].photourl
+          } else {
+            return 'http://localhost:8181/img/defaultprofile.jpg'
+          }
         } else {
-          return 'http://localhost:8181/img/defaultprofile.jpg'
+          let friend = this.$store.state.friend.friends.filter(
+            f => f.id == this.$store.state.friend.activefriendid
+          )
+          if (friend[0].photourl != undefined) {
+            return friend[0].photourl
+          } else {
+            return 'http://localhost:8181/img/defaultprofile.jpg'
+          }
         }
       } else {
-        let friend = this.$store.state.friend.friends.filter(
-          f => f.id == this.$store.state.friend.activefriendid
-        )
-        if (friend[0].photourl != undefined) {
-          return friend[0].photourl
-        } else {
-          return 'http://localhost:8181/img/defaultprofile.jpg'
-        }
+        return this.$store.state.myState.photourl
       }
     },
     getdescription() {
-      if (this.$store.state.friend.individualorgroup == 'group') {
-        let group = this.$store.state.friend.groups.filter(
-          g => g._id == this.$store.state.friend.activegroupid
-        )
-        return group[0].groupdescription
+      if (!this.$store.state.view.isFeedMine) {
+        if (this.$store.state.friend.individualorgroup == 'group') {
+          let group = this.$store.state.friend.groups.filter(
+            g => g._id == this.$store.state.friend.activegroupid
+          )
+          return group[0].groupdescription
+        }
       }
     },
     currentFeed() {

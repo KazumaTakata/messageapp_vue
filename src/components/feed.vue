@@ -7,10 +7,15 @@
 
     </div>
     <div>
-      <img class="background_photo" src="http://localhost:8181/img/chuttersnap-176529-unsplash-1536071573660.jpg" alt="">
-      <img class="profile-img" src="http://localhost:8181/img/chuttersnap-176529-unsplash-1536071573660.jpg" alt="">
+
+      <img class="background_photo" ref="back" v-on:error="loaderr" v-bind:src="getbackground" alt="">
+
+      <img class="profile-img" ref="profile" v-on:error="loaderrprofile" v-bind:src="getprofile" alt="">
       <div>
         <h2>{{chattitle}}</h2>
+      </div>
+      <div>
+        <h4>{{getdescription}}</h4>
       </div>
     </div>
     <ul>
@@ -32,14 +37,14 @@
         </div>
       </li>
     </ul>
-    <button v-on:click="addfeed" v-if="showeditbutton" id="floating" class="feededitpos">
+    <button v-on:click="editgroupprofile" v-if="showeditbutton" id="floating" class="feededitpos">
       <font-awesome-icon icon="edit" />
     </button>
-    <button v-on:click="addfeed" id="floating" class="feedhomepos">
+    <button v-on:click="homefeed" id="floating" class="feedhomepos">
       <font-awesome-icon icon="home" />
     </button>
     <button v-on:click="addfeed" id="floating" class="feedpluspos">+ </button>
-
+    <EditGroupProfile></EditGroupProfile>
     <div class="panel" v-bind:class="{active: isActiveAddFeed}">
       <button v-on:click="addfeed" class="closebutton">
         <font-awesome-icon icon="times" />
@@ -71,7 +76,9 @@
 
 <script>
 import axios from 'axios'
+import EditGroupProfile from './panel/editgroupprofile'
 export default {
+  components: { EditGroupProfile },
   data() {
     return {
       chatinput: '',
@@ -80,40 +87,103 @@ export default {
       file: '',
       filechosenmessage: '',
       feeds: [],
-      successorfailuremessage: ''
+      successorfailuremessage: '',
+      backgroundurl: ''
     }
   },
   computed: {
-    currentFeed() {
+    getbackground() {
       if (this.$store.state.friend.individualorgroup == 'group') {
-        if (this.feeds.groupfeeds != undefined) {
-          let groupfeeds = this.feeds.groupfeeds.filter(
-            feed => feed.groupid == this.$store.state.friend.activegroupid
-          )
-          for (let i = 0; i < groupfeeds.length; i++) {
-            let u = this.$store.state.friend.groupmember.find(
-              f => f.id == groupfeeds[i].userId
-            )
-            if (u != undefined) {
-              groupfeeds[i].name = u.name
-              groupfeeds[i].profileurl = u.photourl
-            }
-          }
-          return groupfeeds
+        let group = this.$store.state.friend.groups.filter(
+          g => g._id == this.$store.state.friend.activegroupid
+        )
+        if (group[0].backgroundurl != undefined) {
+          return group[0].backgroundurl
+        } else {
+          return 'http://localhost:8181/img/defaultbackground.jpg'
         }
       } else {
-        if (this.feeds.feeds != undefined) {
-          return this.feeds.feeds.filter(
-            feed => feed.userId == this.$store.state.friend.activefriendid
-          )
+        let friend = this.$store.state.friend.friends.filter(
+          f => f.id == this.$store.state.friend.activefriendid
+        )
+        if (friend[0].backgroundurl != undefined) {
+          return friend[0].backgroundurl
+        } else {
+          return 'http://localhost:8181/img/defaultbackground.jpg'
         }
       }
     },
-    chattitle() {
+    getprofile() {
       if (this.$store.state.friend.individualorgroup == 'group') {
-        return this.$store.state.friend.acitvegroupname
+        let group = this.$store.state.friend.groups.filter(
+          g => g._id == this.$store.state.friend.activegroupid
+        )
+        if (group[0].photourl != undefined) {
+          return group[0].photourl
+        } else {
+          return 'http://localhost:8181/img/defaultprofile.jpg'
+        }
       } else {
-        return this.$store.state.friend.acitvename
+        let friend = this.$store.state.friend.friends.filter(
+          f => f.id == this.$store.state.friend.activefriendid
+        )
+        if (friend[0].photourl != undefined) {
+          return friend[0].photourl
+        } else {
+          return 'http://localhost:8181/img/defaultprofile.jpg'
+        }
+      }
+    },
+    getdescription() {
+      if (this.$store.state.friend.individualorgroup == 'group') {
+        let group = this.$store.state.friend.groups.filter(
+          g => g._id == this.$store.state.friend.activegroupid
+        )
+        return group[0].groupdescription
+      }
+    },
+    currentFeed() {
+      if (!this.$store.state.view.isFeedMine) {
+        if (this.$store.state.friend.individualorgroup == 'group') {
+          if (this.feeds.groupfeeds != undefined) {
+            let groupfeeds = this.feeds.groupfeeds.filter(
+              feed => feed.groupid == this.$store.state.friend.activegroupid
+            )
+            for (let i = 0; i < groupfeeds.length; i++) {
+              let u = this.$store.state.friend.groupmember.find(
+                f => f.id == groupfeeds[i].userId
+              )
+              if (u != undefined) {
+                groupfeeds[i].name = u.name
+                groupfeeds[i].profileurl = u.photourl
+              }
+            }
+            return groupfeeds
+          }
+        } else {
+          if (this.feeds.feeds != undefined) {
+            if (this.feeds.feeds != undefined) {
+              return this.feeds.feeds.filter(
+                feed => feed.userId == this.$store.state.friend.activefriendid
+              )
+            }
+          }
+        }
+      } else {
+        return this.feeds.feeds.filter(
+          feed => feed.userId == this.$store.state.myState.id
+        )
+      }
+    },
+    chattitle() {
+      if (!this.$store.state.view.isFeedMine) {
+        if (this.$store.state.friend.individualorgroup == 'group') {
+          return this.$store.getters.getactivegroupname
+        } else {
+          return this.$store.state.friend.acitvename
+        }
+      } else {
+        return this.$store.state.myState.name
       }
     },
     showeditbutton() {
@@ -129,6 +199,18 @@ export default {
     }
   },
   methods: {
+    loaderr() {
+      this.$refs['back'].src = 'http://localhost:8181/img/defaultbackground.jpg'
+    },
+    loaderrprofile() {
+      this.$refs['profile'].src = 'http://localhost:8181/img/defaultprofile.jpg'
+    },
+    editgroupprofile() {
+      this.$store.commit('togglegroupprofile')
+    },
+    homefeed() {
+      this.$store.commit('toggleisFeedMine', true)
+    },
     handleFileUpload() {
       this.file = this.$refs.file.files[0]
       this.filechosenmessage = 'file chosen'

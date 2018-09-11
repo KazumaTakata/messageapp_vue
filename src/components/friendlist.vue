@@ -120,6 +120,7 @@ export default {
     },
     friendchosen: async function(event) {
       this.$store.commit('setindividualorgroup', 'individual')
+      this.$store.commit('toggleisFeedMine', false)
       this.$store.commit(
         'setactivefriendid',
         this.$store.getters.getfriend(event.target.id).id
@@ -143,6 +144,7 @@ export default {
     },
     groupchosen: async function(event) {
       this.$store.commit('setindividualorgroup', 'group')
+      this.$store.commit('toggleisFeedMine', false)
 
       this.$store.commit(
         'setactivegroup',

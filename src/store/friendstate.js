@@ -1,3 +1,4 @@
+import Vue from "vue";
 const module = {
   state: {
     friends: [],
@@ -59,6 +60,28 @@ const module = {
     },
     setsetgroupmember(state, groupmember) {
       state.groupmember = groupmember;
+    },
+    setGroupPhoto(state, obj) {
+      let group = state.groups.find(g => g._id == obj.groupid);
+      Vue.set(group, "photourl", obj.photourl);
+    },
+    setGroupName(state, obj) {
+      let group = state.groups.find(g => g._id == obj.groupid);
+      Vue.set(group, "groupname", obj.name);
+    },
+    setGroupDescription(state, obj) {
+      let group = state.groups.find(g => g._id == obj.groupid);
+      Vue.set(group, "groupdescription", obj.description);
+    },
+    setGroupBackPhoto(state, obj) {
+      let group = state.groups.find(g => g._id == obj.groupid);
+      Vue.set(group, "backgroundurl", obj.backgroundurl);
+    },
+  },
+  getters: {
+    getactivegroupname: state => {
+      let group = state.groups.find(g => g._id == state.activegroupid);
+      return group.groupname;
     },
   },
 };

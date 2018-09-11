@@ -6,10 +6,11 @@
     <div class="form__container">
       <div>
         <h2 class="white-title">UPDATE YOUR PROFILE !!</h2>
-        <button v-on:click="tophoto" class="basicbutton">Name</button>
-        <button v-on:click="toname" class="basicbutton">Photo</button>
+        <button v-on:click="tophoto" class="basicbutton">Photo</button>
+        <button v-on:click="toname" class="basicbutton">Name</button>
+        <button v-on:click="toback" class="basicbutton">BackgroupPhoto</button>
 
-        <div v-if="photoorname">
+        <div class="set__container" v-if="photoornameorback === 'photo'">
           <h4 class="white-title">Update your profile photo.</h4>
           <div>
             <img class="previewimg" v-bind:src='this.$store.state.myState.photourl'>
@@ -25,7 +26,7 @@
           <p>{{this.profilephotochosen}}</p>
           <p>{{this.setprofilemessage}}</p>
         </div>
-        <div v-else>
+        <div class="set__container" v-else-if="photoornameorback === 'name'">
           <div>
             <h4 class="white-title">Type in NEW NAME</h4>
             <p class="white-title">Your current name is {{this.$store.state.myState.name}}</p>
@@ -37,6 +38,22 @@
             </button>
             <p>{{setnamemessage}}</p>
           </div>
+        </div>
+        <div class="set__container" v-else-if="photoornameorback === 'back'">
+          <h4 class="white-title">Update your Background photo.</h4>
+          <div>
+            <img class="previewimg" v-bind:src='this.$store.state.myState.photourl'>
+          </div>
+          <div class="selectfile__container">
+            <label class="basicbutton selectfile">
+              <input @change="onFileChange" style="display:none" type="file" accept="image/*"> SELECT
+            </label>
+          </div>
+          <div>
+            <button v-on:click="sendProfilephoto" class="basicbutton">SET PHOTO</button>
+          </div>
+          <p>{{this.profilephotochosen}}</p>
+          <p>{{this.setprofilemessage}}</p>
         </div>
 
       </div>
@@ -56,28 +73,46 @@ export default {
       friendaddmessage: '',
       friendname: '',
       profilephoto: '',
+      backphoto: '',
       newname: '',
       profilephotochosen: '',
       setprofilemessage: '',
       setnamemessage: '',
-      photoorname: true
+      photoornameorback: 'name'
     }
   },
   methods: {
     tophoto(e) {
-      this.photoorname = false
+      this.photoornameorback = 'photo'
     },
     toname(e) {
-      this.photoorname = true
+      this.photoornameorback = 'name'
+    },
+    toback(e) {
+      this.photoornameorback = 'back'
+    },
+    sendphotovalidation: function() {
+      if (this.photoornameorback == 'photo') {
+        return this.profilephoto != ''
+      } else if (this.photoornameorback == 'back') {
+        return this.backphoto != ''
+      }
     },
     sendProfilephoto: function(event) {
-      if (this.profilephoto != '') {
+      if (this.sendphotovalidation()) {
         const home_url = `http://localhost:8181`
-        const url = home_url + '/api/user/profile/photo'
+        let url
         let formData = new FormData()
-        formData.append('image', this.profilephoto)
+        if (this.photoornameorback == 'photo') {
+          url = home_url + '/api/user/profile/photo'
+          formData.append('image', this.profilephoto)
+        } else if (this.photoornameorback == 'back') {
+          url = home_url + '/api/user/profile/back'
+          formData.append('image', this.backphoto)
+        }
+
         axios
-          .post(url, formData, {
+          .put(url, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               'x-access-token': this.$store.state.token
@@ -85,15 +120,15 @@ export default {
           })
           .then(res => {
             console.log(res.data.photourl)
-            this.setprofilemessage = 'New profile photo is set!!'
+            this.$toasted.show('New profile photo is set')
             this.$store.commit('setPhoto', res.data.photourl)
           })
           .catch(function() {
             console.log('FAILURE!!')
+            this.$toasted.show('Fail to set')
           })
       } else {
-        this.setprofilemessage =
-          'No photo is chosen. Please choose your new profile photo!'
+        this.$toasted.show('New profile photo is set')
       }
     },
     sendNewname: function(event) {
@@ -112,34 +147,34 @@ export default {
           )
           .then(() => {
             console.log('SUCCESS!!')
-            this.setnamemessage = 'New name is set!'
+            this.$toasted.show('New name is set!')
             this.$store.commit('setName', this.newname)
           })
           .catch(() => {
             console.log('FAILURE!!')
-            this.setnamemessage = 'This name is not unique!'
+            this.$toasted.show('This name is not unique!')
           })
       } else {
-        this.setnamemessage = 'Name should not be empty!'
+        this.$toasted.show('Name should not be empty!')
       }
     },
     onFileChange(e) {
-      this.profilephoto = e.target.files[0]
-      this.profilephotochosen = 'New photo is chosen. SET IT!!'
+      if (this.photoornameorback == 'photo') {
+        this.profilephoto = e.target.files[0]
+        this.$toasted.show('New photo is chosen. SET IT!!')
+      } else if (this.photoornameorback == 'back') {
+        this.backphoto = e.target.files[0]
+        this.$toasted.show('New Background photo is chosen. SET IT!!')
+      }
     },
+
     profileopen: function(event) {
       this.$store.commit('toggleprofile')
-      this.loginerrmessage = ''
-      this.friendaddmessage = ''
-      this.setprofilemessage = ''
-      this.setnamemessage = ''
       this.friendname = ''
       this.profilephoto = ''
       this.newname = ''
       this.profilephotochosen = ''
-      this.setprofilemessage = ''
-      this.setnamemessage = ''
-      this.photoorname = true
+      this.photoornameorback = 'name'
     }
   }
 }
@@ -155,18 +190,5 @@ img {
   width: 100px;
   border-radius: 50%;
   object-fit: cover;
-}
-.selectfile {
-  padding: 10px;
-  margin: 30px;
-}
-
-.selectfile:hover {
-  color: white;
-  border-color: white;
-}
-
-.selectfile__container {
-  margin: 40px 0;
 }
 </style>

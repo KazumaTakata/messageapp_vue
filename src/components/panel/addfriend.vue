@@ -45,25 +45,6 @@
             </li>
           </ul>
         </div>
-
-        <!-- <template v-else>
-          <h2 class="white-title">Find Group!!</h2>
-          <div>
-            <input v-model="groupname" placeholder="name" type="text">
-            <button v-on:click="findgroup" class="searchbutton">
-              <font-awesome-icon icon="search" />
-            </button>
-            <p>{{nofindmessage}}</p>
-          </div>
-          <div class="result__container">
-            <p> {{resultgroupname}}</p>
-            <button v-on:click="joingroup" class="basicbutton">
-              Join this group
-            </button>
-            <p>{{friendaddmessage}}</p>
-          </div>
-        </template> -->
-
       </div>
 
     </div>

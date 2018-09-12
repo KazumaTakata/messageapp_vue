@@ -18,10 +18,10 @@
                 {{chat.time}}
               </div>
 
-              <div v-bind:ref="index" v-bind:contenteditable="editableindex === index" v-bind:class="{underline: editableindex === index}" @input="updateeditable" class="bubble__container">
-                <span v-bind:class="{underline: editableindex === index}">
+              <div class="bubble__container">
+                <div v-bind:class="{underline: editableindex === index}" v-bind:ref="index" class="chatbox" @input="updateeditable($event, index)" v-bind:contenteditable="editableindex === index">
                   {{chat.content}}
-                </span>
+                </div>
               </div>
 
               <div v-if="chat.which == 0" class="chat_hover_menu">
@@ -78,21 +78,35 @@ export default {
       activepreview: '',
       previewtext: '',
       editableindex: null,
-      editedtalk: ''
+      editedtalk: {}
     }
   },
   computed: {},
   methods: {
-    updateeditable: function(event) {
-      this.editedtalk = event.target.innerText
+    showchatcontent: function(content) {
+      let splitcontent = content.split(' ')
+      for (let i = 0; i < splitcontent.length; i++) {
+        if (i % 5 == 0 && i != 0) {
+          splitcontent.splice(i, 0, '\n')
+        }
+      }
+      let splitstr = splitcontent.join(' ')
+      return splitstr
+    },
+    updateeditable: function(event, index) {
+      // this.$store.commit('updateinvidivualtalk', {
+      //   index,
+      //   content: event.target.innerText
+      // })
+      this.editedtalk[index] = event.target.innerText
     },
     edittalk: function(index) {
       if (this.editableindex == index) {
         this.editableindex = null
-        // this.updatechat(index)
+        this.updatechat(index)
       } else {
         if (this.editableindex != null) {
-          // this.updatechat(this.editableindex)
+          this.updatechat(this.editableindex)
         }
         this.editableindex = index
         setTimeout(() => {
@@ -104,22 +118,25 @@ export default {
       const home_url = `http://localhost:8181`
       const _url = `/api/talk`
       const url = home_url + _url
+      if (this.editedtalk[index] != undefined) {
+        let content = this.editedtalk[index]
 
-      try {
-        let result = await axios({
-          method: 'put',
-          url: url,
-          data: {
-            index,
-            content: this.editedtalk,
-            groupid: this.$store.state.friend.activegroupid
-          },
-          headers: { 'x-access-token': this.$store.state.token }
-        })
-        console.log(result)
-        // this.$store.commit('plusonestargroup', chatindex)
-      } catch (err) {
-        console.log(err)
+        try {
+          let result = await axios({
+            method: 'put',
+            url: url,
+            data: {
+              time: this.$store.state.chat.talks[index].time,
+              content,
+              friendid: this.$store.state.friend.activefriendid
+            },
+            headers: { 'x-access-token': this.$store.state.token }
+          })
+          console.log(result)
+          // this.$store.commit('plusonestargroup', chatindex)
+        } catch (err) {
+          console.log(err)
+        }
       }
     },
     previewfile: async function(index, url) {
@@ -213,7 +230,10 @@ export default {
 }
 .underline {
   background: white !important;
-  color: $font-color;
+  color: $font-color !important;
+}
+.underline:after {
+  border-bottom-color: transparent !important;
 }
 
 .file__preview {

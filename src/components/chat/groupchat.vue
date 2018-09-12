@@ -18,8 +18,10 @@
                   {{chat.time}}
                 </div>
               </div>
-              <div v-bind:contenteditable="editableindex === index" v-bind:class="{underline: editableindex === index}" @input="updateeditable" class="bubble__container">
-                {{chat.content}}
+              <div class="bubble__container">
+                <div class="chatbox" v-bind:contenteditable="editableindex === index" @input="updateeditable" v-bind:ref="index" v-bind:class="{underline: editableindex === index}">
+                  {{chat.content}}
+                </div>
               </div>
             </div>
             <div class="responce__container">
@@ -34,13 +36,16 @@
                   </div>
 
                   <div class="bubble__container-small">
-                    {{responce.content}}
+                    <div class="chatbox">
+                      {{responce.content}}
+                    </div>
+
                   </div>
                 </div>
               </li>
             </div>
-            <div class="feedback__container">
-              <template v-if="chat.star > 0">
+            <div class=" feedback__container ">
+              <template v-if="chat.star> 0">
                 <font-awesome-icon icon="star" /> {{chat.star}}
               </template>
               <template v-if="String(index)===activeresponceindex">
@@ -99,7 +104,7 @@ export default {
       responcemessage: '',
       websocket: '',
       editableindex: null,
-      editedtalk: ''
+      editedtalk: {}
     }
   },
   created() {
@@ -111,7 +116,7 @@ export default {
       return id == this.$store.state.myState.id
     },
     updateeditable: function(event) {
-      this.editedtalk = event.target.innerText
+      this.editedtalk[index] = event.target.innerText
     },
     ifeditable: function(index) {},
     edittalk: function(index) {
@@ -123,6 +128,9 @@ export default {
           this.updatechat(this.editableindex)
         }
         this.editableindex = index
+        setTimeout(() => {
+          this.$refs[index][0].focus()
+        }, 0)
       }
     },
     updatechat: async function(index) {
@@ -130,21 +138,24 @@ export default {
       const _url = `/api/group/talk`
       const url = home_url + _url
 
-      try {
-        let result = await axios({
-          method: 'put',
-          url: url,
-          data: {
-            index,
-            content: this.editedtalk,
-            groupid: this.$store.state.friend.activegroupid
-          },
-          headers: { 'x-access-token': this.$store.state.token }
-        })
-        console.log(result)
-        // this.$store.commit('plusonestargroup', chatindex)
-      } catch (err) {
-        console.log(err)
+      if (this.editedtalk[index] != undefined) {
+        let content = this.editedtalk[index]
+        try {
+          let result = await axios({
+            method: 'put',
+            url: url,
+            data: {
+              index,
+              content,
+              groupid: this.$store.state.friend.activegroupid
+            },
+            headers: { 'x-access-token': this.$store.state.token }
+          })
+          console.log(result)
+          // this.$store.commit('plusonestargroup', chatindex)
+        } catch (err) {
+          console.log(err)
+        }
       }
     },
     showday: function(index) {
@@ -177,8 +188,14 @@ export default {
         time: d.toLocaleString(),
         chatindex: this.activeresponceindex
       }
-
       this.websocket.send(JSON.stringify(sendobj))
+      this.$store.commit('addresponse', {
+        id: this.activeresponceindex,
+        content: this.responcemessage,
+        time: d.toLocaleString(),
+        senderid: this.$store.state.myState.id,
+        filepath: null
+      })
     },
     addresponce: function(event) {
       let chatindex = event.currentTarget.id
@@ -257,6 +274,14 @@ export default {
 @import '../../scss/color.scss';
 @import '../../scss/button.scss';
 @import '../../scss/chat.scss';
+
+.underline {
+  background: white !important;
+  color: $font-color !important;
+}
+.underline:after {
+  border-bottom-color: transparent !important;
+}
 
 .time__span {
   font-size: 20px;

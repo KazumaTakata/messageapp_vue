@@ -12,15 +12,74 @@
   text-align: left;
 }
 
-.youchat span {
+.youchat .chatbox {
   background: rgb(103, 199, 65);
+  margin-right: auto;
 }
 
-.mechat span {
+.mechat .chatbox {
   background: rgb(75, 21, 201);
+  margin-left: auto;
+}
+
+.mechat .chatbox:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 14px solid transparent;
+  border-bottom-color: rgb(75, 21, 201);
+  border-top: 0;
+  border-right: 0;
+  margin-left: -7px;
+  margin-top: -14px;
+}
+
+.youchat .chatbox:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 14px solid transparent;
+  border-bottom-color: rgb(103, 199, 65);
+  border-top: 0;
+  border-left: 0;
+  margin-left: -7px;
+  margin-top: -14px;
+}
+
+.chatbox {
+  position: relative;
+  width: 100px;
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  word-wrap: break-word;
+  background: $main-color;
+  outline: none;
+}
+
+.chatbox:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 14px solid transparent;
+  border-bottom-color: $main-color;
+  border-top: 0;
+  border-left: 0;
+  margin-left: -7px;
+  margin-top: -14px;
 }
 
 .menu__container {
+  overflow-y: scroll;
   position: fixed;
   top: 50px;
   right: 0;
@@ -28,6 +87,7 @@
   width: 200px;
   transition: 0.5s;
   border-left: 1px solid $border-color;
+
   input {
     width: 80%;
     margin-top: 20px;
@@ -35,6 +95,10 @@
 }
 .menu__container.active {
   right: -200px;
+}
+
+.star__container {
+  padding-bottom: 150px;
 }
 
 .inner__chat__container {
@@ -105,6 +169,8 @@ li {
 .bubble__container {
   margin: 30px;
   outline: none;
+
+  display: flex;
 }
 .bubble__container-small {
   margin: 5px;

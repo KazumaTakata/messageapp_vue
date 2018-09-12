@@ -79,10 +79,10 @@ const module = {
     },
   },
   getters: {
-    getactivegroupname: state => {
-      let group = state.groups.find(g => g._id == state.activegroupid);
-      return group.groupname;
-    },
+    // getactivegroupname: state => {
+    //   let group = state.groups.find(g => g._id == state.activegroupid);
+    //   return group.groupname;
+    // },
   },
 };
 

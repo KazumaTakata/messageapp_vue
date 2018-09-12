@@ -55,9 +55,8 @@
           </template>
         </template>
         <template v-else-if=" menustate=='star' ">
-          <ul>
+          <ul class="star__container">
             <li v-for="(chat, index) in staredchat" v-bind:key="index ">
-              <div class="text__container subheader">{{chat.star}} stared</div>
               <div class="profile__container margin10">
                 <img class="profile-img" v-bind:src="getphoto(chat.senderid)">
                 <div class="name__container">
@@ -65,6 +64,9 @@
                   <div class="time__container">
                     {{chat.time}}
                   </div>
+                </div>
+                <div>
+                  {{chat.star}} stared
                 </div>
                 <div class="bubble__container">
                   {{chat.content}}
